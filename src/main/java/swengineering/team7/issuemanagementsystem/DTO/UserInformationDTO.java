@@ -2,18 +2,18 @@ package swengineering.team7.issuemanagementsystem.DTO;
 
 import swengineering.team7.issuemanagementsystem.entity.User;
 
-public class UserDTO {
+public class UserInformationDTO {
     private Long id;
     private String name;
     private String role;
 
-    public UserDTO(Long id, String name, String role) {
+    public UserInformationDTO(Long id, String name, String role) {
         this.id = id;
         this.name = name;
         this.role = role;
     }
 
-    public UserDTO() {
+    public UserInformationDTO() {
     }
 
     public Long getId() {
@@ -41,12 +41,11 @@ public class UserDTO {
     }
 
     // 엔티티 객체에서 DTO 객체로 변환하는 메소드
-    public static UserDTO from(User user) {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(user.getId());
-        userDTO.setName(user.getUsername());
-        userDTO.setRole(user.getRole());
-        return userDTO;
+    public static UserInformationDTO from(User user) {
+        UserInformationDTO userInformationDTO = new UserInformationDTO();
+        userInformationDTO.setId(user.getId());
+        userInformationDTO.setName(user.getUsername());
+        userInformationDTO.setRole(user.getRole());
+        return userInformationDTO;
     }
-
 }

@@ -19,13 +19,13 @@ public class UserService {
        this.userRepository=userRepository;
    }
 
-    public User create(String username, String password, String contract) {
+   //회원가입
+    public void create(String username, String password, String contract) {
        User user = new User();
        user.setUsername(username);
        user.setPassword(password);
        user.setRole(contract);
        this.userRepository.save(user);
-       return user;
     }
 
     //사용자 이름으로 검색

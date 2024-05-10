@@ -11,8 +11,8 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
     //로그인 하기위해 아이디 조회
-    Optional<User> findByusername(String username);
+    Optional<User> findByUsername(String username);
     //사용자 검색
-    Page<User> findALL(Specification<User> spec, Pageable pageable);
+    Page<User> findAll(Specification<User> spec, Pageable pageable);
     // 기본 CRUD 제공
 }
