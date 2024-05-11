@@ -52,6 +52,18 @@ public class Issue {
     )
     private Set<User> assignedUsers;
 
+    public Issue(){};
+
+
+    public static Issue makeIssueOf(String title, String issueDescription,LocalDateTime date, String state){
+        Issue issue = new Issue();
+        issue.setTitle(title);
+        issue.setIssueDescription(issueDescription);
+        issue.setDate(date);
+        issue.setState(state);
+        return issue;
+    }
+
 
     //Getter & Setter
     public Long getId() {
