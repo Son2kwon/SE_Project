@@ -7,8 +7,12 @@ import jakarta.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import swengineering.team7.issuemanagementsystem.DTO.UserInformationDTO;
 import swengineering.team7.issuemanagementsystem.entity.User;
 import swengineering.team7.issuemanagementsystem.repository.UserRepository;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -27,9 +31,21 @@ public class UserService {
        user.setRole(contract);
        this.userRepository.save(user);
     }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //이름으로 검색된 사용자들 DTO 반환
+    public List<UserInformationDTO> searchByUsername(String input) {
+        Specification<User> spec = searchname(input);
+        List<User> users = userRepository.findAll(spec);
 
-    //사용자 이름으로 검색
-    public Specification<User> searchByusername(String input) {
+        List<UserInformationDTO> userInformationDTOS = new ArrayList<>();
+        for (User user : users) {
+            userInformationDTOS.add(UserInformationDTO.from(user));
+        }
+
+        return userInformationDTOS;
+    }
+    //사용자 이름으로 검색 하는 메소드
+    public Specification<User> searchname(String input) {
        return new Specification<User>() {
            @Override
            public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
@@ -38,9 +54,21 @@ public class UserService {
            }
        };
     }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //사용자 권한으로 검색된 리스트 DTO 반환
+    public List<UserInformationDTO> searchByUserrole(String input) {
+    Specification<User> spec = searchrole(input);
+    List<User> users = userRepository.findAll(spec);
 
+    List<UserInformationDTO> userInformationDTOS = new ArrayList<>();
+    for (User user : users) {
+        userInformationDTOS.add(UserInformationDTO.from(user));
+    }
+
+    return userInformationDTOS;
+}
     //사용자 권한(admin, PL, dev, tester) 으로 검색
-    public Specification<User> searchByRole(String input) {
+    public Specification<User> searchrole(String input) {
         return new Specification<User>() {
           @Override
           public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
