@@ -32,6 +32,22 @@ public class UserService {
        this.userRepository.save(user);
     }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 사용자 계정 정보 수정
+    public void modifyUsername(User user, String newname) {
+       user.setUsername(newname);
+       this.userRepository.save(user);
+    }
+
+    public void modifyUserpassword(User user, String newpassword) {
+       user.setPassword(newpassword);
+       this.userRepository.save(user);
+    }
+
+    public void modifyUserrole(User user, String newrole) {
+       user.setRole(newrole);
+       this.userRepository.save(user);
+    }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //이름으로 검색된 사용자들 DTO 반환
     public List<UserInformationDTO> searchByUsername(String input) {
         Specification<User> spec = searchname(input);
