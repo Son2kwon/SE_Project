@@ -5,9 +5,11 @@ import org.springframework.stereotype.Service;
 import swengineering.team7.issuemanagementsystem.dto.IssueDTO;
 import swengineering.team7.issuemanagementsystem.dto.SearchInfoDTO;
 import swengineering.team7.issuemanagementsystem.entitiy.Issue;
+import swengineering.team7.issuemanagementsystem.entitiy.Project;
 import swengineering.team7.issuemanagementsystem.entitiy.User;
 import swengineering.team7.issuemanagementsystem.repository.CommentRepository;
 import swengineering.team7.issuemanagementsystem.repository.IssueRepository;
+import swengineering.team7.issuemanagementsystem.repository.ProjectRepository;
 import swengineering.team7.issuemanagementsystem.repository.UserRepository;
 import swengineering.team7.issuemanagementsystem.util.SearchType;
 
@@ -19,25 +21,28 @@ import java.util.Optional;
 @Service
 public class IssueService {
 
-    CommentRepository commentRepository;
     IssueRepository issueRepository;
     UserRepository userRepository;
+    ProjectRepository projectRepository;
 
-    public IssueService(UserRepository userRepository, IssueRepository issueRepository, CommentRepository commentRepository) {
+    public IssueService(UserRepository userRepository, IssueRepository issueRepository, ProjectRepository projectRepository) {
         this.userRepository = userRepository;
         this.issueRepository = issueRepository;
-        this.commentRepository = commentRepository;
+        this.projectRepository = projectRepository;
     }
 
     //새로운 issue 하나를 만드는 작업 ( issue 저장 성공시 True 실패시 False 반환)
     public Boolean createIssue(IssueDTO issueDTO) {
         Issue newIssue = Issue.makeIssueOf(issueDTO.getTitle(), issueDTO.getIssueDescription(), issueDTO.getDate(), issueDTO.getState());
         User user = userRepository.findById(issueDTO.getCreateUserID()).orElse(null);
-        if (user == null) {
+        Project project =  projectRepository.findById(issueDTO.getProjectID()).orElse(null);
+        if (user == null || project == null) {
             return false;
         }
         newIssue.setReporter(user);
         user.addIssue(newIssue);
+        newIssue.setProject(project);
+        project.addIssue(newIssue);
         issueRepository.save(newIssue);
         return true;
     }
@@ -111,10 +116,14 @@ public class IssueService {
             if (optionalIssue.isPresent()) {
                 Issue issue = optionalIssue.get();
                 User user = issue.getReporter(); // 해당 이슈를 생성한 유저
+                Project project = issue.getProject(); // 해당 이슈의 프로젝트
 
                 // Issue를 유저의 이슈 목록에서 제거
                 if (user != null) {
                     user.removeIssue(issue);
+                }
+                if (project != null) {
+                    project.removeIssue(issue);
                 }
 
                 issueRepository.deleteById(issueDTO.getId());

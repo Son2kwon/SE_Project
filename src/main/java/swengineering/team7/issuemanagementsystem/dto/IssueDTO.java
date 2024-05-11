@@ -15,6 +15,7 @@ public class IssueDTO {
     private Priority priority;
     private Long createUserID;
     private String createUsername;
+    private Long ProjectID;
 
     public IssueDTO() {
     }
@@ -101,4 +102,7 @@ public class IssueDTO {
         return createUserID;
     }
 
+    public Long getProjectID() {
+        return ProjectID;
+    }
 }

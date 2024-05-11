@@ -103,4 +103,13 @@ public class User {
     public void removeIssue(Issue issue) {
         issues.remove(issue);
     }
+
+    public void addinchargeProject(Project project){
+        inchargeProjects.add(project);
+    }
+
+    public void removeinchargeProjects(Project project){
+        inchargeProjects.remove(project);
+    }
+
 }
