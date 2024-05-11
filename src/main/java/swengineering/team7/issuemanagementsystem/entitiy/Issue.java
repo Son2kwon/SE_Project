@@ -1,6 +1,9 @@
 package swengineering.team7.issuemanagementsystem.entitiy;
 
 import jakarta.persistence.*;
+import swengineering.team7.issuemanagementsystem.util.Priority;
+
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
@@ -10,7 +13,7 @@ public class Issue {
     private Long id;
 
     private String title;
-    private String date;
+    private LocalDateTime date;
     private String state;
 
     @Lob // 긴 텍스트 지원
@@ -25,16 +28,20 @@ public class Issue {
 
     // Issue:User 다;1   create
     @ManyToOne
-    private User user;
+    private User reporter;
+
+    //  Issue:User 다;1   최종 Fixer ( 추후 추가 필요)
+    //    @ManyToOne
+    //    private User fixer;
 
     // Issue:Comment 1:다    has many
     @OneToMany(mappedBy = "issue")
     private Set<Comment> comments;
 
-    //Enum으로 Priority 정의
-    public enum Priority{
-        //LOW, MEDIUM, HIGH, CRITICAL
-    }
+    //Enum으로 Priority 정의 (Util 패키지로 리팩토링)
+    //    public enum Priority{
+    //        //LOW, MEDIUM, HIGH, CRITICAL
+    //    }
 
     //Issue:User 다:다    Assign
     @ManyToMany
@@ -63,11 +70,11 @@ public class Issue {
         this.title = title;
     }
 
-    public String getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
@@ -87,12 +94,12 @@ public class Issue {
         this.project = project;
     }
 
-    public User getUser() {
-        return user;
+    public User getReporter() {
+        return reporter;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setReporter(User user) {
+        this.reporter = user;
     }
 
     public Set<Comment> getComments() {

@@ -2,6 +2,9 @@ package swengineering.team7.issuemanagementsystem.entitiy;
 
 
 import jakarta.persistence.*;
+import org.springframework.cglib.core.Local;
+
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
@@ -12,11 +15,11 @@ public class Project {
     private Long id;
 
     private String name;
-    private String startDate;
-    private String dueDate;
+    private LocalDateTime startDate;
+    private LocalDateTime dueDate;
 
     //Project:User 다:다      inchargeProjects 테이블 사용
-    @ManyToMany(mappedBy = "inchargeProjects")
+    @ManyToMany (mappedBy = "inchargeProjects")
     private Set<User> assignedUsers;
 
     // Project:Issue   1:다      has many
@@ -41,19 +44,19 @@ public class Project {
         this.name = name;
     }
 
-    public String getStartDate() {
+    public LocalDateTime getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(String startDate) {
+    public void setStartDate(LocalDateTime startDate) {
         this.startDate = startDate;
     }
 
-    public String getDueDate() {
+    public LocalDateTime getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(String dueDate) {
+    public void setDueDate(LocalDateTime dueDate) {
         this.dueDate = dueDate;
     }
 

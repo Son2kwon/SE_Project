@@ -6,9 +6,11 @@ import java.util.Set;
 
 
 @Entity
+@Table(name="member")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
 
     private String name;
@@ -24,7 +26,7 @@ public class User {
     private Set<Project> inchargeProjects;
 
     // User:Issue 1:다   create
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "reporter")
     private Set<Issue> issues;
 
     // User:Issue 1:다   Assign
@@ -92,5 +94,13 @@ public class User {
 
     public void setInchargeProjects(Set<Project> inchargeProjects) {
         this.inchargeProjects = inchargeProjects;
+    }
+
+    public void addIssue(Issue issue){
+        issues.add(issue);
+    }
+
+    public void removeIssue(Issue issue) {
+        issues.remove(issue);
     }
 }
