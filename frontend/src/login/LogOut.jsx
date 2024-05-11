@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const LogOut = () => {
@@ -15,13 +14,7 @@ const LogOut = () => {
   	};
   
   return (
-  	<div className="user-profile">
-  		<div className="user-logout-btn-container">
-        	<button className="user-logout-btn" onClick={handleLogout}>
-          		로그아웃
-        	</button>
-      	</div>
-	</div>
+	<button onClick={handleLogout}>로그아웃</button>
 	);
 };
 export default LogOut

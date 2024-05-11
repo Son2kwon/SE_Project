@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import URLs from '../utils/urls'
 
@@ -8,7 +8,6 @@ const Login = () => {
   const [loginCheck, setLoginCheck] = useState(false);
   const navigate = useNavigate();
 
-  
   const handleLogin = async (event) => {
     event.preventDefault();
 
@@ -26,25 +25,23 @@ const Login = () => {
       }
     );
     const result = await response.json();
-
     if (response.status === 200) {
       // Store token in local storage
       await Promise.all([
         localStorage.setItem("token", result.token),
         localStorage.setItem("email", result.email), // Save userId here
-        localStorage.setItem("role",result.role)
+        localStorage.setItem("role",result.role),
         // localStorage.setItem("storeid", result.storeId), // Save storeId here
-      ]);
+      ])
+
+      if(result.role==='admin'){
+        navigate('/admin');
+        window.location.reload();
+      }
+      else{
+        navigate('/')
+      }
       setLoginCheck(false);
-      console.log("Token:", localStorage.getItem("token")); // Log for debugging
-       // 로그인 성공시 홈으로 이동합니다.
-      window.location.replace("http://localhost:3000/")
-      //localStorage.setItem("role", result.role); // 여기서 role를 저장합니다.
-      //localStorage.setItem("storeid", result.storeId); // 여기서 role를 저장합니다.
-      
-      console.log("로그인성공, 이메일주소:" + result.email);
-
-
     } else {
       setLoginCheck(true);
       navigate('/login')
