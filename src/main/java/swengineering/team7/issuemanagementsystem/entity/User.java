@@ -16,6 +16,7 @@ public class User {
     private String username;
     private String password;
     private String role;
+    private String Contract;
 
     // User:Project 다:다     두 엔터티 연결하는 중간 테이블 생성
     @ManyToMany
@@ -61,6 +62,10 @@ public class User {
         return password;
     }
 
+    public String getContract() {
+        return Contract;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -101,8 +106,11 @@ public class User {
         this.inchargeProjects = inchargeProjects;
     }
 
-    public void setPassword(String passowrd)
-    {
+    public void setPassword(String passowrd) {
         this.password = passowrd;
+    }
+
+    public void setContract(String contract) {
+        this.Contract=contract;
     }
 }

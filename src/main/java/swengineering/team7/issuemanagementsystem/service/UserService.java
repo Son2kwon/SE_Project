@@ -24,11 +24,11 @@ public class UserService {
    }
 
    //회원가입
-    public void create(String username, String password, String contract) {
+    public void create(String username, String password, String role) {
        User user = new User();
        user.setUsername(username);
        user.setPassword(password);
-       user.setRole(contract);
+       user.setRole(role);
        this.userRepository.save(user);
     }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -95,3 +95,5 @@ public class UserService {
     }
 
 }
+
+///// add comment : 해당 프로젝트에 속한 사용자만 가능
