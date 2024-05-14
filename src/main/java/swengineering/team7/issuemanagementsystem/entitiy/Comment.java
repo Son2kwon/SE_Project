@@ -2,6 +2,9 @@ package swengineering.team7.issuemanagementsystem.entitiy;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+
 
 @Entity
 public class Comment {
@@ -11,7 +14,7 @@ public class Comment {
 
     private String body;
     private String writer;
-    private String date;
+    private LocalDateTime date;
 
     // Comment:Issue 다:1  has many
     @ManyToOne
@@ -49,11 +52,11 @@ public class Comment {
         this.writer = writer;
     }
 
-    public String getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 

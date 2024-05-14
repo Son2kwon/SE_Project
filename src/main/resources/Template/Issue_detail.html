@@ -7,7 +7,7 @@
 <form action="#" method="post">
     <div>
         <label>Status:</label>
-        <select th:field="${issue.status}">
+        <select th:field="${issue.state}">
             <option value="new">New</option>
             <option value="assigned">Assigned</option>
             <option value="fixed">Fixed</option>
@@ -15,16 +15,16 @@
         </select>
     </div>
     <div>
-        <p>Title of Issue: <span th:text="${issue.title}" /></p>
+        <p><span th:text="${issue.title}" /></p>
     </div>
     <div>
-        <p>Body of Issue: <span th:text="${issue.body}" /></p>
+        <p><span th:text="${issue.date}" /></p>
     </div>
     <div>
-        <p>Date: <span th:text="${issue.date}" /></p>
+        <p><span th:text="${issue.writer}" /></p>
     </div>
     <div>
-        <p>Writer: <span th:text="${issue.writer}" /></p>
+        <p><span th:text="${issue.issueDescription}" /></p>
     </div>
     <div>
         <button type="submit">Save</button>
@@ -35,25 +35,24 @@
     <h3>Comments:</h3>
     <div th:each="comment : ${issue.comments}">
         <div>
-            <p>Writer: <span th:text="${comment.writer}" /></p>
+            <p><span th:text="${comment.writer}" /></p>
         </div>
         <div>
-            <p>Comment: <span th:text="${comment.text}" /></p>
+            <p><span th:text="${comment.body}" /></p>
         </div>
         <div>
-            <p>Date: <span th:text="${comment.date}" /></p>
+            <p><span th:text="${comment.date}" /></p>
         </div>
     </div>
 </div>
 <hr />
 <div>
-    <h3>New Comment:</h3>
-    <form action="#" method="post">
+    <form th:action="@{|/comments/create/${issue.id}|}" method="post">
         <div>
             <label for="newComment">Comment:</label>
             <textarea id="newComment" name="newComment" rows="4" cols="50"></textarea>
         </div>
-        <button type="submit">Add Comment</button>
+        <input type="submit" value = "Add Comment">
     </form>
 </div>
 </body>
