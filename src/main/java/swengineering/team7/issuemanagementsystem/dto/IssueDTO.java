@@ -19,7 +19,7 @@ public class IssueDTO {
 
     public IssueDTO() {
     }
-
+=
     //Entity -> DTO로 바꿔주는 생성자 메소드
     static public IssueDTO makeDTOFrom(Issue issue){
         return new IssueDTO(issue.getId(), issue.getTitle(), issue.getDate(),
@@ -68,6 +68,10 @@ public class IssueDTO {
 
     public void setCreateUsername(String createUsername) {
         this.createUsername = createUsername;
+    }
+
+    public void setProjectID(Long projectID) {
+        ProjectID = projectID;
     }
 
     public Long getId() {
