@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Service
 public class CommentService {
-    private final CommentRepository commentRepository;
+    private CommentRepository commentRepository;
 
     public void create(Issue issue, String newComment) {
         Comment comment = new Comment();
