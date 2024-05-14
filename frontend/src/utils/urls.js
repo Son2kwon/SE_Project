@@ -1,7 +1,11 @@
+const base_url = 'http://localhost:5000'
 const URLs = {
-    LOGIN: 'http://127.0.0.1:5000/login',
-    REGISTER: 'http://127.0.0.1:5000/register',
-    SEARCH: 'http://127.0.0.1:5000/search',
-    CREATEPROJECT: 'http://localhost:5000/createproject'
+  LOGIN: base_url + '/login',
+  REGISTER: base_url + '/register',
+  SEARCH: base_url + '/search',
+  CREATEPROJECT: base_url + '/createproject',
+  GETPl: base_url + '/get/pl',
+  GETTester: base_url + '/get/tester',
+  GETDev: base_url + '/get/dev',
   };
 export default URLs;
