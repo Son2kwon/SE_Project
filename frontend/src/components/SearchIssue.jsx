@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from 'react';
 import Select from 'react-select';
 import URLs from '../utils/urls';
-import SearchResult from './SearchResultTable';
+import SearchResultTable from './SearchResultTable';
 const plOption = [
   { value: '', label: "선택 안 함" },
   { value: 'new', label: 'new' },
@@ -38,9 +38,9 @@ const Search = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchData, setSearchData] = useState([]);
 
-  const role = localStorage.getItem('role')
+  const role = sessionStorage.getItem('role')
   useEffect(() => {
-    const role = localStorage.getItem('role');
+    const role = sessionStorage.getItem('role');
     if (role === 'tester') {
       setOptionsByRole(testerOption);
     } else if (role === 'developer') {
@@ -62,23 +62,13 @@ const Search = () => {
     setSearchTerm(event.target.value);
   };
   
-  const fetchData=() =>{
-    fetch(`${URLs.SEARCH}?status=${issueStatus.value? issueStatus.value : ''}&person=${person.value ? person.value : ''}&term=${searchTerm.value ? searchTerm.value : ''}&priority=${priority.value ? priority.value : ''}`)
-      .then(response=>response.json())
-      .then(responseData=>{setSearchData(responseData.items)})
-  }
-  
-  const handleSearch = async() => {
+  const handleSearch = async(event) => {
+    event.preventDefault();
     try{
-    if (issueStatus || person || priority) {
       console.log("검색어:", issueStatus, person, searchTerm, priority);
       const response = await fetch(`${URLs.SEARCH}?status=${issueStatus.value? issueStatus.value : ''}&person=${person.value ? person.value : ''}&term=${searchTerm.value ? searchTerm.value : ''}&priority=${priority.value ? priority.value : ''}`);
       const data = await response.json();
       setSearchData(data.results);
-    }
-     else {
-      console.log("이슈 상태를 선택하세요.");
-    }
     }catch(error){
         console.error('Error fetching search results:', error);
     }
@@ -127,34 +117,7 @@ const Search = () => {
         </div>
       )}
       <button onClick={handleSearch}>검색</button>
-      {searchData.length > 0 && 
-        (<table>
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Status</th>
-            <th>Priority</th>
-            <th>Date</th>
-            <th>Reporter</th>
-            <th>Fixer</th>
-            <th>Assignee</th>
-          </tr>
-        </thead>
-        <tbody>
-          {searchData.map((item, index) => (
-            <tr key={index}>
-              <td>{item.title}</td>
-              <td>{item.status}</td>
-              <td>{item.priority}</td>
-              <td>{item.date}</td>
-              <td>{item.reporter}</td>
-              <td>{item.fixer}</td>
-              <td>{item.assignee}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>)
-      }
+      {searchData.length > 0 && <SearchResultTable props={searchData}/>}
 
     </div>
   );
