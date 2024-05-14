@@ -7,11 +7,11 @@ interface Props {
   exact?: boolean;
   isAllow: boolean;
 }
-const ProtectedRoute = ({
+const FallbackRoute = ({
   component: Component,
   fallback: Fallback,
   isAllow
 }: Props) => {
   return isAllow ? <Component /> : <Fallback />;
 };
-export default ProtectedRoute;
+export default FallbackRoute;
