@@ -3,46 +3,48 @@ import {useState,useEffect} from 'react'
 import { Routes, Route, Navigate,useNavigate,} from 'react-router-dom';
 import SignUp from './login/Register'
 import Login from './login/Login'
-import ProtectedRoute from './components/ProtectedRoute.tsx'
+import FallbackRoute from './components/FallbackRoute.tsx'
 import CreateProject from './components/CreateProject';
 import Admin from './view/Admin';
 import HomePage from './view/HomePage';
+import PrivateRoute from './components/PrivateRoute';
 
 function App() {
   const navigate = useNavigate();
-  const [token, setToken] = useState(localStorage.getItem('token'));
-  const [role, setRole] = useState(localStorage.getItem('token')); // 토큰 상태 관리
+  const [token, setToken] = useState(sessionStorage.getItem('token'));
+  const [role, setRole] = useState(sessionStorage.getItem('token')); // 토큰 상태 관리
   
   useEffect(() => {
-    setToken(localStorage.getItem('token'));
+    setToken(sessionStorage.getItem('token'));
   }, [token]);
   useEffect(() => {
-    setRole(localStorage.getItem('role'));
+    setRole(sessionStorage.getItem('role'));
   }, [role]);
 
   return (
     <div className="App">
       <Routes>
-        <Route path ="/signup" element={<SignUp/>}/>
         
-        <Route path="/login" element={<Login/>}/>
+        <Route path = "/signup" element={<PrivateRoute login2login={true} component={SignUp}/>}/>
+        <Route path="/login" element={<PrivateRoute login2login={true} component={Login}/>}/>
 
-        <Route path="/admin" element={
-            <ProtectedRoute
+        <Route element={<PrivateRoute/>}>
+          <Route path="/admin" element={
+            <FallbackRoute
               component = {Admin}
               fallback = {Login}
               isAllow={token&&role==='admin'}
             />}
-        />
-        <Route path="/admin/create-project" element={
-            <ProtectedRoute
+          />
+          <Route path="/admin/create-project" element={
+            <FallbackRoute
               component = {CreateProject}
               fallback = {Login}
               isAllow={token&&role==='admin'}
             />}
-        />
-
-        <Route path="/" element={token ? <HomePage/> : <Navigate to="/login" replace />} />
+          />
+          <Route path="/" element={<HomePage/>}/>
+        </Route>
       </Routes>
     </div>
   );

@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import URLs from '../utils/urls'
 
 const Login = () => {
+  console.log(sessionStorage.getItem('token'))
+  const navigate = useNavigate();
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginCheck, setLoginCheck] = useState(false);
-  const navigate = useNavigate();
+  
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -28,18 +31,16 @@ const Login = () => {
     if (response.status === 200) {
       // Store token in local storage
       await Promise.all([
-        localStorage.setItem("token", result.token),
-        localStorage.setItem("email", result.email), // Save userId here
-        localStorage.setItem("role",result.role),
-        // localStorage.setItem("storeid", result.storeId), // Save storeId here
+        sessionStorage.setItem("token", result.token),
+        sessionStorage.setItem("email", result.email), // Save userId here
+        sessionStorage.setItem("role",result.role),
       ])
 
       if(result.role==='admin'){
-        navigate('/admin');
-        window.location.reload();
+        window.location.href="/admin"
       }
       else{
-        navigate('/')
+        window.location.href="/"
       }
       setLoginCheck(false);
     } else {

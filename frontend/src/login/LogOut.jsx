@@ -5,12 +5,12 @@ const LogOut = () => {
 	const handleLogout = () => {
     	// 로그아웃 처리 로직을 구현합니다.
 
-    	localStorage.removeItem("token");
-    	localStorage.removeItem("email");
-    	localStorage.removeItem("role");
-    	localStorage.removeItem("storeid");
+    	sessionStorage.removeItem("token");
+    	sessionStorage.removeItem("email");
+    	sessionStorage.removeItem("role");
+    	sessionStorage.removeItem("storeid");
     	// 페이지 이동
-    	navigate("/login");
+    	window.location.href='/login'
   	};
   
   return (
