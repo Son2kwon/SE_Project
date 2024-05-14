@@ -134,10 +134,4 @@ public class IssueService {
         return false;
 
     }
-
-    // id를 가지고 issue 찾는 함수
-    public Issue getIssue(Integer id) {
-        Optional<Issue> issue = this.issueRepository.findById(Long.valueOf(id));
-        return issue.get();
-    }
 }

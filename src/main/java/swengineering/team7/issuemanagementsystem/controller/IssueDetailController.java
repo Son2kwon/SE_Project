@@ -13,7 +13,7 @@ public class IssueDetailController {
 
     @GetMapping("/issue/detail/{id}")
     public String detail(@PathVariable("id") Integer id, Model model) {
-        Issue issue = this.issueService.getIssue(id);
+        Issue issue = this.issueService.findbyId(id);
         model.addAttribute("issue", issue);
         return "Issue_detail";
     }
