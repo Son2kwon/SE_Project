@@ -2,61 +2,63 @@ import React, { useState,useEffect } from 'react';
 import Select from 'react-select';
 import URLs from '../utils/urls';
 import SearchResultTable from './SearchResultTable';
-const plOption = [
-  { value: '', label: "선택 안 함" },
-  { value: 'new', label: 'new' },
-  { value: 'assigned', label: 'assigned' },
-  { value: 'fixed', label: 'fixed' },
-  { value: 'resolved', label: 'resolved' },
-  { value: 'closed', label: 'closed' },
-  { value: 'reopened', label: 'reopened' },
-];
-const personField = [
-    { value: '', label: '선택 안 함'},
-    { value: 'assignee', label: "담당자" },
-    { value: 'reporter', label: "보고자" },
-    { value: 'fixer', label: "수정자" },
-]
-const priorityField = [
-    { value: '', label: "선택 안 함"},
-    { value: 'blocker', label: "blocker" },
-    { value: 'blocker', label: "critical" },
-    { value: 'major', label: "major" },
-    { value: 'minor', label: "minor" },
-    { value: 'trivial', label: "trivial"}
-]
-
-const testerOption = [{ value: 'fixed', label: 'fixed' }]
-const devOption = [{ value: 'assigned', label: 'assigned' }]
-
+import axios from 'axios';
 
 const Search = () => {
-  const [issueStatus, setIssueStatus] = useState('');
-  const [person, setPerson] = useState('');
-  const [priority, setPriority] = useState('');
-  const [optionsByRole, setOptionsByRole] = useState(plOption);
+  //const [optionsByRole,setOptionsByRole] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [searchData, setSearchData] = useState([]);
-
+  const [selectedOption, setSelectedOption] = useState({});
+  const [nextSelectedOption, setNextSelectedOption] = useState({});
+  const [nextDropdownOptions, setNextDropdownOptions] = useState([]);
   const role = sessionStorage.getItem('role')
+
+  const optionsByRole={
+    pl:{
+     issueStatus: [
+      { value: 'new', label: 'New' },
+      { value: 'assigned', label: 'Assigned' },
+      { value: 'fixed', label: 'Fixed' },
+      { value: 'resolved', label: 'Resolved' },
+      { value: 'closed', label: 'Closed' },
+      { value: 'reopened', label: 'Reopened' },
+      ],
+      personField: [
+        { value: 'assignee', label: "Assignee" },
+        { value: 'reporter', label: "Reporter" },
+        { value: 'fixer', label: "Fixer" },
+      ],
+      priorityField: [
+        { value: 'blocker', label: "Blocker" },
+        { value: 'critical', label: "Critical" },
+        { value: 'major', label: "Major" },
+        { value: 'minor', label: "Minor" },
+        { value: 'trivial', label: "Trivial"}
+      ],},
+      tester: [{ value: 'fixed', label: 'fixed' }],
+      dev: [{ value: 'assigned', label: 'assigned' }]
+  }
+
   useEffect(() => {
-    const role = sessionStorage.getItem('role');
-    if (role === 'tester') {
-      setOptionsByRole(testerOption);
-    } else if (role === 'developer') {
-      setOptionsByRole(devOption);
-    } else {
-      setOptionsByRole(plOption);
+    if (role==='pl'&& selectedOption && selectedOption.value !== '') {
+      switch (selectedOption.value) {
+        case 'issueStatus':
+          setNextDropdownOptions(optionsByRole['pl'].issueStatus);
+          break;
+        case 'personField':
+          setNextDropdownOptions(optionsByRole['pl'].personField);
+          break;
+        case 'priorityField':
+          setNextDropdownOptions(optionsByRole['pl'].priorityField);
+          break;
+        default:
+          setNextDropdownOptions([]);
+      }
     }
-  }, []);
-  const handleStatusChange = issueStatus => {
-    setIssueStatus(issueStatus);
-  };
-  const handlePersonChange = person => {
-    setPerson(person);
-  };
-  const handlePriorityChange = priority => {
-    setPriority(priority);
+  }, [selectedOption]);
+
+  const handleDropdownChange = (selected) => {
+    setSelectedOption(selected);
   };
   const handleTermChange = event => {
     setSearchTerm(event.target.value);
@@ -65,10 +67,30 @@ const Search = () => {
   const handleSearch = async(event) => {
     event.preventDefault();
     try{
-      console.log("검색어:", issueStatus, person, searchTerm, priority);
-      const response = await fetch(`${URLs.SEARCH}?status=${issueStatus.value? issueStatus.value : ''}&person=${person.value ? person.value : ''}&term=${searchTerm.value ? searchTerm.value : ''}&priority=${priority.value ? priority.value : ''}`);
-      const data = await response.json();
-      setSearchData(data.results);
+      let url,searchParam
+      switch (selectedOption.value){
+        case 'issueStatus':
+          url = URLs.SEARCH + "/byIssueStatus"
+          searchParam = {status: nextSelectedOption.value}
+          break;
+        case 'personField':
+          url = URLs.SEARCH + "/byPerson"
+          searchParam = {
+            role: nextSelectedOption.value,
+            id: searchTerm
+          }
+          break;
+        case 'priorityField':
+          url = URLs.SEARCH + "/byPriority"
+          searchParam = {priority: nextSelectedOption.value}
+          break;
+      }
+      await axios.get(url,{
+        params:searchParam
+      })
+      .then(response=>{
+        setSearchData(response.data.results)
+      })
     }catch(error){
         console.error('Error fetching search results:', error);
     }
@@ -76,49 +98,36 @@ const Search = () => {
 
   return (
     <div>
-      <div style={{ width:'180px',marginBottom: '10px'}}>
         <Select
-            placeholder="이슈 상태"
-            value={issueStatus}
-            onChange={handleStatusChange}
-            options={optionsByRole}
-            //options={plOption}
-            //isSearchable // 이것이 드롭다운에서 검색을 가능하게 하는 부분입니다.
+          placeholder="검색 조건 선택"
+          value={selectedOption}
+          onChange={handleDropdownChange}
+          options={[
+            { value: 'issueStatus', label: '이슈 상태' },
+            { value: 'personField', label: '사람으로 검색' },
+            { value: 'priorityField', label: '우선순위' }
+          ]}
         />
-      </div>
-      {role === 'pl' && (
-        <div>
-          <div style={{  display:'flex',marginBottom: '10px'}}>
-            <div style={{width:'180px',}} >
-              <Select
-                placeholder="사람으로 검색"
-                value={person}
-                onChange={handlePersonChange}
-                options={personField}/>
-            </div>
-            {person && person.value !== '' && (
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={handleTermChange}
-                placeholder="텍스트 검색어 입력"
-                style={{ flex: 0.2, marginLeft: '10px'}}/>
-            )}
-          </div>
-          <div style={{  display:'flex',marginBottom: '10px'}}>
-            <div style={{width:'180px',}} >
-              <Select
-                placeholder="우선순위"
-                value={priority}
-                onChange={handlePriorityChange}
-                options={priorityField}/>
-            </div>
-          </div>
+        {nextDropdownOptions.length > 0 && (
+        <div style={{ marginTop: '10px' }}>
+          <Select
+            placeholder="선택"
+            options={nextDropdownOptions}
+            onChange={(selected)=>{setNextSelectedOption(selected)}}
+          />
+          {selectedOption.value === 'personField' && (
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={handleTermChange}
+              placeholder="id"
+              style={{ marginTop: '10px' }}
+            />
+          )}
         </div>
       )}
-      <button onClick={handleSearch}>검색</button>
-      {searchData.length > 0 && <SearchResultTable props={searchData}/>}
-
+      <button onClick={handleSearch} style={{ marginTop: '10px' }}>검색</button>
+      {searchData.length > 0 && <SearchResultTable props={searchData} />}
     </div>
   );
 };
