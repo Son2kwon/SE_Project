@@ -3,11 +3,12 @@ import {useState,useEffect} from 'react'
 import { Routes, Route, Navigate,useNavigate,} from 'react-router-dom';
 import SignUp from './login/Register'
 import Login from './login/Login'
-import FallbackRoute from './components/FallbackRoute.tsx'
-import CreateProject from './components/CreateProject';
 import Admin from './view/Admin';
 import HomePage from './view/HomePage';
 import PrivateRoute from './components/PrivateRoute';
+import FallbackRoute from './components/FallbackRoute.tsx'
+import CreateProject from './components/CreateProject';
+import ManageAccount from './components/ManageAccount.jsx';
 
 function App() {
   const navigate = useNavigate();
@@ -39,6 +40,13 @@ function App() {
           <Route path="/admin/create-project" element={
             <FallbackRoute
               component = {CreateProject}
+              fallback = {Login}
+              isAllow={token&&role==='admin'}
+            />}
+          />
+          <Route path="/admin/manage-account" element={
+            <FallbackRoute
+              component = {ManageAccount}
               fallback = {Login}
               isAllow={token&&role==='admin'}
             />}

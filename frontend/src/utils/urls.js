@@ -7,5 +7,7 @@ const URLs = {
   GETPl: base_url + '/get/pl',
   GETTester: base_url + '/get/tester',
   GETDev: base_url + '/get/dev',
-  };
+  GETAccount: base_url + '/getAccount',
+  DELAccount: base_url + '/deleteAccount',
+};
 export default URLs;
