@@ -28,10 +28,8 @@ const Signup = () => {
     const payload = {
       email: email,
       password: password,
-      nickname: userNickname,
       name: username,
       phone: phoneNumber,
-      role: role,
     };
 
     try {
@@ -74,20 +72,12 @@ const Signup = () => {
           onChange={(e) => setEmail(e.target.value)}
         />
 
-        <label htmlFor="username">사용자명</label>
+        <label htmlFor="username">이름</label>
         <input
           type="text"
           id="username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-        />
-
-        <label htmlFor="nickname">닉네임</label>
-        <input
-          type="text"
-          id="nickname"
-          value={userNickname}
-          onChange={(e) => setUserNickname(e.target.value)}
         />
 
         <label htmlFor="phone-number">전화번호</label>
@@ -113,30 +103,6 @@ const Signup = () => {
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
-
-        <div className="role-selection">
-          <label>회원 유형</label>
-          <div>
-            <input
-              type="radio"
-              id="customer"
-              value="user"
-              checked={role === "user"}
-              onChange={() => setRole("user")}
-            />
-            <label htmlFor="customer">고객</label>
-          </div>
-          <div>
-            <input
-              type="radio"
-              id="seller"
-              value="seller"
-              checked={role === "seller"}
-              onChange={() => setRole("seller")}
-            />
-            <label htmlFor="seller">판매자</label>
-          </div>
-        </div>
 
         <button id="signup-button" onClick={handleSignup}>
           회원가입
