@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import URLs from '../utils/urls'
 
 const Login = () => {
-  console.log(sessionStorage.getItem('token'))
   const navigate = useNavigate();
   
   const [email, setEmail] = useState("");

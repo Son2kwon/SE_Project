@@ -54,8 +54,8 @@ const CreateProject=()=>{
           }
         }
       );
-      if (response.status === 201) {
-        alert('프로젝트 생성');
+      if (response.status === 200) {
+        alert('프로젝트 생성 성공');
         navigate('/admin');
       }
     } catch (error) {
@@ -177,8 +177,6 @@ const CreateProject=()=>{
         ))}
       </div>
   </div>
-
-
       <br/> <button type="submit">생성</button>
     </form>
   </div>);
