@@ -1,4 +1,4 @@
-import './App.css';
+import './styles/App.css';
 import {useState,useEffect} from 'react'
 import { Routes, Route, Navigate,useNavigate,} from 'react-router-dom';
 import SignUp from './login/Register'
