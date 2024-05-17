@@ -77,7 +77,6 @@ public class User {
     public void setRole(String role) {
         this.role = role;
     }
-
     public void setIssues(Set<Issue> issues) {
         this.issues = issues;
     }
@@ -112,5 +111,17 @@ public class User {
 
     public void setContract(String contract) {
         this.Contract=contract;
+    }
+
+    public void addIssue(Issue newissue) {
+        issues.add(newissue);
+    }
+
+    public void removeIssue(Issue target) {
+        issues.remove(target);
+    }
+
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
     }
 }

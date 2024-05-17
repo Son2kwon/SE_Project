@@ -45,7 +45,7 @@ public class UserOtherDTO {
         return this.comments;
     }
 
-    public static UserOtherDTO from(User user) {
+    public static UserOtherDTO makeDTOfrom(User user) {
         UserOtherDTO userOtherDTO = new UserOtherDTO();
         userOtherDTO.setIssues(user.getIssues());
         userOtherDTO.setAssignedIssues(user.getAssignedIssues());

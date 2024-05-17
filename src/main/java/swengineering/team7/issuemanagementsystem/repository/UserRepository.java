@@ -12,6 +12,5 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
     //사용자 검색
     Page<User> findAll(Specification<User> spec, Pageable pageable);
-
     // 기본 CRUD 제공
 }

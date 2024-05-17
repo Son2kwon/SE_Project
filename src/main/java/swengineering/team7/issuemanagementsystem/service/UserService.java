@@ -7,8 +7,10 @@ import jakarta.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import swengineering.team7.issuemanagementsystem.DTO.IssueDTO;
 import swengineering.team7.issuemanagementsystem.DTO.UserInformationDTO;
 import swengineering.team7.issuemanagementsystem.entity.User;
+import swengineering.team7.issuemanagementsystem.exception.NoPermission;
 import swengineering.team7.issuemanagementsystem.repository.UserRepository;
 
 import java.util.ArrayList;
@@ -24,7 +26,7 @@ public class UserService {
    }
 
    //회원가입
-    public void create(String username, String password, String role) {
+    public void createUser(String username, String password, String role) {
        User user = new User();
        user.setUsername(username);
        user.setPassword(password);
@@ -33,19 +35,35 @@ public class UserService {
     }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // 사용자 계정 정보 수정
-    public void modifyUsername(User user, String newname) {
-       user.setUsername(newname);
-       this.userRepository.save(user);
+    public void modifyUsername(UserInformationDTO userDTO, String newname) {
+       User user = userRepository.findById(userDTO.getId()).orElse(null);
+       if(user != null) {
+           user.setUsername(newname);
+           this.userRepository.save(user);
+       }
     }
 
-    public void modifyUserpassword(User user, String newpassword) {
-       user.setPassword(newpassword);
-       this.userRepository.save(user);
+    public void modifyUserpassword(UserInformationDTO userDTO, String newpassword) {
+       User user = userRepository.findById(userDTO.getId()).orElse(null);
+       if(user != null) {
+            user.setPassword(newpassword);
+            this.userRepository.save(user);
+       }
     }
 
-    public void modifyUserrole(User user, String newrole) {
-       user.setRole(newrole);
-       this.userRepository.save(user);
+    // role 수정은 admin만 가능
+    public void modifyUserrole(UserInformationDTO usernow,UserInformationDTO usertarget, String newrole) {
+       // user_n = 현재 로그인된 사용자 계정 정보
+        User user_n = userRepository.findById(usernow.getId()).orElse(null);
+        // user_t = 변경할 사용자의 계정 정보
+        User user_t = userRepository.findById(usertarget.getId()).orElse(null);
+        if(user_n.getRole().equals("admin")) {
+            user_t.setRole(newrole);
+            this.userRepository.save(user_t);
+        }
+        else {
+            throw new NoPermission("관리자 권한이 있어야합니다.");
+        }
     }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //이름으로 검색된 사용자들 DTO 반환
@@ -94,6 +112,10 @@ public class UserService {
         };
     }
 
+    // 코멘트 추가기능
+    public void addComment(IssueDTO issueDTO, String comment){
+
+    }
 }
 
 ///// add comment : 해당 프로젝트에 속한 사용자만 가능
