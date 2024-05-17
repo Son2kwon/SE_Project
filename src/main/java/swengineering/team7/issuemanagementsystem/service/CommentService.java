@@ -23,6 +23,14 @@ public class CommentService {
     ProjectRepository projectRepository;
     CommentRepository commentRepository;
 
+    //Comment Create 할때 issue랑 user에도 업데이트해야하나요?
+    public void create(Issue issue, String newComment) {
+        Comment comment = new Comment();
+        comment.setBody(newComment);
+        comment.setDate(LocalDateTime.now());
+        comment.setIssue(issue);
+        this.commentRepository.save(comment);
+  
     public CommentService(UserRepository userRepository, IssueRepository issueRepository, ProjectRepository projectRepository, CommentRepository commentRepository) {
         this.userRepository = userRepository;
         this.issueRepository = issueRepository;
@@ -53,6 +61,5 @@ public class CommentService {
             }
         }
         return false;
-
     }
 }
