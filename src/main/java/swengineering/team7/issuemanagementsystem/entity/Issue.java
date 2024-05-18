@@ -23,25 +23,21 @@ public class Issue {
     private Priority priority;
 
     // Issue:Project 다:1
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Project project;
 
     // Issue:User 다;1   create
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private User reporter;
 
-    //  Issue:User 다;1   최종 Fixer ( 추후 추가 필요)
-    //    @ManyToOne
-    //    private User fixer;
+    // Issue:User 다;1   최종 Fixer
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fixer_id")
+    private User fixer;
 
     // Issue:Comment 1:다    has many
     @OneToMany(mappedBy = "issue")
     private Set<Comment> comments;
-
-    //Enum으로 Priority 정의 (Util 패키지로 리팩토링)
-    //    public enum Priority{
-    //        //LOW, MEDIUM, HIGH, CRITICAL
-    //    }
 
     //Issue:User 다:다    Assign
     @ManyToMany
@@ -114,6 +110,10 @@ public class Issue {
         this.reporter = user;
     }
 
+    public User getFixer() { return fixer; }
+
+    public void setFixer(User fixer) { this.fixer = fixer;}
+
     public Set<Comment> getComments() {
         return comments;
     }
@@ -149,4 +149,7 @@ public class Issue {
     public void addCommnet(Comment comment) {
         this.comments.add(comment);
     }
+
+
+
 }
