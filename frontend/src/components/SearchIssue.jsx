@@ -1,17 +1,19 @@
 import React, { useState,useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import Select from 'react-select';
 import URLs from '../utils/urls';
 import SearchResultTable from './SearchResultTable';
 import axios from 'axios';
 
 const Search = () => {
-  //const [optionsByRole,setOptionsByRole] = useState('');
+  const {projectId} = useParams()
   const [searchTerm, setSearchTerm] = useState('');
   const [searchData, setSearchData] = useState([]);
   const [selectedOption, setSelectedOption] = useState({});
   const [nextSelectedOption, setNextSelectedOption] = useState({});
   const [nextDropdownOptions, setNextDropdownOptions] = useState([]);
-  const role = sessionStorage.getItem('role')
+  let role = sessionStorage.getItem('role')
+  if(role==='admin') role='pl'
 
   const optionsByRole={
     pl:{
@@ -38,6 +40,19 @@ const Search = () => {
       tester: [{ value: 'fixed', label: 'fixed' }],
       dev: [{ value: 'assigned', label: 'assigned' }]
   }
+  useEffect(()=>{
+    const fetchFirstData=async()=>{
+      if(role==='pl'){
+        await axios.get(URLs.SEARCH+'/all',{
+          params:{projectId:projectId,token:sessionStorage.getItem('token'),role:role}
+        })
+        .then(response=>{
+          setSearchData(response.data.results)
+        })
+      }
+    }
+    fetchFirstData();
+  },[])
 
   useEffect(() => {
     if (role==='pl'&& selectedOption && selectedOption.value !== '') {
@@ -68,36 +83,49 @@ const Search = () => {
     event.preventDefault();
     try{
       let url,searchParam
-      switch (selectedOption.value){
-        case 'issueStatus':
-          url = URLs.SEARCH + "/byIssueStatus"
-          searchParam = {status: nextSelectedOption.value}
-          break;
-        case 'personField':
-          url = URLs.SEARCH + "/byPerson"
-          searchParam = {
-            role: nextSelectedOption.value,
-            id: searchTerm
-          }
-          break;
-        case 'priorityField':
-          url = URLs.SEARCH + "/byPriority"
-          searchParam = {priority: nextSelectedOption.value}
-          break;
+      //tester일 경우는 자신이 report하고 fixed된 이슈만 검색.
+      if (role==='tester'){
+        url = URLs.SEARCH + '/byIssueStatus'
+        searchParam = {status:'fixed', reporter: sessionStorage.getItem('id')}
+      }
+      else if (role==='dev'){
+        url = URLs.SEARCH + '/byIssueStatus'
+        searchParam = {status:'assigned', assignee: sessionStorage.getItem('id')}
+      }
+      else{
+        switch (selectedOption.value){
+          case 'issueStatus':
+            url = URLs.SEARCH + "/byIssueStatus"
+            searchParam = {status: nextSelectedOption.value}
+            break;
+          case 'personField':
+            url = URLs.SEARCH + "/byPerson"
+            searchParam = {
+              role: nextSelectedOption.value,
+              id: searchTerm,
+            }
+            break;
+          case 'priorityField':
+            url = URLs.SEARCH + "/byPriority"
+            searchParam = {priority: nextSelectedOption.value}
+            break;
+        }
       }
       await axios.get(url,{
-        params:searchParam
+        params:{...searchParam,projectId:projectId,token:sessionStorage.getItem('token')}
       })
       .then(response=>{
         setSearchData(response.data.results)
       })
     }catch(error){
-        console.error('Error fetching search results:', error);
+      alert('검색어를 선택하세요!')
     }
 }
 
   return (
     <div>
+      Project {projectId}<br/>
+      {role==='pl' && (
         <Select
           placeholder="검색 조건 선택"
           value={selectedOption}
@@ -108,6 +136,7 @@ const Search = () => {
             { value: 'priorityField', label: '우선순위' }
           ]}
         />
+        )}
         {nextDropdownOptions.length > 0 && (
         <div style={{ marginTop: '10px' }}>
           <Select

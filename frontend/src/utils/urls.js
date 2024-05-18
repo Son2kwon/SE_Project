@@ -9,5 +9,6 @@ const URLs = {
   GETDev: base_url + '/get/dev',
   GETAccount: base_url + '/getAccount',
   DELAccount: base_url + '/deleteAccount',
+  GetProjectList: base_url + '/getProjectList'
 };
 export default URLs;

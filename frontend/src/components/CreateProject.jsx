@@ -16,6 +16,7 @@ const CreateProject=()=>{
   const [name,setName] = useState('');
   const [startDate,setStartDate] = useState(new Date());
   const [endDate,setEndDate] = useState(new Date());
+
   const navigate = useNavigate();
 
   const checkAllInputFilled=()=>
@@ -102,6 +103,22 @@ const CreateProject=()=>{
       devs: [...prevState.devs, '']
     }));
   };
+  const handleRemoveTesterDropdown = (index) => {
+    setSelectedDropdowns(prevState => {
+      const updatedTesters = [...prevState.testers];
+      updatedTesters.splice(index, 1);
+      return { ...prevState, testers: updatedTesters };
+    });
+  };
+
+  const handleRemoveDevDropdown = (index) => {
+    setSelectedDropdowns(prevState => {
+      const updatedDevs = [...prevState.devs];
+      updatedDevs.splice(index, 1);
+      return { ...prevState, devs: updatedDevs };
+    });
+  };
+
   const handleSelectDropdown = (value, type, index) => {
     setSelectedDropdowns(prevState => {
       if (type === 'pl') {
@@ -154,6 +171,9 @@ const CreateProject=()=>{
             {index === selectedDropdowns.testers.length - 1 && (
               <button onClick={handleAddTesterDropdown}>추가</button>
             )}
+            {index > 0 && (
+              <button type="button" onClick={() => handleRemoveTesterDropdown(index)}>삭제</button>
+            )}
           </div>
         ))}
       </div>
@@ -172,6 +192,9 @@ const CreateProject=()=>{
             </select>
             {index === selectedDropdowns.devs.length - 1 && (
               <button onClick={handleAddDevDropdown}>추가</button>
+            )}
+            {index > 0 && (
+              <button type="button" onClick={() => handleRemoveDevDropdown(index)}>삭제</button>
             )}
           </div>
         ))}
