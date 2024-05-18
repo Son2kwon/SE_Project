@@ -1,4 +1,4 @@
-package swengineering.team7.issuemanagementsystem.entitiy;
+package swengineering.team7.issuemanagementsystem.entity;
 
 import jakarta.persistence.*;
 import swengineering.team7.issuemanagementsystem.util.Priority;
@@ -144,5 +144,9 @@ public class Issue {
 
     public void setAssignedUsers(Set<User> assignedUsers) {
         this.assignedUsers = assignedUsers;
+    }
+
+    public void addCommnet(Comment comment) {
+        this.comments.add(comment);
     }
 }

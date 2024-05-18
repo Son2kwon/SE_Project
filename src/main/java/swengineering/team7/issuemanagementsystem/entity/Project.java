@@ -1,8 +1,9 @@
-package swengineering.team7.issuemanagementsystem.entitiy;
+package swengineering.team7.issuemanagementsystem.entity;
 
 
 import jakarta.persistence.*;
 import org.springframework.cglib.core.Local;
+import swengineering.team7.issuemanagementsystem.entity.User;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -98,3 +99,8 @@ public class Project {
     }
 
 }
+
+
+
+
+

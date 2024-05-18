@@ -1,4 +1,4 @@
-package swengineering.team7.issuemanagementsystem.dto;
+package swengineering.team7.issuemanagementsystem.DTO;
 
 import java.util.List;
 
@@ -19,4 +19,5 @@ public class ProjectAssignedUserDTO {
     public List<Long> getAssignedUsersID() {
         return assignedUsersID;
     }
+
 }

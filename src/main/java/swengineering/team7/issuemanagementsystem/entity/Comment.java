@@ -1,9 +1,7 @@
-package swengineering.team7.issuemanagementsystem.entitiy;
+package swengineering.team7.issuemanagementsystem.entity;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
-import java.util.Date;
 
 
 @Entity
@@ -12,7 +10,7 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String body;
+    private String content;
     private String writer;
     private LocalDateTime date;
 
@@ -25,6 +23,16 @@ public class Comment {
     @JoinColumn(name = "user_id") // 외래키 컬럼 이름을 user_id로 설정
     private User user;
 
+    public static Comment makeCommentof(String body,String writer,LocalDateTime date,
+                                        Issue issue,User user) {
+        Comment comment=new Comment();
+        comment.setContent(body);
+        comment.setWriter(writer);
+        comment.setDate(date);
+        comment.setIssue(issue);
+        comment.setUser(user);
+        return comment;
+    }
 
     //Getter & Setter
 
@@ -36,12 +44,12 @@ public class Comment {
         this.id = id;
     }
 
-    public String getBody() {
-        return body;
+    public String getContent() {
+        return content;
     }
 
-    public void setBody(String body) {
-        this.body = body;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public String getWriter() {
@@ -74,5 +82,9 @@ public class Comment {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public void setBody(String newComment) {
+        this.content=newComment;
     }
 }
