@@ -8,11 +8,12 @@ public class SearchInfoDTO {
     // 유저가 입력한 정보
     private String searchValue;
 
-    public SearchInfoDTO() {}
+    public SearchInfoDTO() {
+    }
 
-    public SearchInfoDTO(SearchType searchType, String searchValue) {
-        this.searchType = searchType;
+    public SearchInfoDTO(String searchValue, SearchType searchType) {
         this.searchValue = searchValue;
+        this.searchType = searchType;
     }
 
     public SearchType getSearchType() {
@@ -22,5 +23,4 @@ public class SearchInfoDTO {
     public String getSearchValue() {
         return searchValue;
     }
-
 }

@@ -28,7 +28,7 @@ public class User {
     private Set<Project> inchargeProjects;
 
     // User:Issue 1:다   create
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "reporter")
     private Set<Issue> issues;
 
     // User:Issue 1:다   Assign
@@ -124,4 +124,15 @@ public class User {
     public void addComment(Comment comment) {
         this.comments.add(comment);
     }
+
+
+    public void addinchargeProject(Project project){
+        inchargeProjects.add(project);
+    }
+
+    public void removeinchargeProjects(Project project){
+        inchargeProjects.remove(project);
+    }
+
+
 }

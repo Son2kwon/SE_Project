@@ -1,6 +1,5 @@
 package swengineering.team7.issuemanagementsystem.DTO;
 
-import swengineering.team7.issuemanagementsystem.entity.Issue;
 import swengineering.team7.issuemanagementsystem.util.Priority;
 
 import java.time.LocalDateTime;
@@ -15,13 +14,13 @@ public class IssueDTO {
     private Priority priority;
     private Long createUserID;
     private String createUsername;
-    private Long ProjectID;
+    private Long projectID;
 
     public IssueDTO() {
     }
 
     //Entity -> DTO로 바꿔주는 생성자 메소드
-    static public IssueDTO makeDTOFrom(Issue issue){
+    static public IssueDTO makeDTOFrom(swengineering.team7.issuemanagementsystem.entity.Issue issue){
         return new IssueDTO(issue.getId(), issue.getTitle(), issue.getDate(),
                 issue.getState(), issue.getIssueDescription(),issue.getPriority(),
                 issue.getReporter().getId(),issue.getReporter().getUsername());
@@ -103,6 +102,10 @@ public class IssueDTO {
     }
 
     public Long getProjectID() {
-        return ProjectID;
+        return projectID;
+    }
+
+    public void setProjectID(Long id) {
+        this.projectID = id;
     }
 }

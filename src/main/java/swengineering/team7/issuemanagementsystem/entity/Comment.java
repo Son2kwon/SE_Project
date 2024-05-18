@@ -84,5 +84,7 @@ public class Comment {
         this.user = user;
     }
 
-
+    public void setBody(String newComment) {
+        this.content=newComment;
+    }
 }

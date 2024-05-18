@@ -30,7 +30,8 @@ public class CommentService {
         comment.setDate(LocalDateTime.now());
         comment.setIssue(issue);
         this.commentRepository.save(comment);
-  
+    }
+
     public CommentService(UserRepository userRepository, IssueRepository issueRepository, ProjectRepository projectRepository, CommentRepository commentRepository) {
         this.userRepository = userRepository;
         this.issueRepository = issueRepository;
