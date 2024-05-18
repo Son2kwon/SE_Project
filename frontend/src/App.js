@@ -5,6 +5,7 @@ import SignUp from './login/Register'
 import Login from './login/Login'
 import Admin from './view/Admin';
 import HomePage from './view/HomePage';
+import Search from './components/SearchIssue.jsx';
 import PrivateRoute from './components/PrivateRoute';
 import FallbackRoute from './components/FallbackRoute.tsx'
 import CreateProject from './components/CreateProject';
@@ -52,6 +53,7 @@ function App() {
             />}
           />
           <Route path="/" element={<HomePage/>}/>
+          <Route path="/project/:projectId" element={<Search/>}/>
         </Route>
       </Routes>
     </div>
