@@ -4,6 +4,8 @@ import swengineering.team7.issuemanagementsystem.entitiy.Issue;
 import swengineering.team7.issuemanagementsystem.util.Priority;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class IssueDTO {
 
@@ -68,6 +70,10 @@ public class IssueDTO {
 
     public void setCreateUsername(String createUsername) {
         this.createUsername = createUsername;
+    }
+
+    public void setProjectID(Long projectID) {
+        ProjectID = projectID;
     }
 
     public Long getId() {

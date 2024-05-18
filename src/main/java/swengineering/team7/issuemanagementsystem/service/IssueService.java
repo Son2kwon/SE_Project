@@ -94,6 +94,18 @@ public class IssueService {
         return issueDTOs;
     }
 
+    // 이슈 아이디를 통한 Issue 정보 얻기
+    public List<IssueDTO> findbyIssueID(Long issueID) {
+        List<IssueDTO> issueDTOs = new ArrayList<>();
+        Issue findIssue = issueRepository.findById(issueID).orElse(null);
+        if(findIssue != null) {
+            IssueDTO issue = IssueDTO.makeDTOFrom(findIssue);
+            issue.setProjectID(findIssue.getProject().getId());
+        }
+
+        return issueDTOs;
+    }
+
     //특정 Issue 업데이트
     public Boolean UpdateIssueInfo(IssueDTO issueDTO) {
         Issue issue = issueRepository.findById(issueDTO.getId()).orElse(null);
