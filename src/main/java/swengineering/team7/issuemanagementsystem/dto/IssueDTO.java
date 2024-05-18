@@ -105,8 +105,4 @@ public class IssueDTO {
     public Long getProjectID() {
         return ProjectID;
     }
-
-    public void setProjectID(Long id) {
-        this.ProjectID = id;
-    }
 }
