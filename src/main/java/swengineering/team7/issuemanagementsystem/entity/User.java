@@ -3,6 +3,7 @@ package swengineering.team7.issuemanagementsystem.entity;
 import jakarta.persistence.*;
 
 import java.util.Set;
+import java.util.Map;
 
 
 @Entity
@@ -39,7 +40,11 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Comment> comments;
 
-
+    // 트렌드 점수 저장을 위한 필드
+    @ElementCollection
+    @CollectionTable(name = "user_trend_scores", joinColumns = @JoinColumn(name = "user_id"))
+    @MapKeyColumn(name = "score")
+    private Map<String, Integer> trendScores;
 
     //Getter & Setter
     public Long getId() {
@@ -134,5 +139,11 @@ public class User {
         inchargeProjects.remove(project);
     }
 
+    public Map<String, Integer> getTrendScores() {
+        return trendScores;
+    }
 
+    public void setTrendScores(Map<String, Integer> trendScores) {
+        this.trendScores = trendScores;
+    }
 }
