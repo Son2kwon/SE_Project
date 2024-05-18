@@ -124,4 +124,15 @@ public class User {
     public void addComment(Comment comment) {
         this.comments.add(comment);
     }
+
+
+    public void addinchargeProject(Project project){
+        inchargeProjects.add(project);
+    }
+
+    public void removeinchargeProjects(Project project){
+        inchargeProjects.remove(project);
+    }
+
+
 }
