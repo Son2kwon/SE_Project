@@ -4,3 +4,4 @@ public enum SearchType {
     TITLE,WRITER,STATE,IssueID
 
 }
+
