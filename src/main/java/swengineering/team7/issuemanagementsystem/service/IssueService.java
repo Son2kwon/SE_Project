@@ -1,8 +1,10 @@
 package swengineering.team7.issuemanagementsystem.service;
 
 import org.springframework.stereotype.Service;
-import swengineering.team7.issuemanagementsystem.DTO.*;
-;
+
+
+import swengineering.team7.issuemanagementsystem.DTO.IssueDTO;
+import swengineering.team7.issuemanagementsystem.DTO.SearchInfoDTO;
 import swengineering.team7.issuemanagementsystem.entity.Issue;
 import swengineering.team7.issuemanagementsystem.entity.Project;
 import swengineering.team7.issuemanagementsystem.entity.User;
@@ -10,6 +12,8 @@ import swengineering.team7.issuemanagementsystem.repository.IssueRepository;
 import swengineering.team7.issuemanagementsystem.repository.ProjectRepository;
 import swengineering.team7.issuemanagementsystem.repository.UserRepository;
 import swengineering.team7.issuemanagementsystem.util.SearchType;
+
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +76,7 @@ public class IssueService {
 
     public List<IssueDTO> findbyWriter(String writer) {
         List<IssueDTO> issueDTOs = new ArrayList<>();
-        List<Issue> issues = issueRepository.findByReporter_NameContainingOrderByDateDesc(writer);
+        List<Issue> issues = issueRepository.findByReporter_usernameContainingOrderByDateDesc(writer);
 
         for (Issue issue : issues) {
             issueDTOs.add(IssueDTO.makeDTOFrom(issue));

@@ -28,7 +28,7 @@ public class User {
     private Set<Project> inchargeProjects;
 
     // User:Issue 1:다   create
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "reporter")
     private Set<Issue> issues;
 
     // User:Issue 1:다   Assign
