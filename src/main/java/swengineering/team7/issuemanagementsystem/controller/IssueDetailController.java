@@ -15,7 +15,7 @@ public class IssueDetailController {
 
     @GetMapping("/issue/detail/{id}")
     public String detail(@PathVariable("id") long id, Model model) {
-        List<IssueDTO> issue = this.issueService.findbyIssueID(id);
+        List<IssueDTO> issue = issueService.findbyIssueID(id);
         model.addAttribute("issue", issue);
         return "Issue_detail";
     }

@@ -19,8 +19,8 @@ public class CommentController {
     private CommentService commentService;
     @PostMapping("/create/{id}")
     public String createComment(@PathVariable("id") long id, Model model, @RequestParam(value = "newComment") String newComment) {
-        List<IssueDTO> issue = this.issueService.findbyIssueID(id);
-        this.commentService.create(issue, newComment);
+        List<IssueDTO> issues = this.issueService.findbyIssueID(id);
+        IssueDTO issue = issues.get(0);
         return String.format("redirect:/issue/detail/%d", id);
     }
 }

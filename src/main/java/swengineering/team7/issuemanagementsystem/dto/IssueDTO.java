@@ -1,11 +1,8 @@
-package swengineering.team7.issuemanagementsystem.dto;
+package swengineering.team7.issuemanagementsystem.DTO;
 
-import swengineering.team7.issuemanagementsystem.entitiy.Issue;
 import swengineering.team7.issuemanagementsystem.util.Priority;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 public class IssueDTO {
 
@@ -15,29 +12,30 @@ public class IssueDTO {
     private String state;
     private String issueDescription;
     private Priority priority;
-    private Long createUserID;
-    private String createUsername;
-    private Long ProjectID;
+    private Long UserID;
+    private String Username;
+    private Long projectID;
+
 
     public IssueDTO() {
     }
 
     //Entity -> DTO로 바꿔주는 생성자 메소드
-    static public IssueDTO makeDTOFrom(Issue issue){
+    static public IssueDTO makeDTOFrom(swengineering.team7.issuemanagementsystem.entity.Issue issue){
         return new IssueDTO(issue.getId(), issue.getTitle(), issue.getDate(),
                 issue.getState(), issue.getIssueDescription(),issue.getPriority(),
-                issue.getReporter().getId(),issue.getReporter().getName());
+                issue.getReporter().getId(),issue.getReporter().getUsername());
     }
 
-    public IssueDTO(Long id, String title, LocalDateTime date, String state, String issueDescription, Priority priority, Long createUserID, String createUsername) {
+    public IssueDTO(Long id, String title, LocalDateTime date, String state, String issueDescription, Priority priority, Long UserID, String Username) {
         this.id = id;
         this.title = title;
         this.date = date;
         this.state = state;
         this.issueDescription = issueDescription;
         this.priority = priority;
-        this.createUserID = createUserID;
-        this.createUsername = createUsername;
+        this.UserID = UserID;
+        this.Username = Username;
     }
 
     public void setId(Long id) {
@@ -64,16 +62,12 @@ public class IssueDTO {
         this.priority = priority;
     }
 
-    public void setCreateUserID(Long createUserID) {
-        this.createUserID = createUserID;
+    public void setUserID(Long userID) {
+        this.UserID = userID;
     }
 
-    public void setCreateUsername(String createUsername) {
-        this.createUsername = createUsername;
-    }
-
-    public void setProjectID(Long projectID) {
-        ProjectID = projectID;
+    public void setUsername(String username) {
+        this.Username = username;
     }
 
     public Long getId() {
@@ -100,15 +94,19 @@ public class IssueDTO {
         return priority;
     }
 
-    public String getCreateUsername() {
-        return createUsername;
+    public String getUsername() {
+        return Username;
     }
 
-    public Long getCreateUserID() {
-        return createUserID;
+    public Long getUserID() {
+        return UserID;
     }
 
     public Long getProjectID() {
-        return ProjectID;
+        return projectID;
+    }
+
+    public void setProjectID(Long id) {
+        this.projectID = id;
     }
 }
