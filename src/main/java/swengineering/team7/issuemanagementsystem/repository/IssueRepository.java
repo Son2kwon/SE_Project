@@ -1,7 +1,7 @@
 package swengineering.team7.issuemanagementsystem.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import swengineering.team7.issuemanagementsystem.entitiy.Issue;
+import swengineering.team7.issuemanagementsystem.entity.Issue;
 
 import java.util.List;
 

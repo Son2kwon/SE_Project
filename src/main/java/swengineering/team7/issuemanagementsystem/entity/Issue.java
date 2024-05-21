@@ -1,4 +1,4 @@
-package swengineering.team7.issuemanagementsystem.entitiy;
+package swengineering.team7.issuemanagementsystem.entity;
 
 import jakarta.persistence.*;
 import swengineering.team7.issuemanagementsystem.util.Priority;

@@ -1,20 +1,16 @@
 package swengineering.team7.issuemanagementsystem.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
-import swengineering.team7.issuemanagementsystem.dto.IssueDTO;
-import swengineering.team7.issuemanagementsystem.dto.SearchInfoDTO;
-import swengineering.team7.issuemanagementsystem.entitiy.Issue;
-import swengineering.team7.issuemanagementsystem.entitiy.Project;
-import swengineering.team7.issuemanagementsystem.entitiy.User;
-import swengineering.team7.issuemanagementsystem.repository.CommentRepository;
+import swengineering.team7.issuemanagementsystem.DTO.IssueDTO;
+import swengineering.team7.issuemanagementsystem.DTO.SearchInfoDTO;
+import swengineering.team7.issuemanagementsystem.entity.Issue;
+import swengineering.team7.issuemanagementsystem.entity.Project;
+import swengineering.team7.issuemanagementsystem.entity.User;
 import swengineering.team7.issuemanagementsystem.repository.IssueRepository;
 import swengineering.team7.issuemanagementsystem.repository.ProjectRepository;
 import swengineering.team7.issuemanagementsystem.repository.UserRepository;
 import swengineering.team7.issuemanagementsystem.util.SearchType;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
