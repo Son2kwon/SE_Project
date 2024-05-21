@@ -1,5 +1,6 @@
 package swengineering.team7.issuemanagementsystem.service;
 
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
@@ -21,16 +22,17 @@ public class UserService {
     private final UserRepository userRepository;
 
    @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, EntityManager entityManager) {
        this.userRepository=userRepository;
    }
 
    //회원가입
-    public void createUser(String username, String password, String role) {
-       User user = new User();
+    public void createUser(String id, String password, String username,  String contract) {
+       User user = new User(id, username,password,contract);
+       /*user.setId(id);
        user.setUsername(username);
        user.setPassword(password);
-       user.setRole(role);
+       user.setContract(contract);*/
        this.userRepository.save(user);
     }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
