@@ -10,6 +10,7 @@ import PrivateRoute from './components/PrivateRoute';
 import FallbackRoute from './components/FallbackRoute.tsx'
 import CreateProject from './components/CreateProject';
 import ManageAccount from './components/ManageAccount.jsx';
+import CreateIssue from './components/CreateIssue.jsx';
 
 function App() {
   const navigate = useNavigate();
@@ -53,7 +54,12 @@ function App() {
             />}
           />
           <Route path="/" element={<HomePage/>}/>
-          <Route path="/project/:projectId" element={<Search/>}/>
+          <Route path="/project/:projectId" element={
+            <>
+              <Search/>
+              <CreateIssue/>
+            </>
+          }/>
         </Route>
       </Routes>
     </div>
