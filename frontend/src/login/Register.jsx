@@ -26,12 +26,12 @@ const Signup = () => {
 
     // Create payload
     const payload = {
-      email: email,
+      id: email,
       password: password,
       name: username,
-      phone: phoneNumber,
+      contract: phoneNumber,
     };
-
+    console.log(payload);
     try {
       const response = await fetch(
         URLs.REGISTER,
@@ -45,10 +45,9 @@ const Signup = () => {
       );
 
       const data = await response.json();
-
+      console.log(response.status)
       if (response.status === 201) {
         // Redirect to login.html
-        console.log("성공! 이메일주소: " + data.email);
         navigate("/login"); // 로그인 성공시 홈으로 이동합니다.
       } else if (response.status === 400) {
         // Handle error

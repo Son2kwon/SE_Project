@@ -1,4 +1,4 @@
-const base_url = 'http://localhost:5000'
+const base_url = 'http://localhost:8080'
 const URLs = {
   LOGIN: base_url + '/login',
   REGISTER: base_url + '/register',
