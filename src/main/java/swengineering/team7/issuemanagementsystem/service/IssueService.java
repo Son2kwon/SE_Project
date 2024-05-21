@@ -122,11 +122,12 @@ public class IssueService {
         issue.setPriority(issueDTO.getPriority());
         issue.setIssueDescription(issueDTO.getIssueDescription());
         issueRepository.save(issue);
-        UpdateState(issueDTO);
+        updateState(issueDTO);
         return true;
     }
 
-    public Boolean UpdateState(IssueDTO issueDTO){
+    //State Update
+    public Boolean updateState(IssueDTO issueDTO){
         Issue issue = issueRepository.findById(issueDTO.getId()).orElse(null);
         if(issue != null) {
             String issueState = issueDTO.getState();
@@ -139,6 +140,20 @@ public class IssueService {
         }
 
        return false;
+    }
+
+    //Description 업데이트
+    public Boolean updateDesciprtion(IssueDTO issueDTO){
+        Issue issue = issueRepository.findById(issueDTO.getId()).orElse(null);
+        if(issue != null) {
+            String issueDescription = issueDTO.getIssueDescription();
+            if(issueDTO.getIssueDescription()!=null){
+                issue.setIssueDescription(issueDescription);
+                issueRepository.save(issue);
+            }
+            return true;
+        }
+        return false;
     }
 
     //특정 Issue 삭제
