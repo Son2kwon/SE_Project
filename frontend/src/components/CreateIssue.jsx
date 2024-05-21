@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
+import URLs from '../utils/urls';
 import axios from 'axios';
 
 const CreateIssue = () => {
@@ -29,7 +30,7 @@ const CreateIssue = () => {
       priority: priority,
     };
     try {
-      const response = await axios.post(URLS.CreateIssue, {
+      const response = await axios.post(URLs.CreateIssue, {
         token:token,
         projectId:projectId,
         issue:issue,
