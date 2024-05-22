@@ -35,8 +35,8 @@ const CreateProject=()=>{
 
     const selectedDropdownsCopy = {
       pl: selectedDropdowns.pl,
-      testers: [...selectedDropdowns.testers],
-      devs: [...selectedDropdowns.devs]
+      tester: [...selectedDropdowns.testers],
+      dev: [...selectedDropdowns.devs]
     };
     
     try {
@@ -46,8 +46,8 @@ const CreateProject=()=>{
           token: sessionStorage.getItem('token'),
           name: name,
           startDate: startDate,
-          endDate: endDate,
-          related: selectedDropdownsCopy
+          dueDate: endDate,
+          relatedUser: selectedDropdownsCopy
         },
         {
           headers: {
@@ -64,26 +64,22 @@ const CreateProject=()=>{
     }
   };
 
-  const [plList,setPlList] = useState([])
-  const [testerList,setTesterList] = useState([])
-  const [devList,setDevList] = useState([])
+  const [userList,setUserList] = useState([])
 
-  useEffect(()=>{
-    const fetchData = async()=>{
-      try {
-          const plResponse = await axios.get(URLs.GETPl);
-          const testerResponse = await axios.get(URLs.GETTester);
-          const devResponse = await axios.get(URLs.GETDev);
-  
-          setPlList(plResponse.data);
-          setTesterList(testerResponse.data);
-          setDevList(devResponse.data);
-        } catch (error) {
-          console.error('Error fetching data: ', error);
+  const fetchData = async() => {
+    await axios({
+      url: URLs.GetAllUser,
+      method: 'get',
+      params: {token: sessionStorage.getItem('token')}
+    }).then(response=>{
+        setUserList(response.data.map(item => `${item.id}`))
         }
-      };
-      fetchData();
-  }, []);
+      )
+      .catch(error => {
+        console.error('Error fetching assignees:', error);
+      });
+  }
+  useEffect(()=>{fetchData()},[])
 
   const [selectedDropdowns, setSelectedDropdowns] = useState({
     pl:'',
@@ -150,7 +146,7 @@ const CreateProject=()=>{
           value={selectedDropdowns.pl}
         >
           <option value="">선택하세요</option>
-          {plList.map((pl, index) => (
+          {userList.map((pl, index) => (
             <option key={index} value={pl}>{pl}</option>
           ))}
         </select>
@@ -164,7 +160,7 @@ const CreateProject=()=>{
               value={tester}
             >
               <option value="">선택하세요</option>
-              {testerList.map((testerOption, optionIndex) => (
+              {userList.map((testerOption, optionIndex) => (
                 <option key={optionIndex} value={testerOption}>{testerOption}</option>
               ))}
             </select>
@@ -186,7 +182,7 @@ const CreateProject=()=>{
               value={dev}
             >
               <option value="">선택하세요</option>
-              {devList.map((devOption, optionIndex) => (
+              {userList.map((devOption, optionIndex) => (
                 <option key={optionIndex} value={devOption}>{devOption}</option>
               ))}
             </select>

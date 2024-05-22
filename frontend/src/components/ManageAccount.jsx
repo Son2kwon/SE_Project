@@ -7,11 +7,13 @@ const ManageAccount=()=>{
   
   const fetchData = async() => {
     await axios({
-      url: URLs.GETAccount,
+      url: URLs.GetAllUser,
       method: 'get',
       params: {token: sessionStorage.getItem('token')}
-    }).then(response=>
+    }).then(response=>{
         setAccountList(response.data)
+        console.log(response.data)
+        }
       )
       .catch(error => {
         console.error('Error fetching assignees:', error);
@@ -33,10 +35,10 @@ const ManageAccount=()=>{
   }
 
   return (
-    accountList&&accountList.length>0 &&
+    Array.isArray(accountList)&&accountList.length>0 &&
     <div>
       <h2>User Data</h2>
-      <table className="table">
+      <table className="table" style={{width:"80%"}}>
         <thead>
           <tr>
             <th>ID</th>
