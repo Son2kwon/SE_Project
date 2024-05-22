@@ -1,6 +1,7 @@
-package swengineering.team7.issuemanagementsystem.entitiy;
+package swengineering.team7.issuemanagementsystem.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -9,9 +10,9 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String body;
+    private String content;
     private String writer;
-    private String date;
+    private LocalDateTime date;
 
     // Comment:Issue 다:1  has many
     @ManyToOne
@@ -22,6 +23,16 @@ public class Comment {
     @JoinColumn(name = "user_id") // 외래키 컬럼 이름을 user_id로 설정
     private User user;
 
+    public static Comment makeCommentof(String body,String writer,LocalDateTime date,
+                                        Issue issue,User user) {
+        Comment comment=new Comment();
+        comment.setContent(body);
+        comment.setWriter(writer);
+        comment.setDate(date);
+        comment.setIssue(issue);
+        comment.setUser(user);
+        return comment;
+    }
 
     //Getter & Setter
 
@@ -33,12 +44,12 @@ public class Comment {
         this.id = id;
     }
 
-    public String getBody() {
-        return body;
+    public String getContent() {
+        return content;
     }
 
-    public void setBody(String body) {
-        this.body = body;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public String getWriter() {
@@ -49,11 +60,11 @@ public class Comment {
         this.writer = writer;
     }
 
-    public String getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
@@ -71,5 +82,9 @@ public class Comment {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public void setBody(String newComment) {
+        this.content=newComment;
     }
 }

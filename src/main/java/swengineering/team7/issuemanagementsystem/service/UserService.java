@@ -7,9 +7,9 @@ import jakarta.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import swengineering.team7.issuemanagementsystem.dto.IssueDTO;
-import swengineering.team7.issuemanagementsystem.dto.UserInformationDTO;
-import swengineering.team7.issuemanagementsystem.entitiy.User;
+import swengineering.team7.issuemanagementsystem.DTO.IssueDTO;
+import swengineering.team7.issuemanagementsystem.DTO.UserInformationDTO;
+import swengineering.team7.issuemanagementsystem.entity.User;
 import swengineering.team7.issuemanagementsystem.exception.NoPermission;
 import swengineering.team7.issuemanagementsystem.repository.UserRepository;
 

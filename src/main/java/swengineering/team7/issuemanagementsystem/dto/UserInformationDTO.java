@@ -1,6 +1,6 @@
-package swengineering.team7.issuemanagementsystem.dto;
+package swengineering.team7.issuemanagementsystem.DTO;
 
-import swengineering.team7.issuemanagementsystem.entitiy.User;
+import swengineering.team7.issuemanagementsystem.entity.User;
 
 public class UserInformationDTO {
     private Long id;

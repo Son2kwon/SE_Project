@@ -3,15 +3,14 @@ package swengineering.team7.issuemanagementsystem.service;
 import org.springframework.stereotype.Service;
 import swengineering.team7.issuemanagementsystem.dto.ProjectAssignedUserDTO;
 import swengineering.team7.issuemanagementsystem.dto.ProjectDTO;
-import swengineering.team7.issuemanagementsystem.entitiy.Project;
-import swengineering.team7.issuemanagementsystem.entitiy.User;
+import swengineering.team7.issuemanagementsystem.entity.Project;
+import swengineering.team7.issuemanagementsystem.entity.User;
 import swengineering.team7.issuemanagementsystem.repository.ProjectRepository;
 import swengineering.team7.issuemanagementsystem.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProjectService {

@@ -1,4 +1,4 @@
-package swengineering.team7.issuemanagementsystem.entitiy;
+package swengineering.team7.issuemanagementsystem.entity;
 
 import jakarta.persistence.*;
 
@@ -6,15 +6,17 @@ import java.util.Set;
 
 
 @Entity
-@Table(name="member")
+@Table(name = "User")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
     private Long id;
 
-    private String name;
-    private String contract;
+    @Column(unique = true)
+    private String username;
+    private String password;
+    private String role;
+    private String Contract;
 
     // User:Project 다:다     두 엔터티 연결하는 중간 테이블 생성
     @ManyToMany
@@ -44,30 +46,37 @@ public class User {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    public String getContract() {
-        return contract;
+    public String getRole() {
+        return role;
     }
 
     public Set<Issue> getIssues() {
         return issues;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public String getContract() {
+        return Contract;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String name) {
+        this.username = name;
     }
 
-    public void setContract(String contract) {
-        this.contract = contract;
+    public void setRole(String role) {
+        this.role = role;
     }
-
     public void setIssues(Set<Issue> issues) {
         this.issues = issues;
     }
@@ -96,13 +105,26 @@ public class User {
         this.inchargeProjects = inchargeProjects;
     }
 
-    public void addIssue(Issue issue){
-        issues.add(issue);
+    public void setPassword(String passowrd) {
+        this.password = passowrd;
     }
 
-    public void removeIssue(Issue issue) {
-        issues.remove(issue);
+    public void setContract(String contract) {
+        this.Contract=contract;
     }
+
+    public void addIssue(Issue newissue) {
+        issues.add(newissue);
+    }
+
+    public void removeIssue(Issue target) {
+        issues.remove(target);
+    }
+
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
+    }
+
 
     public void addinchargeProject(Project project){
         inchargeProjects.add(project);
@@ -111,5 +133,6 @@ public class User {
     public void removeinchargeProjects(Project project){
         inchargeProjects.remove(project);
     }
+
 
 }

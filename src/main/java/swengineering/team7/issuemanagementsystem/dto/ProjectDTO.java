@@ -1,6 +1,6 @@
 package swengineering.team7.issuemanagementsystem.dto;
 
-import swengineering.team7.issuemanagementsystem.entitiy.Project;
+import swengineering.team7.issuemanagementsystem.entity.Project;
 
 import java.time.LocalDateTime;
 
