@@ -21,20 +21,22 @@ import java.util.Optional;
 @Service
 public class IssueService {
 
+    private final UserService userService;
     IssueRepository issueRepository;
     UserRepository userRepository;
     ProjectRepository projectRepository;
 
-    public IssueService(UserRepository userRepository, IssueRepository issueRepository, ProjectRepository projectRepository) {
+    public IssueService(UserRepository userRepository, IssueRepository issueRepository, ProjectRepository projectRepository, UserService userService) {
         this.userRepository = userRepository;
         this.issueRepository = issueRepository;
         this.projectRepository = projectRepository;
+        this.userService = userService;
     }
 
     //새로운 issue 하나를 만드는 작업 ( issue 저장 성공시 True 실패시 False 반환)
     public Boolean createIssue(IssueDTO issueDTO) {
         Issue newIssue = Issue.makeIssueOf(issueDTO.getTitle(), issueDTO.getIssueDescription(), issueDTO.getDate(), issueDTO.getState());
-        User user = userRepository.findById(issueDTO.getCreateUserID()).orElse(null);
+        User user = userRepository.findById(issueDTO.getUserID()).orElse(null);
         Project project =  projectRepository.findById(issueDTO.getProjectID()).orElse(null);
         if (user == null || project == null) {
             return false;
@@ -103,10 +105,40 @@ public class IssueService {
 
         issue.setTitle(issueDTO.getTitle());
         issue.setPriority(issueDTO.getPriority());
-        issue.setState(issueDTO.getState());
         issue.setIssueDescription(issueDTO.getIssueDescription());
         issueRepository.save(issue);
+        updateState(issueDTO);
         return true;
+    }
+
+    //State Update
+    public Boolean updateState(IssueDTO issueDTO){
+        Issue issue = issueRepository.findById(issueDTO.getId()).orElse(null);
+        if(issue != null) {
+            String issueState = issueDTO.getState();
+            issue.setState(issueState);
+            if(issueDTO.getState().equals("Complete")){
+                userRepository.findById(issueDTO.getUserID()).ifPresent(issue::setFixer);
+            }
+            issueRepository.save(issue);
+            return true;
+        }
+
+       return false;
+    }
+
+    //Description 업데이트
+    public Boolean updateDesciprtion(IssueDTO issueDTO){
+        Issue issue = issueRepository.findById(issueDTO.getId()).orElse(null);
+        if(issue != null) {
+            String issueDescription = issueDTO.getIssueDescription();
+            if(issueDTO.getIssueDescription()!=null){
+                issue.setIssueDescription(issueDescription);
+                issueRepository.save(issue);
+            }
+            return true;
+        }
+        return false;
     }
 
     //특정 Issue 삭제
