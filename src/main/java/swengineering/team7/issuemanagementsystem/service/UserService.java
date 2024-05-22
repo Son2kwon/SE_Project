@@ -10,12 +10,16 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import swengineering.team7.issuemanagementsystem.DTO.IssueDTO;
 import swengineering.team7.issuemanagementsystem.DTO.UserInformationDTO;
+import swengineering.team7.issuemanagementsystem.entity.Project;
 import swengineering.team7.issuemanagementsystem.entity.User;
 import swengineering.team7.issuemanagementsystem.exception.NoPermission;
 import swengineering.team7.issuemanagementsystem.repository.UserRepository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+
 
 @Service
 public class UserService {
@@ -34,6 +38,10 @@ public class UserService {
        user.setPassword(password);
        user.setContract(contract);*/
        this.userRepository.save(user);
+    }
+    public boolean login(UserInformationDTO userInformationDTO){
+       User user = userRepository.findById(userInformationDTO.getId()).orElse(null);
+        return user != null && user.getPassword().equals(userInformationDTO.getPassword());
     }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // 사용자 계정 정보 수정
@@ -67,7 +75,47 @@ public class UserService {
             throw new NoPermission("관리자 권한이 있어야합니다.");
         }
     }
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //모든 유저 받아오기(admin만 가능)
+    public List<UserInformationDTO> getAllUser(String id){
+        User user_n = userRepository.findById(id).orElse(null);
+        if(user_n.getRole().equals("admin")) {
+            List<UserInformationDTO> userInformationDTOS = new ArrayList<>();
+            List<User> users = userRepository.findAll();
+            for(User user: users){
+                userInformationDTOS.add(UserInformationDTO.from(user));
+            }
+            return userInformationDTOS;
+        }else{
+            throw new NoPermission("관리자 권한이 있어야합니다.");
+        }
+    }
+    //해당 유저와 연관이 있는 프로젝트 아이디들을 반환.
+    public List<HashMap<String,String>> mapToUserResponse(UserInformationDTO userInformationDTO) {
+        User user = userRepository.findById(userInformationDTO.getId()).orElse(null);
+        Set<Project> projectSet = user.getInchargeProjects();
+
+        List<HashMap<String,String>> result = new ArrayList<>();
+        if (projectSet.isEmpty()) {
+            HashMap<String,String> tmp = new HashMap<String,String>();
+            tmp.put("id", user.getId());
+            tmp.put("name",user.getUsername());
+            tmp.put("role",user.getRole());
+            tmp.put("charge","");
+            result.add(tmp);
+        }else{
+            for (Project p : projectSet) {
+                HashMap<String,String> tmp = new HashMap<String,String>();
+                tmp.put("id", user.getId());
+                tmp.put("name",user.getUsername());
+                tmp.put("role",user.getRole());
+                tmp.put("charge","");
+                result.add(tmp);
+            }
+        }
+        return result;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //이름으로 검색된 사용자들 DTO 반환
     public List<UserInformationDTO> searchByUsername(String input) {
         Specification<User> spec = searchname(input);
