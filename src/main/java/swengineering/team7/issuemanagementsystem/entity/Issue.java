@@ -158,7 +158,7 @@ public class Issue {
         this.assignedUsers = assignedUsers;
     }
 
-    public void addCommnet(Comment comment) {
+    public void addComment(Comment comment) {
         this.comments.add(comment);
     }
 }

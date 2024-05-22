@@ -28,6 +28,9 @@ public class Project {
     @OneToMany(mappedBy = "project")
     private Set<Issue> issues;
 
+    // 트렌드 필드 추가
+    private String trend;
+
     // 생성자 메소드
     public static Project makeProjectOf(String name, LocalDateTime startDate, LocalDateTime dueDate ){
         Project project = new Project();
@@ -112,6 +115,14 @@ public class Project {
 
     public void removeIssue(Issue issue){
         issues.remove(issue);
+    }
+
+    public String getTrend() {
+        return trend;
+    }
+
+    public void setTrend(String trend) {
+        this.trend = trend;
     }
 
 }
