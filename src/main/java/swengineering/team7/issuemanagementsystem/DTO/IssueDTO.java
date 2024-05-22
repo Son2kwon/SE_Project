@@ -12,7 +12,7 @@ public class IssueDTO {
     private String state;
     private String issueDescription;
     private Priority priority;
-    private Long UserID;
+    private String UserID;
     private String Username;
     private Long projectID;
 
@@ -27,7 +27,7 @@ public class IssueDTO {
                 issue.getReporter().getId(),issue.getReporter().getUsername());
     }
 
-    public IssueDTO(Long id, String title, LocalDateTime date, String state, String issueDescription, Priority priority, Long UserID, String Username) {
+    public IssueDTO(Long id, String title, LocalDateTime date, String state, String issueDescription, Priority priority, String UserID, String Username) {
         this.id = id;
         this.title = title;
         this.date = date;
@@ -62,7 +62,7 @@ public class IssueDTO {
         this.priority = priority;
     }
 
-    public void setUserID(Long userID) {
+    public void setUserID(String userID) {
         this.UserID = userID;
     }
 
@@ -98,7 +98,7 @@ public class IssueDTO {
         return Username;
     }
 
-    public Long getUserID() {
+    public String getUserID() {
         return UserID;
     }
 
