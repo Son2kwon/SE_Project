@@ -1,17 +1,21 @@
 package swengineering.team7.issuemanagementsystem.controller;
 
+import jakarta.validation.Valid;
+import org.apache.logging.log4j.LogManager;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
+import jakarta.validation.Valid;
 
 import swengineering.team7.issuemanagementsystem.DTO.IssueDTO;
 import swengineering.team7.issuemanagementsystem.DTO.CommentDTO;
 import swengineering.team7.issuemanagementsystem.entity.Comment;
 import swengineering.team7.issuemanagementsystem.service.CommentService;
 import swengineering.team7.issuemanagementsystem.service.IssueService;
+import swengineering.team7.issuemanagementsystem.service.UserService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,19 +26,22 @@ import java.util.List;
 public class CommentController {
     private IssueService issueService;
     private CommentService commentService;
+    private UserService userService;
 
     @PostMapping("/create/{id}")
-    public String createComment(@PathVariable("id") Long id, Model model, @RequestParam(value = "newComment") String newComment) {
+    public String createComment(@PathVariable("id") Long id, Model model, @RequestParam(value = "newComment") String newComment, Principal principal) {
         List<IssueDTO> issues = issueService.findbyIssueID(id);
         IssueDTO issue = issues.get(0);
+        String writer = principal.getName();
 
-        Comment comment = Comment.makeCommentof(newComment, writer, LocalDateTime.now(), issue, user);
+        Comment comment = Comment.makeCommentof(newComment, writer, LocalDateTime.now(), issue);
         CommentDTO commentDTO = CommentDTO.makeDTOfrom(comment);
         issueService.addComment(commentDTO, issue);
 
         return String.format("redirect:/issue/detail/%d", id);
     }
 
+    @ResponseBody
     @PostMapping("/edit/{issueID}/{commentID}")
     public String editComment(@PathVariable("issueID") Long issueID, @PathVariable("commentID") Long commentID, Model model) {
         List<IssueDTO> issues = issueService.findbyIssueID(issueID);

@@ -13,6 +13,7 @@ import java.util.List;
 public class IssueDetailController {
     IssueService issueService;
 
+    @ResponseBody
     @PostMapping("/detail/{id}")
     public String detail(@PathVariable("id") Long id, Model model) {
         List<IssueDTO> issue = issueService.findbyIssueID(id);
@@ -20,6 +21,7 @@ public class IssueDetailController {
         return "IssueDetail";
     }
 
+    @ResponseBody
     @PostMapping("/edit/{id}")
     public String edit(@PathVariable("id") Long id, Model model) {
         List<IssueDTO> issue = issueService.findbyIssueID(id);
