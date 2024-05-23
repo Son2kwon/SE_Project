@@ -18,16 +18,17 @@ public class ProjectService {
     ProjectRepository projectRepository;
     UserRepository userRepository;
 
-    public ProjectService(ProjectRepository projectRepository) {
+    public ProjectService(ProjectRepository projectRepository, UserRepository userRepository) {
         this.projectRepository = projectRepository;
+        this.userRepository = userRepository;
     }
 
     // 새로운 Project 생성
-    public Boolean createProject(ProjectDTO projectDTO) {
+    public Long createProject(ProjectDTO projectDTO) {
         Project newProject = Project.makeProjectOf(projectDTO.getName(), projectDTO.getStartDate(),projectDTO.getDueDate());
         newProject.setStartDate(LocalDateTime.now());
         projectRepository.save(newProject);
-        return true;
+        return newProject.getId();
     }
 
     // 모든 프로젝트 가져오기

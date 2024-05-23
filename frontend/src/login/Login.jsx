@@ -21,7 +21,7 @@ const Login = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: email,
+          id: email,
           password: password,
         }),
       }
@@ -31,7 +31,7 @@ const Login = () => {
       // Store token in local storage
       await Promise.all([
         sessionStorage.setItem("token", result.token),
-        sessionStorage.setItem("email", result.email), // Save userId here
+        //sessionStorage.setItem("email", result.email), // Save userId here
         sessionStorage.setItem("role",result.role),
       ])
 
@@ -51,7 +51,7 @@ const Login = () => {
   return (
     <div className="login-container">
       <form className="login-form" onSubmit={handleLogin}>
-        <h1>On&Off</h1>
+        <h1>Login</h1>
         <label htmlFor="username">이메일</label>
         <input
           type="text"
