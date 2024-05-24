@@ -62,7 +62,7 @@ public class ProjectService {
             return false;
         }
 
-        for(Long userId : projectAssignedUserDTO.getAssignedUsersID()){
+        for(String userId : projectAssignedUserDTO.getAssignedUsersID()){
             User user=userRepository.findById(userId).orElse(null);
             if(user!=null){
                 project.addAssignedUser(user);

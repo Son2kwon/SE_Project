@@ -3,6 +3,7 @@ package swengineering.team7.issuemanagementsystem.service;
 import swengineering.team7.issuemanagementsystem.DTO.CommentDTO;
 import swengineering.team7.issuemanagementsystem.entity.Comment;
 import swengineering.team7.issuemanagementsystem.entity.Issue;
+import swengineering.team7.issuemanagementsystem.entity.Tester;
 import swengineering.team7.issuemanagementsystem.repository.CommentRepository;
 import swengineering.team7.issuemanagementsystem.repository.IssueRepository;
 import swengineering.team7.issuemanagementsystem.repository.ProjectRepository;

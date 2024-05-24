@@ -4,10 +4,7 @@ import org.springframework.stereotype.Service;
 
 
 import swengineering.team7.issuemanagementsystem.DTO.*;
-import swengineering.team7.issuemanagementsystem.entity.Comment;
-import swengineering.team7.issuemanagementsystem.entity.Issue;
-import swengineering.team7.issuemanagementsystem.entity.Project;
-import swengineering.team7.issuemanagementsystem.entity.User;
+import swengineering.team7.issuemanagementsystem.entity.*;
 import swengineering.team7.issuemanagementsystem.repository.CommentRepository;
 import swengineering.team7.issuemanagementsystem.repository.IssueRepository;
 import swengineering.team7.issuemanagementsystem.repository.ProjectRepository;
@@ -16,9 +13,7 @@ import swengineering.team7.issuemanagementsystem.util.SearchType;
 
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class IssueService {
@@ -119,6 +114,16 @@ public class IssueService {
             return false;
         }
 
+        // 만약 issue의 상태가 resolved, 즉 해결된 상태로 바뀐다면
+        // 해당 issue에 배정된 Dev의 해결 이력 업데이트
+        if(issueDTO.getState().equals("closed")) {
+            for(User user : issue.getAssignedUsers()) {
+                if(user instanceof Dev) {
+                    ((Dev) user).incrementResolve(issueDTO.getTag());
+                    userRepository.save(user);
+                }
+            }
+        }
         issue.setTitle(issueDTO.getTitle());
         issue.setPriority(issueDTO.getPriority());
         issue.setState(issueDTO.getState());
@@ -197,5 +202,55 @@ public class IssueService {
             return true;
         }
         return false;
+    }
+
+    public List<User> recommendAssignee(ProjectDTO projectDTO, String tag) {
+        ///////////////////////////////////////////////////////////////////////
+        // 최대 힙 구현을 위해 Comparable 메소드 오버라이딩
+        class PriorityPair implements Comparable<PriorityPair> {
+            private Integer priority;
+            private User user;
+
+            public PriorityPair(Integer priority, User user) {
+                this.priority = priority;
+                this.user = user;
+            }
+
+            public Integer getPriority() {
+                return priority;
+            }
+            public User getUser() {
+                return user;
+            }
+
+            @Override
+            public int compareTo(PriorityPair o) {
+                return o.priority.compareTo(this.priority);
+            }
+        }
+        ///////////////////////////////////////////////////////////////////////
+        String tagset[] = tag.split("#");
+        PriorityQueue<PriorityPair> queue = new PriorityQueue<>();
+        Optional<Project> optionalProject = projectRepository.findById(projectDTO.getId());
+        if(optionalProject.isPresent()) {
+            Project project = optionalProject.get();
+            for(User user : project.getAssignedUsers()) {
+                if(user instanceof Dev) {
+                    int temp=0;
+                    for(String s : tagset) {
+                        if(((Dev) user).getIssueResolve().containsKey(s)){
+                            temp=temp+((Dev) user).getIssueResolve().get(s);
+                        }
+                    }
+                    queue.offer(new PriorityPair(temp,user));
+                }
+            }
+        }
+        List<User> ret = new ArrayList<>();
+        // 상위 3명을 반환하거나, 프로젝트에 있는 Dev들이 모두 추가되기전까지 반복
+        for(int i=0;i<3&&!queue.isEmpty();i++) {
+            ret.add(queue.poll().getUser());
+        }
+        return ret;
     }
 }

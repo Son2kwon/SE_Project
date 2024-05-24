@@ -67,8 +67,8 @@ public class UserService {
     }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //이름으로 검색된 사용자들 DTO 반환
-    public List<UserInformationDTO> searchByUsername(String input) {
-        Specification<User> spec = searchname(input);
+    public List<UserInformationDTO> searchByUsername(UserInformationDTO userInformationDTO) {
+        Specification<User> spec = searchname(userInformationDTO.getName());
         List<User> users = userRepository.findAll(spec);
 
         List<UserInformationDTO> userInformationDTOS = new ArrayList<>();
@@ -111,11 +111,4 @@ public class UserService {
             }
         };
     }
-
-    // 코멘트 추가기능
-    public void addComment(IssueDTO issueDTO, String comment){
-
-    }
 }
-
-///// add comment : 해당 프로젝트에 속한 사용자만 가능

@@ -5,7 +5,10 @@ import jakarta.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "User")
+@Table(name = "PL")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class PL extends User{
-
+        public PL() {
+            setRole("PL");
+        }
 }
