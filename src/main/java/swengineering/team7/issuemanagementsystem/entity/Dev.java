@@ -6,7 +6,6 @@ import java.util.*;
 
 @Entity
 @Table(name = "Dev")
-@Inheritance(strategy = InheritanceType.JOINED)
 public class Dev extends User{
         @ElementCollection
         private Map<String,Integer> IssueResolve = new HashMap<>();

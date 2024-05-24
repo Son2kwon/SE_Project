@@ -8,6 +8,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "User")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User {
     @Id
     private String id;
