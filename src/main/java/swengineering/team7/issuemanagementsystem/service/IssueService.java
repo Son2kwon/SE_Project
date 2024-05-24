@@ -230,6 +230,10 @@ public class IssueService {
         }
         ///////////////////////////////////////////////////////////////////////
         String tagset[] = tag.split("#");
+        List<String> temp_tagset = new ArrayList<>(Arrays.asList(tagset));
+        temp_tagset.remove(0);
+        tagset = temp_tagset.toArray(new String[temp_tagset.size()]);
+        
         PriorityQueue<PriorityPair> queue = new PriorityQueue<>();
         Optional<Project> optionalProject = projectRepository.findById(projectDTO.getId());
         if(optionalProject.isPresent()) {
