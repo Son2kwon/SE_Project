@@ -4,9 +4,13 @@ import org.springframework.stereotype.Service;
 import swengineering.team7.issuemanagementsystem.DTO.ProjectAssignedUserDTO;
 import swengineering.team7.issuemanagementsystem.DTO.ProjectDTO;
 import swengineering.team7.issuemanagementsystem.entity.Project;
+import swengineering.team7.issuemanagementsystem.entity.ProjectAssignment;
+import swengineering.team7.issuemanagementsystem.entity.ProjectAssignmentKey;
 import swengineering.team7.issuemanagementsystem.entity.User;
+import swengineering.team7.issuemanagementsystem.repository.ProjectAssignmentRepository;
 import swengineering.team7.issuemanagementsystem.repository.ProjectRepository;
 import swengineering.team7.issuemanagementsystem.repository.UserRepository;
+import swengineering.team7.issuemanagementsystem.util.Role;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,10 +21,12 @@ public class ProjectService {
 
     ProjectRepository projectRepository;
     UserRepository userRepository;
+    ProjectAssignmentRepository projectAssignmentRepository;
 
-    public ProjectService(ProjectRepository projectRepository, UserRepository userRepository) {
+    public ProjectService(ProjectRepository projectRepository, UserRepository userRepository, ProjectAssignmentRepository projectAssignmentRepository) {
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
+        this.projectAssignmentRepository = projectAssignmentRepository;
     }
 
     // 새로운 Project 생성
@@ -52,6 +58,20 @@ public class ProjectService {
         project.setName(projectDTO.getName());
         project.setDueDate(projectDTO.getDueDate());
         projectRepository.save(project);
+        return true;
+    }
+    public boolean assignUserToProject(Long projectId, String userId, Role role) {
+        Project project = projectRepository.findById(projectId).orElseThrow(() -> new RuntimeException("Project not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+
+        ProjectAssignmentKey id = new ProjectAssignmentKey(projectId, userId);
+        ProjectAssignment assignment = new ProjectAssignment();
+        assignment.setId(id);
+        assignment.setProject(project);
+        assignment.setUser(user);
+        assignment.setRole(role);
+
+        projectAssignmentRepository.save(assignment);
         return true;
     }
 
