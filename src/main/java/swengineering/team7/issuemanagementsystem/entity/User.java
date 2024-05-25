@@ -9,15 +9,22 @@ import java.util.Set;
 @Table(name = "User")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     @Column(unique = true)
     private String username;
     private String password;
     private String role;
     private String Contract;
-
+    public User(){}
+    public User(String id, String username, String password, String contract){
+        this.id = id;
+        this.username=username;
+        this.password=password;
+        this.Contract=contract;
+        //test: 일단은 admin
+        this.role = "admin";
+    }
     // User:Project 다:다     두 엔터티 연결하는 중간 테이블 생성
     @ManyToMany
     @JoinTable(
@@ -28,7 +35,7 @@ public class User {
     private Set<Project> inchargeProjects;
 
     // User:Issue 1:다   create
-    @OneToMany(mappedBy = "reporter")
+    @OneToMany(mappedBy = "reporter", cascade = CascadeType.ALL)
     private Set<Issue> issues;
 
     // User:Issue 1:다   Assign
@@ -42,7 +49,7 @@ public class User {
 
 
     //Getter & Setter
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
@@ -66,7 +73,7 @@ public class User {
         return Contract;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
