@@ -8,9 +8,11 @@ import swengineering.team7.issuemanagementsystem.DTO.SearchInfoDTO;
 import swengineering.team7.issuemanagementsystem.entity.Issue;
 import swengineering.team7.issuemanagementsystem.entity.Project;
 import swengineering.team7.issuemanagementsystem.entity.User;
+import swengineering.team7.issuemanagementsystem.exception.WrongPriorityException;
 import swengineering.team7.issuemanagementsystem.repository.IssueRepository;
 import swengineering.team7.issuemanagementsystem.repository.ProjectRepository;
 import swengineering.team7.issuemanagementsystem.repository.UserRepository;
+import swengineering.team7.issuemanagementsystem.util.Priority;
 import swengineering.team7.issuemanagementsystem.util.SearchType;
 
 
@@ -58,11 +60,26 @@ public class IssueService {
             return findbyWriter(searchInfoDTO.getSearchValue());
         } else if (searchInfoDTO.getSearchType() == SearchType.STATE) {
             return findbyState(searchInfoDTO.getSearchValue());
-        } else if (searchInfoDTO.getSearchType() == SearchType.IssueID){
+        } else if (searchInfoDTO.getSearchType() == SearchType.ISSUEID){
             return findbyIssueID(Long.parseLong(searchInfoDTO.getSearchValue()));
-        } else {
+        } else if (searchInfoDTO.getSearchType() == SearchType.PRIORITY){
+            return findByPriority(searchInfoDTO.getSearchValue());
+        }else if (searchInfoDTO.getSearchType() == SearchType.ALL){
+            return findALl();
+        }else {
             return null;
         }
+    }
+
+    public List<IssueDTO> findALl(){
+        List<IssueDTO> issueDTOs = new ArrayList<>();
+        List<Issue> issues = issueRepository.findAll();
+
+        for (Issue issue : issues) {
+            issueDTOs.add(IssueDTO.makeDTOFrom(issue));
+        }
+
+        return issueDTOs;
     }
 
     public List<IssueDTO> findbyTitle(String title) {
@@ -97,6 +114,29 @@ public class IssueService {
 
         return issueDTOs;
     }
+
+    //Priority 기반 검색
+    public List<IssueDTO> findByPriority(String priority) {
+        // 문자열을 Priority Enum으로 변환
+        Priority priorityEnum;
+        try {
+            priorityEnum = Priority.valueOf(priority.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new WrongPriorityException("Invalid priority value: " + priority);
+        }
+
+        // Priority Enum을 사용하여 검색
+        List<Issue> issues = issueRepository.findByPriority(priorityEnum);
+        List<IssueDTO> issueDTOs = new ArrayList<>();
+
+        // 검색된 Issue 객체들을 IssueDTO로 변환
+        for (Issue issue : issues) {
+            issueDTOs.add(IssueDTO.makeDTOFrom(issue));
+        }
+
+        return issueDTOs;
+    }
+
 
     // 이슈 아이디를 통한 Issue 정보 얻기
     public List<IssueDTO> findbyIssueID(Long issueID) {
