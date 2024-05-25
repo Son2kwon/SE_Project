@@ -28,4 +28,9 @@ public interface IssueRepository extends JpaRepository<Issue, Long> {
     @Query("SELECT DATE(i.date), COUNT(i) FROM Issue i GROUP BY DATE(i.date)")
     List<Object[]> countIssuesByDate();
 
+    //태그별로 발생한 이슈의 개수를 반환하는 메소드
+    @Query("SELECT t.name, COUNT(i) FROM Issue i JOIN i.tags t GROUP BY t.name")
+    List<Object[]> countIssuesByTag();
+
+
 }

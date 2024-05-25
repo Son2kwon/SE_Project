@@ -3,6 +3,7 @@ package swengineering.team7.issuemanagementsystem.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import swengineering.team7.issuemanagementsystem.DTO.IssueCountByDateDTO;
+import swengineering.team7.issuemanagementsystem.DTO.IssueCountByTagDTO;
 import swengineering.team7.issuemanagementsystem.repository.IssueRepository;
 
 import java.time.LocalDate;
@@ -35,6 +36,22 @@ public class IssueAnalyticsService {
         return issueCountsByDate;
     }
 
+    //태그 별 이슈의 개수를 반환하는 메서드
+    public List<IssueCountByTagDTO> getIssueCountsByTag() {
+        List<Object[]> results = issueRepository.countIssuesByTag();
+        List<IssueCountByTagDTO> issueCountsByTag = new ArrayList<>();
+
+        for (Object[] result : results) {
+            String tag = (String) result[0];
+            Long count = (Long) result[1];
+            issueCountsByTag.add(new IssueCountByTagDTO(tag, count));
+        }
+
+        return issueCountsByTag;
+    }
 
 
 }
+
+
+
