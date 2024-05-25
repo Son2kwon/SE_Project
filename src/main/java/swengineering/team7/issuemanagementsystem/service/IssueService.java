@@ -132,7 +132,7 @@ public class IssueService {
         if(issue != null) {
             String issueState = issueDTO.getState();
             issue.setState(issueState);
-            if(issueDTO.getState().equals("Complete")){
+            if(issueDTO.getState().equals("Complete") && issueDTO.getUserID() != null){
                 userRepository.findById(issueDTO.getUserID()).ifPresent(issue::setFixer);
             }
             issueRepository.save(issue);
