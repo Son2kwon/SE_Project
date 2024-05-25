@@ -39,7 +39,7 @@ public class IssueService {
     //새로운 issue 하나를 만드는 작업 ( issue 저장 성공시 True 실패시 False 반환)
     public Boolean createIssue(IssueDTO issueDTO) {
         Issue newIssue = Issue.makeIssueOf(issueDTO.getTitle(), issueDTO.getIssueDescription(), issueDTO.getDate(), issueDTO.getState());
-        User user = userRepository.findById(issueDTO.getUserID()).orElse(null);
+        User user = userRepository.findById(issueDTO.getReporterID()).orElse(null);
         Project project =  projectRepository.findById(issueDTO.getProjectID()).orElse(null);
         if (user == null || project == null) {
             return false;
@@ -172,8 +172,8 @@ public class IssueService {
         if(issue != null) {
             String issueState = issueDTO.getState();
             issue.setState(issueState);
-            if(issueDTO.getState().equals("Complete") && issueDTO.getUserID() != null){
-                userRepository.findById(issueDTO.getUserID()).ifPresent(issue::setFixer);
+            if(issueDTO.getState().equals("Complete") && issueDTO.getReporterID() != null){
+                userRepository.findById(issueDTO.getReporterID()).ifPresent(issue::setFixer);
             }
             issueRepository.save(issue);
             return true;
