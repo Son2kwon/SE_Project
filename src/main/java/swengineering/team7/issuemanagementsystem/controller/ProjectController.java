@@ -72,6 +72,20 @@ public class ProjectController {
         }
         return ResponseEntity.ok(response);
     }
+    @GetMapping("/getRole")
+    public ResponseEntity<HashMap<String,String>> getRole(@RequestParam("token") String token,
+                                                          @RequestParam("projectId") String projectId){
+        JwtCertificate jwtCertificate = new JwtCertificate();
+        String userId = jwtCertificate.extractId(token);
+        HashMap<String,String> response = new HashMap<>();
+        for(ProjectAssignmentDTO paDTO: projectAssignmentService.getAssignmentsByUserId(userId)){
+            if(paDTO.getProjectDTO().getId()==Long.parseLong(projectId)){
+                response.put("role",paDTO.getRole().toString());
+                return ResponseEntity.ok(response);
+            }
+        }
+        return null;
+    }
 
 
 }

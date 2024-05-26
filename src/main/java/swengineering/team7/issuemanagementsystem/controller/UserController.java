@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import swengineering.team7.issuemanagementsystem.DTO.ProjectAssignmentDTO;
 import swengineering.team7.issuemanagementsystem.DTO.UserInformationDTO;
 import swengineering.team7.issuemanagementsystem.service.ProjectAssignmentService;
+import swengineering.team7.issuemanagementsystem.service.ProjectService;
 import swengineering.team7.issuemanagementsystem.service.UserService;
 import swengineering.team7.issuemanagementsystem.util.JwtCertificate;
 
