@@ -1,5 +1,6 @@
 package swengineering.team7.issuemanagementsystem.DTO;
 
+import swengineering.team7.issuemanagementsystem.entity.Issue;
 import swengineering.team7.issuemanagementsystem.util.Priority;
 
 import java.time.LocalDateTime;
@@ -12,31 +13,38 @@ public class IssueDTO {
     private String state;
     private String issueDescription;
     private Priority priority;
-    private String createUserID;
-    private String createUsername;
+    private String ReporterID;
+    private String Reportername;
     private Long projectID;
     private String tag;
+
 
     public IssueDTO() {
     }
 
     //Entity -> DTO로 바꿔주는 생성자 메소드
-    static public IssueDTO makeDTOFrom(swengineering.team7.issuemanagementsystem.entity.Issue issue){
+    static public IssueDTO makeDTOFrom(Issue issue){
         return new IssueDTO(issue.getId(), issue.getTitle(), issue.getDate(),
                 issue.getState(), issue.getIssueDescription(),issue.getPriority(),
                 issue.getReporter().getId(),issue.getReporter().getUsername(),issue.getTag());
     }
 
-    public IssueDTO(Long id, String title, LocalDateTime date, String state, String issueDescription, Priority priority, String createUserID, String createUsername, String tag) {
+    public IssueDTO(Long id, String title, LocalDateTime date, String state, String issueDescription, Priority priority, String ReporterID, String Reportername, String tag) {
         this.id = id;
         this.title = title;
         this.date = date;
         this.state = state;
         this.issueDescription = issueDescription;
         this.priority = priority;
-        this.createUserID = createUserID;
-        this.createUsername = createUsername;
+        this.ReporterID = ReporterID;
+        this.Reportername = Reportername;
         this.tag = tag;
+    }
+
+    public IssueDTO(Long id, String state, String issueDescription) {
+        this.id = id;
+        this.state = state;
+        this.issueDescription = issueDescription;
     }
 
     public void setId(Long id) {
@@ -63,12 +71,12 @@ public class IssueDTO {
         this.priority = priority;
     }
 
-    public void setCreateUserID(String createUserID) {
-        this.createUserID = createUserID;
+    public void setReporterID(String reporterID) {
+        this.ReporterID = reporterID;
     }
 
-    public void setCreateUsername(String createUsername) {
-        this.createUsername = createUsername;
+    public void setReportername(String reportername) {
+        this.Reportername = reportername;
     }
 
     public void setTag(String tag) { this.tag = tag; }
@@ -97,12 +105,12 @@ public class IssueDTO {
         return priority;
     }
 
-    public String getCreateUsername() {
-        return createUsername;
+    public String getReportername() {
+        return Reportername;
     }
 
-    public String getCreateUserID() {
-        return createUserID;
+    public String getReporterID() {
+        return ReporterID;
     }
 
     public String getTag() { return tag; }

@@ -5,4 +5,3 @@ public class NoBelong extends RuntimeException{
         super(message);
     }
 }
-

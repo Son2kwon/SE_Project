@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import swengineering.team7.issuemanagementsystem.util.Priority;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -26,25 +25,21 @@ public class Issue {
     private Priority priority;
 
     // Issue:Project 다:1
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Project project;
 
     // Issue:User 다;1   create
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private User reporter;
 
-    //  Issue:User 다;1   최종 Fixer ( 추후 추가 필요)
-    //    @ManyToOne
-    //    private User fixer;
+    // Issue:User 다;1   최종 Fixer
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fixer_id")
+    private User fixer;
 
     // Issue:Comment 1:다    has many
     @OneToMany(mappedBy = "issue")
     private Set<Comment> comments;
-
-    //Enum으로 Priority 정의 (Util 패키지로 리팩토링)
-    //    public enum Priority{
-    //        //LOW, MEDIUM, HIGH, CRITICAL
-    //    }
 
     //Issue:User 다:다    Assign
     @ManyToMany
@@ -57,6 +52,7 @@ public class Issue {
 
     public Issue(){};
 
+
     public static Issue makeIssueOf(String title, String issueDescription,LocalDateTime date, String state){
         Issue issue = new Issue();
         issue.setTitle(title);
@@ -66,18 +62,6 @@ public class Issue {
         return issue;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Issue issue = (Issue) o;
-        return Objects.equals(id, issue.id) && Objects.equals(title, issue.title) && Objects.equals(date, issue.date) && Objects.equals(state, issue.state) && Objects.equals(issueDescription, issue.issueDescription) && priority == issue.priority && Objects.equals(project, issue.project) && Objects.equals(reporter, issue.reporter) && Objects.equals(comments, issue.comments) && Objects.equals(assignedUsers, issue.assignedUsers);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, title, date, state, issueDescription, priority, project, reporter, comments, assignedUsers);
-    }
 
     //Getter & Setter
     public Long getId() {
@@ -128,6 +112,10 @@ public class Issue {
         this.reporter = user;
     }
 
+    public User getFixer() { return fixer; }
+
+    public void setFixer(User fixer) { this.fixer = fixer;}
+
     public Set<Comment> getComments() {
         return comments;
     }
@@ -167,4 +155,5 @@ public class Issue {
     public void setTag(String tag) { this.tag = tag; }
 
     public String getTag() { return tag; }
+
 }

@@ -1,9 +1,17 @@
 package swengineering.team7.issuemanagementsystem.service;
 
-import swengineering.team7.issuemanagementsystem.DTO.CommentDTO;
+import swengineering.team7.issuemanagementsystem.DTO.IssueDTO;
+import swengineering.team7.issuemanagementsystem.dto.ProjectDTO;
+import swengineering.team7.issuemanagementsystem.DTO.UserInformationDTO;
 import swengineering.team7.issuemanagementsystem.entity.Comment;
 import swengineering.team7.issuemanagementsystem.entity.Issue;
 import swengineering.team7.issuemanagementsystem.entity.Tester;
+import swengineering.team7.issuemanagementsystem.entity.Project;
+import swengineering.team7.issuemanagementsystem.entity.User;
+import swengineering.team7.issuemanagementsystem.exception.NoBelong;
+import swengineering.team7.issuemanagementsystem.DTO.CommentDTO;
+import swengineering.team7.issuemanagementsystem.entity.Issue;
+
 import swengineering.team7.issuemanagementsystem.repository.CommentRepository;
 import swengineering.team7.issuemanagementsystem.repository.IssueRepository;
 import swengineering.team7.issuemanagementsystem.repository.ProjectRepository;
@@ -19,6 +27,7 @@ public class CommentService {
     ProjectRepository projectRepository;
     CommentRepository commentRepository;
 
+    //Comment Create 할때 issue랑 user에도 업데이트해야하나요?
     public void create(Issue issue, String newComment) {
         Comment comment = new Comment();
         comment.setBody(newComment);
@@ -84,7 +93,6 @@ public class CommentService {
     public CommentDTO getComment(Long IssueID, Long CommentID) {
         Optional<Issue> issue = issueRepository.findById(IssueID);
         Optional<Comment> comment = commentRepository.findById(CommentID);
-
         // 두 ID로 찾은 Issue와 Comment가 존재하고, Issue에 해당 Comment가 있는경우
         // CommentDTO 생성해서 반환
         if(issue.isPresent()&&comment.isPresent()){

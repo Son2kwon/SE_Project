@@ -4,14 +4,15 @@ import swengineering.team7.issuemanagementsystem.entity.User;
 
 public class UserInformationDTO {
     private String id;
+    private String password;
     private String name;
     private String role;
     private String contract;
 
-    public UserInformationDTO(String id, String name, String role, String contract) {
+    public UserInformationDTO(String id, String password, String name, String contract) {
         this.id = id;
+        this.password = password;
         this.name = name;
-        this.role = role;
         this.contract = contract;
     }
 
@@ -25,6 +26,8 @@ public class UserInformationDTO {
     public void setId(String id) {
         this.id = id;
     }
+    public void setPassword(String password){this.password = password;}
+    public String getPassword(){return password;}
 
     public String getName() {
         return name;
@@ -57,6 +60,7 @@ public class UserInformationDTO {
         userInformationDTO.setName(user.getUsername());
         userInformationDTO.setRole(user.getRole());
         userInformationDTO.setContract(user.getContract());
+        userInformationDTO.setPassword(user.getPassword());
         return userInformationDTO;
     }
 }

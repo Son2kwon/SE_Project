@@ -1,8 +1,8 @@
 package swengineering.team7.issuemanagementsystem.service;
 
 import org.springframework.stereotype.Service;
-import swengineering.team7.issuemanagementsystem.DTO.ProjectAssignedUserDTO;
-import swengineering.team7.issuemanagementsystem.DTO.ProjectDTO;
+import swengineering.team7.issuemanagementsystem.dto.ProjectAssignedUserDTO;
+import swengineering.team7.issuemanagementsystem.dto.ProjectDTO;
 import swengineering.team7.issuemanagementsystem.entity.Project;
 import swengineering.team7.issuemanagementsystem.entity.User;
 import swengineering.team7.issuemanagementsystem.repository.ProjectRepository;
@@ -18,16 +18,19 @@ public class ProjectService {
     ProjectRepository projectRepository;
     UserRepository userRepository;
 
-    public ProjectService(ProjectRepository projectRepository) {
+    public ProjectService(ProjectRepository projectRepository, UserRepository userRepository) {
         this.projectRepository = projectRepository;
+        this.userRepository = userRepository;
     }
 
     // 새로운 Project 생성
-    public Boolean createProject(ProjectDTO projectDTO) {
+    public Long createProject(ProjectDTO projectDTO) {
         Project newProject = Project.makeProjectOf(projectDTO.getName(), projectDTO.getStartDate(),projectDTO.getDueDate());
-        newProject.setStartDate(LocalDateTime.now());
-        projectRepository.save(newProject);
-        return true;
+        if(projectDTO.getStartDate()==null){
+            newProject.setStartDate(LocalDateTime.now());
+        }
+        Project savedProject = projectRepository.save(newProject);
+        return savedProject.getId();
     }
 
     // 모든 프로젝트 가져오기
