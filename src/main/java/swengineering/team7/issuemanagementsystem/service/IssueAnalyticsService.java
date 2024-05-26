@@ -2,8 +2,8 @@ package swengineering.team7.issuemanagementsystem.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import swengineering.team7.issuemanagementsystem.DTO.IssueCountByDateDTO;
-import swengineering.team7.issuemanagementsystem.DTO.IssueCountByTagDTO;
+import swengineering.team7.issuemanagementsystem.DTOs.IssueCountByDateDTO;
+import swengineering.team7.issuemanagementsystem.DTOs.IssueCountByTagDTO;
 import swengineering.team7.issuemanagementsystem.repository.IssueRepository;
 
 import java.time.LocalDate;

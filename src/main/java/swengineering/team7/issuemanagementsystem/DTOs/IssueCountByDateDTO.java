@@ -1,4 +1,4 @@
-package swengineering.team7.issuemanagementsystem.DTO;
+package swengineering.team7.issuemanagementsystem.DTOs;
 
 import java.time.LocalDate;
 

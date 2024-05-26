@@ -7,7 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import swengineering.team7.issuemanagementsystem.DTO.UserInformationDTO;
+import swengineering.team7.issuemanagementsystem.DTOs.UserInformationDTO;
 import swengineering.team7.issuemanagementsystem.service.UserService;
 import swengineering.team7.issuemanagementsystem.util.JwtCertificate;
 
