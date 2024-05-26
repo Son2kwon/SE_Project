@@ -13,8 +13,8 @@ public class IssueDTO {
     private String state;
     private String issueDescription;
     private Priority priority;
-    private Long UserID;
-    private String Username;
+    private String ReporterID;
+    private String Reportername;
     private Long projectID;
 
 
@@ -28,15 +28,15 @@ public class IssueDTO {
                 issue.getReporter().getId(),issue.getReporter().getUsername());
     }
 
-    public IssueDTO(Long id, String title, LocalDateTime date, String state, String issueDescription, Priority priority, Long UserID, String Username) {
+    public IssueDTO(Long id, String title, LocalDateTime date, String state, String issueDescription, Priority priority, String ReporterID, String Reportername) {
         this.id = id;
         this.title = title;
         this.date = date;
         this.state = state;
         this.issueDescription = issueDescription;
         this.priority = priority;
-        this.UserID = UserID;
-        this.Username = Username;
+        this.ReporterID = ReporterID;
+        this.Reportername = Reportername;
     }
 
     public IssueDTO(Long id, String state, String issueDescription) {
@@ -69,12 +69,12 @@ public class IssueDTO {
         this.priority = priority;
     }
 
-    public void setUserID(Long userID) {
-        this.UserID = userID;
+    public void setReporterID(String reporterID) {
+        this.ReporterID = reporterID;
     }
 
-    public void setUsername(String username) {
-        this.Username = username;
+    public void setReportername(String reportername) {
+        this.Reportername = reportername;
     }
 
     public Long getId() {
@@ -101,12 +101,12 @@ public class IssueDTO {
         return priority;
     }
 
-    public String getUsername() {
-        return Username;
+    public String getReportername() {
+        return Reportername;
     }
 
-    public Long getUserID() {
-        return UserID;
+    public String getReporterID() {
+        return ReporterID;
     }
 
     public Long getProjectID() {

@@ -4,6 +4,7 @@ package swengineering.team7.issuemanagementsystem.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -19,7 +20,7 @@ public class Project {
 
     //Project:User 다:다      inchargeProjects 테이블 사용
     @ManyToMany (mappedBy = "inchargeProjects")
-    private Set<User> assignedUsers;
+    private Set<User> assignedUsers = new HashSet<>();
 
     // Project:Issue   1:다      has many
     @OneToMany(mappedBy = "project")

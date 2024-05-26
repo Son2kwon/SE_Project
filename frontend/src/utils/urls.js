@@ -1,0 +1,12 @@
+const base_url = 'http://localhost:8080'
+const URLs = {
+  LOGIN: base_url + '/login',
+  REGISTER: base_url + '/register',
+  SEARCH: base_url + '/search',
+  CREATEPROJECT: base_url + '/createproject',
+  GetAllUser: base_url + '/getAllUser',
+  DELAccount: base_url + '/deleteAccount',
+  GetProjectList: base_url + '/getProjectList',
+  CreateIssue: base_url +'/createIssue',
+};
+export default URLs;
