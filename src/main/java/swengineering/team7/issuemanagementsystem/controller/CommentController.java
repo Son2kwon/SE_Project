@@ -30,9 +30,9 @@ public class CommentController {
         IssueDTO issue = issues.get(0);
         String writer = principal.getName();
 
-        Comment comment = Comment.makeCommentof(newComment, writer, LocalDateTime.now(), issue);
-        CommentDTO commentDTO = CommentDTO.makeDTOfrom(comment);
-        issueService.addComment(commentDTO, issue);
+        CommentDTO commentDTO = commentService.createCommentDTO(null, newComment, writer, LocalDateTime.now(), issue.getId());
+
+        commentService.addComment(commentDTO, issue);
 
         return String.format("redirect:/issue/detail/%d", id);
     }
@@ -52,7 +52,7 @@ public class CommentController {
     @PostMapping("/edit/complete/{issueID}/{commentID}")
     public String SaveEditedComment(@PathVariable("issueID") Long issueID, @PathVariable("commentID") Long commentID, @RequestParam(value="newContent") String newContent) {
         CommentDTO commentDTO = commentService.getComment(issueID, commentID);
-        issueService.modifyComment(commentDTO, newContent, LocalDateTime.now());
+        commentService.modifyComment(commentDTO, newContent, LocalDateTime.now());
 
         return String.format("redirect:/issue/detail/%d", issueID);
     }

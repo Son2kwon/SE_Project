@@ -24,7 +24,7 @@ public class Comment {
     private User user;
 
     public static Comment makeCommentof(String body,String writer,LocalDateTime date,
-                                        Issue issue,User user) {
+                                        Issue issue, User user) {
         Comment comment=new Comment();
         comment.setContent(body);
         comment.setWriter(writer);

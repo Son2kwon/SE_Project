@@ -1,9 +1,11 @@
 package swengineering.team7.issuemanagementsystem.entity;
 
 import jakarta.persistence.*;
+
 import swengineering.team7.issuemanagementsystem.util.Priority;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity

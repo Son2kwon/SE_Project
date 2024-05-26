@@ -1,7 +1,6 @@
 package swengineering.team7.issuemanagementsystem.service;
 
 import swengineering.team7.issuemanagementsystem.DTO.IssueDTO;
-import swengineering.team7.issuemanagementsystem.dto.ProjectDTO;
 import swengineering.team7.issuemanagementsystem.entity.Comment;
 import swengineering.team7.issuemanagementsystem.entity.Issue;
 import swengineering.team7.issuemanagementsystem.entity.User;
@@ -39,7 +38,7 @@ public class CommentService {
     }
     
     public Boolean addComment(CommentDTO commentDTO, IssueDTO issueDTO) {
-        Comment comment = Comment.makeCommentof(commentDTO.getBody(),commentDTO.getWriter(),commentDTO.getDate(),commentDTO.getIssue(),commentDTO.getUser());
+        Comment comment = Comment.makeCommentof(commentDTO.getBody(),commentDTO.getWriter(),commentDTO.getDate(),commentDTO.getIssue());
         //올바른 comment 객체가 입력된경우
         if(commentDTO.getIssue() != null) {
             Issue issue = issueRepository.findById(issueDTO.getId()).orElse(null);
@@ -96,5 +95,10 @@ public class CommentService {
             }
         }
         return null;
+    }
+
+    public CommentDTO createCommentDTO(Long id,String body,String writer,LocalDateTime date,Long issueID) {
+        Issue issue = issueRepository.findById(issueID).orElse(null);
+        return new CommentDTO(id,body,writer,date,issue);
     }
 }
