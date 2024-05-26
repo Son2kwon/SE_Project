@@ -16,18 +16,28 @@ public class IssueDTO {
     private String Username;
     private Long projectID;
 
+    private String fixer;
+    private String fixerName;
+
 
     public IssueDTO() {
     }
 
     //Entity -> DTO로 바꿔주는 생성자 메소드
     static public IssueDTO makeDTOFrom(swengineering.team7.issuemanagementsystem.entity.Issue issue){
+        if(issue.getFixer()!=null){
         return new IssueDTO(issue.getId(), issue.getTitle(), issue.getDate(),
                 issue.getState(), issue.getIssueDescription(),issue.getPriority(),
-                issue.getReporter().getId(),issue.getReporter().getUsername());
+                issue.getReporter().getId(),issue.getReporter().getUsername(),
+                issue.getFixer().getId(), issue.getFixer().getUsername());}
+        else return new IssueDTO(issue.getId(), issue.getTitle(), issue.getDate(),
+                issue.getState(), issue.getIssueDescription(),issue.getPriority(),
+                issue.getReporter().getId(),issue.getReporter().getUsername(),
+                "", "");
     }
 
-    public IssueDTO(Long id, String title, LocalDateTime date, String state, String issueDescription, Priority priority, String UserID, String Username) {
+    public IssueDTO(Long id, String title, LocalDateTime date, String state, String issueDescription, Priority priority, String UserID, String Username,
+                    String fixerId, String fixerName) {
         this.id = id;
         this.title = title;
         this.date = date;
@@ -36,6 +46,8 @@ public class IssueDTO {
         this.priority = priority;
         this.UserID = UserID;
         this.Username = Username;
+        this.fixer = fixerId;
+        this.fixerName = fixerName;
     }
 
     public void setId(Long id) {
@@ -101,6 +113,8 @@ public class IssueDTO {
     public String getUserID() {
         return UserID;
     }
+    public String getFixer(){return fixer;}
+    public String getFixerName(){return fixerName;}
 
     public Long getProjectID() {
         return projectID;
