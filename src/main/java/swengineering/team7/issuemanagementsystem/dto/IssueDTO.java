@@ -16,8 +16,6 @@ public class IssueDTO {
     private String ReporterID;
     private String Reportername;
     private Long projectID;
-    private String tag;
-
 
     public IssueDTO() {
     }
@@ -26,10 +24,10 @@ public class IssueDTO {
     static public IssueDTO makeDTOFrom(Issue issue){
         return new IssueDTO(issue.getId(), issue.getTitle(), issue.getDate(),
                 issue.getState(), issue.getIssueDescription(),issue.getPriority(),
-                issue.getReporter().getId(),issue.getReporter().getUsername(),issue.getTag());
+                issue.getReporter().getId(),issue.getReporter().getUsername());
     }
 
-    public IssueDTO(Long id, String title, LocalDateTime date, String state, String issueDescription, Priority priority, String ReporterID, String Reportername, String tag) {
+    public IssueDTO(Long id, String title, LocalDateTime date, String state, String issueDescription, Priority priority, String ReporterID, String Reportername) {
         this.id = id;
         this.title = title;
         this.date = date;
@@ -38,7 +36,6 @@ public class IssueDTO {
         this.priority = priority;
         this.ReporterID = ReporterID;
         this.Reportername = Reportername;
-        this.tag = tag;
     }
 
     public IssueDTO(Long id, String state, String issueDescription) {
@@ -78,9 +75,6 @@ public class IssueDTO {
     public void setReportername(String reportername) {
         this.Reportername = reportername;
     }
-
-    public void setTag(String tag) { this.tag = tag; }
-
     public Long getId() {
         return id;
     }
@@ -112,9 +106,6 @@ public class IssueDTO {
     public String getReporterID() {
         return ReporterID;
     }
-
-    public String getTag() { return tag; }
-
     public Long getProjectID() {
         return projectID;
     }
