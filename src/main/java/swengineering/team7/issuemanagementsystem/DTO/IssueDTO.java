@@ -17,15 +17,24 @@ public class IssueDTO {
     private String Reportername;
     private Long projectID;
     private String tag;
+    private String fixer;
+    private String fixerName;
+
 
     public IssueDTO() {
     }
 
     //Entity -> DTO로 바꿔주는 생성자 메소드
-    static public IssueDTO makeDTOFrom(Issue issue){
+    static public IssueDTO makeDTOFrom(swengineering.team7.issuemanagementsystem.entity.Issue issue){
+        if(issue.getFixer()!=null){
         return new IssueDTO(issue.getId(), issue.getTitle(), issue.getDate(),
                 issue.getState(), issue.getIssueDescription(),issue.getPriority(),
-                issue.getReporter().getId(),issue.getReporter().getUsername(),issue.getTag());
+                issue.getReporter().getId(),issue.getReporter().getUsername(),issue.getTag(),
+                issue.getFixer().getId(), issue.getFixer().getUsername());}
+        else return new IssueDTO(issue.getId(), issue.getTitle(), issue.getDate(),
+                issue.getState(), issue.getIssueDescription(),issue.getPriority(),
+                issue.getReporter().getId(),issue.getReporter().getUsername(),issue.getTag(),
+                "", "");
     }
 
     public IssueDTO(Long id, String title, LocalDateTime date, String state, String issueDescription, Priority priority, String ReporterID, String Reportername, String tag) {
@@ -38,6 +47,20 @@ public class IssueDTO {
         this.ReporterID = ReporterID;
         this.Reportername = Reportername;
         this.tag = tag;
+    }
+
+    public IssueDTO(Long id, String title, LocalDateTime date, String state, String issueDescription, Priority priority, String ReporterID, String Reportername, String tag, String fixerId, String fixerName) {
+        this.id = id;
+        this.title = title;
+        this.date = date;
+        this.state = state;
+        this.issueDescription = issueDescription;
+        this.priority = priority;
+        this.ReporterID = ReporterID;
+        this.Reportername = Reportername;
+        this.tag = tag;
+        this.fixer = fixerId;
+        this.fixerName = fixerName;
     }
 
     public IssueDTO(Long id, String state, String issueDescription) {
@@ -110,6 +133,9 @@ public class IssueDTO {
     public String getReporterID() {
         return ReporterID;
     }
+    public String getFixer(){return fixer;}
+    public String getFixerName(){return fixerName;}
+
     public Long getProjectID() {
         return projectID;
     }

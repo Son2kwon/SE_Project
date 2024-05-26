@@ -30,15 +30,15 @@ public class UserService {
    //회원가입
     public void createUser(String id, String password, String username,  String contract) {
        User user = new User(id, username,password,contract);
-       /*user.setId(id);
-       user.setUsername(username);
-       user.setPassword(password);
-       user.setContract(contract);*/
        this.userRepository.save(user);
     }
     public boolean login(UserInformationDTO userInformationDTO){
        User user = userRepository.findById(userInformationDTO.getId()).orElse(null);
         return user != null && user.getPassword().equals(userInformationDTO.getPassword());
+    }
+    public boolean isAdmin(UserInformationDTO userInformationDTO){
+       User user = userRepository.findById(userInformationDTO.getId()).orElse(null);
+       return user.getRole()!=null&&user.getRole().equals("admin");
     }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -77,7 +77,7 @@ public class UserService {
     //모든 유저 받아오기(admin만 가능)
     public List<UserInformationDTO> getAllUser(String id){
         User user_n = userRepository.findById(id).orElse(null);
-        if(user_n instanceof Admin) {
+        if(user_n.getRole()!=null && user_n.getRole().equals("admin")) {
             List<UserInformationDTO> userInformationDTOS = new ArrayList<>();
             List<User> users = userRepository.findAll();
             for(User user: users){
@@ -88,7 +88,7 @@ public class UserService {
             throw new NoPermission("관리자 권한이 있어야합니다.");
         }
     }
-    //해당 유저와 연관이 있는 프로젝트 아이디들을 반환.
+    //해당 유저와 연관이 있는 프로젝트 아이디, Role들을 반환.
     public List<HashMap<String,String>> mapToUserResponse(UserInformationDTO userInformationDTO) {
         User user = userRepository.findById(userInformationDTO.getId()).orElse(null);
         Set<Project> projectSet = user.getInchargeProjects();

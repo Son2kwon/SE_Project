@@ -1,47 +1,55 @@
 import React, { useState,useEffect, } from 'react';
 import '../styles/tableStyle.css'
 import axios from 'axios';
+import URLs from '../utils/urls';
+import Select from 'react-select';
 
-const SearchResultTable=({ props }) =>{
+const SearchResultTable=({ props,projectId }) =>{
   const role = sessionStorage.getItem('role')
   const [assignees, setAssignees] = useState([]);
   const [assigneeList, setAssigneeList] = useState([]);
-
-  const handleChangeAssignee = (event, key) => {
-    const selected = event.target.value;
-    setAssignees((prevMap)=>({
-      ...prevMap,
-      [key]:selected
-    }))
-  }
-
+  const [assignedAssigneeList,setAssignedAssigneeList] = useState([]);
   useEffect(() => {
     // 서버로부터 assignee 값을 받아옴
     axios({
-      url: 'http://localhost:5000/get-developers',
+      url: URLs.GetDev,
       method: 'get',
-      params: {token: sessionStorage.getItem('token')}
+      params: {token: sessionStorage.getItem('token'), projectId:projectId}
     })
       .then(response => {
         setAssigneeList(response.data);
+        console.log(assigneeList);
+        console.log(role);
       })
       .catch(error => {
         console.error('Error fetching assignees:', error);
       });
   }, []);
-
+  
+  const handleChangeAssignee = (selectedOptions, issueId) => {
+    const selectedAssignees = selectedOptions.map(option => option.value);
+    const newAssignments = selectedAssignees.map(assignee => ({ issueId, assignee }));
+    const updatedAssignments = [...assignedAssigneeList, ...newAssignments.filter(newAssignment => (
+      !assignedAssigneeList.some(existingAssignment => (
+        existingAssignment.issueId === newAssignment.issueId && existingAssignment.assignee === newAssignment.assignee
+      ))
+    ))];
+  setAssignedAssigneeList(updatedAssignments);
+  }
 
   const handleSaveAssignee = () => {
-    axios.post('http://localhost:5000/assign', {
-      assignees: assignees,
+    axios.post(URLs.AssignDev, {
+      assignees: assignedAssigneeList,
       token: sessionStorage.getItem("token"),
+      projectId: projectId,
     })
     .then(response => {
-      console.log('Assignees successfully saved:', response.data);
+      console.log('Assignees successfully saved', response.data);
     })
     .catch(error => {
       console.error('Error saving assignments:', error);
     });
+    window.location.reload();
   };
   return (
     <div>
@@ -64,13 +72,15 @@ const SearchResultTable=({ props }) =>{
             <td>{item.status}</td>
             <td>{item.reporter}</td>
             <td>
-              {item.status === 'new' && role === 'pl' ? 
-              <select onChange={event=>handleChangeAssignee(event,item.key)}>
-                <option value="">Select Assignee</option>
-                  {assigneeList.map((assignee, index) => (
-                <option key={index} value={assignee}>{assignee}</option>
-                ))}
-              </select>
+              {item.status === 'NEW' && (role === 'PL' || role ==='admin') ? 
+              <Select 
+                onChange={event=>handleChangeAssignee(event,item.id)}
+                options={assigneeList.map((assignee, index) => ({
+                value: assignee,
+                label: assignee
+                }))}
+                isMulti
+              />
               : item.assignee
               }
             </td>

@@ -7,6 +7,18 @@ const SelectProject = () => {
     const [projectList, setProjectList] = useState([]);
     const [selectedProject, setSelectedProject] = useState(null);
     const navigate = useNavigate();
+
+    const fetchRole=async(projectId)=>{
+      let role = ''
+      await axios.get(URLs.GetRole,{
+       params:{projectId:projectId, token:sessionStorage.getItem('token')} 
+      })
+      .then(response=>{
+        role = response.data.role;
+        sessionStorage.setItem('role',role)
+      })
+    }
+
     useEffect(() => {
       const fetchData = async () => {
         try {
@@ -32,7 +44,9 @@ const SelectProject = () => {
             projectList.map(project => (
               <button
                 key={project.id}
-                onClick={() => navigate(`/project/${project.id}`)}
+                onClick={async() => {
+                  await fetchRole(project.id)
+                  navigate(`/project/${project.id}`)}}
               >
                 Project {project.id}: {project.name}
               </button>

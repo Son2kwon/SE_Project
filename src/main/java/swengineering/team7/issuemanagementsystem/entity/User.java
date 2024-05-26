@@ -24,8 +24,6 @@ public class User {
         this.username=username;
         this.password=password;
         this.Contract=contract;
-        //test: 일단은 admin
-        this.role = "admin";
     }
     // User:Project 다:다     두 엔터티 연결하는 중간 테이블 생성
     @ManyToMany
