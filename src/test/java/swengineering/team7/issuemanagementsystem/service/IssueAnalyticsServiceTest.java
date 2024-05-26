@@ -7,8 +7,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import swengineering.team7.issuemanagementsystem.DTOs.IssueCountByDateDTO;
-import swengineering.team7.issuemanagementsystem.DTOs.IssueCountByTagDTO;
+import swengineering.team7.issuemanagementsystem.DTO.IssueCountByDateDTO;
+import swengineering.team7.issuemanagementsystem.DTO.IssueCountByTagDTO;
 import swengineering.team7.issuemanagementsystem.repository.IssueRepository;
 
 import java.time.LocalDate;

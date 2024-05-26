@@ -1,4 +1,4 @@
-package swengineering.team7.issuemanagementsystem.DTOs;
+package swengineering.team7.issuemanagementsystem.DTO;
 
 import swengineering.team7.issuemanagementsystem.entity.User;
 

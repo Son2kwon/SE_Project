@@ -8,8 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import swengineering.team7.issuemanagementsystem.DTOs.ProjectAssignedUserDTO;
-import swengineering.team7.issuemanagementsystem.DTOs.ProjectDTO;
+import swengineering.team7.issuemanagementsystem.DTO.ProjectAssignedUserDTO;
+import swengineering.team7.issuemanagementsystem.DTO.ProjectDTO;
 import swengineering.team7.issuemanagementsystem.service.ProjectService;
 
 import java.time.LocalDateTime;

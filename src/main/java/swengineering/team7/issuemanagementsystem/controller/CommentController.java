@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
-import swengineering.team7.issuemanagementsystem.DTOs.IssueDTO;
-import swengineering.team7.issuemanagementsystem.DTOs.CommentDTO;
+import swengineering.team7.issuemanagementsystem.DTO.IssueDTO;
+import swengineering.team7.issuemanagementsystem.DTO.CommentDTO;
 import swengineering.team7.issuemanagementsystem.entity.Comment;
 import swengineering.team7.issuemanagementsystem.service.CommentService;
 import swengineering.team7.issuemanagementsystem.service.IssueService;

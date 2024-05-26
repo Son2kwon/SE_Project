@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import swengineering.team7.issuemanagementsystem.entity.*;
 import swengineering.team7.issuemanagementsystem.repository.CommentRepository;
-import swengineering.team7.issuemanagementsystem.DTOs.IssueDTO;
+import swengineering.team7.issuemanagementsystem.DTO.IssueDTO;
 import swengineering.team7.issuemanagementsystem.dto.SearchInfoDTO;
 import swengineering.team7.issuemanagementsystem.entity.Issue;
 import swengineering.team7.issuemanagementsystem.entity.Project;

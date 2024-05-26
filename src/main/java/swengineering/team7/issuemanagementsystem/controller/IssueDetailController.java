@@ -3,7 +3,7 @@ package swengineering.team7.issuemanagementsystem.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import swengineering.team7.issuemanagementsystem.DTOs.IssueDTO;
+import swengineering.team7.issuemanagementsystem.DTO.IssueDTO;
 import swengineering.team7.issuemanagementsystem.service.IssueService;
 
 import java.util.List;

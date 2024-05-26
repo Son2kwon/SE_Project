@@ -1,4 +1,4 @@
-package swengineering.team7.issuemanagementsystem.DTOs;
+package swengineering.team7.issuemanagementsystem.DTO;
 
 public class IssueCountByTagDTO {
     private String tag;
