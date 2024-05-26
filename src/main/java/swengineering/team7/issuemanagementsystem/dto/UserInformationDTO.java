@@ -3,28 +3,31 @@ package swengineering.team7.issuemanagementsystem.DTO;
 import swengineering.team7.issuemanagementsystem.entity.User;
 
 public class UserInformationDTO {
-    private Long id;
+    private String id;
+    private String password;
     private String name;
     private String role;
     private String contract;
 
-    public UserInformationDTO(Long id, String name, String role, String contract) {
+    public UserInformationDTO(String id, String password, String name, String contract) {
         this.id = id;
+        this.password = password;
         this.name = name;
-        this.role = role;
         this.contract = contract;
     }
 
     public UserInformationDTO() {
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
+    public void setPassword(String password){this.password = password;}
+    public String getPassword(){return password;}
 
     public String getName() {
         return name;
@@ -57,6 +60,7 @@ public class UserInformationDTO {
         userInformationDTO.setName(user.getUsername());
         userInformationDTO.setRole(user.getRole());
         userInformationDTO.setContract(user.getContract());
+        userInformationDTO.setPassword(user.getPassword());
         return userInformationDTO;
     }
 }

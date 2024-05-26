@@ -5,9 +5,9 @@ import java.util.List;
 public class ProjectAssignedUserDTO {
 
     private Long projectId;
-    private List<Long> assignedUsersID;
+    private List<String> assignedUsersID;
 
-    public ProjectAssignedUserDTO(Long projectId, List<Long> assignedUsersID) {
+    public ProjectAssignedUserDTO(Long projectId, List<String> assignedUsersID) {
         this.projectId = projectId;
         this.assignedUsersID = assignedUsersID;
     }
@@ -16,7 +16,8 @@ public class ProjectAssignedUserDTO {
         return projectId;
     }
 
-    public List<Long> getAssignedUsersID() {
+    public List<String> getAssignedUsersID() {
         return assignedUsersID;
     }
+
 }
