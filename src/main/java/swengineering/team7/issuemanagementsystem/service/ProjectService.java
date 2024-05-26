@@ -1,8 +1,8 @@
 package swengineering.team7.issuemanagementsystem.service;
 
 import org.springframework.stereotype.Service;
-import swengineering.team7.issuemanagementsystem.dto.ProjectAssignedUserDTO;
-import swengineering.team7.issuemanagementsystem.dto.ProjectDTO;
+import swengineering.team7.issuemanagementsystem.DTO.ProjectAssignedUserDTO;
+import swengineering.team7.issuemanagementsystem.DTO.ProjectDTO;
 import swengineering.team7.issuemanagementsystem.entity.Project;
 import swengineering.team7.issuemanagementsystem.entity.User;
 import swengineering.team7.issuemanagementsystem.repository.ProjectRepository;
