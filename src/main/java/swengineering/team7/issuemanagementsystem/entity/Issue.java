@@ -16,6 +16,8 @@ public class Issue {
     private LocalDateTime date;
     private String state;
 
+    private String tag;
+
     @Lob // 긴 텍스트 지원
     private String issueDescription;
 

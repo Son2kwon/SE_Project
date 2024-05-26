@@ -8,9 +8,11 @@ import swengineering.team7.issuemanagementsystem.DTO.SearchInfoDTO;
 import swengineering.team7.issuemanagementsystem.entity.Issue;
 import swengineering.team7.issuemanagementsystem.entity.Project;
 import swengineering.team7.issuemanagementsystem.entity.User;
+import swengineering.team7.issuemanagementsystem.exception.WrongPriorityException;
 import swengineering.team7.issuemanagementsystem.repository.IssueRepository;
 import swengineering.team7.issuemanagementsystem.repository.ProjectRepository;
 import swengineering.team7.issuemanagementsystem.repository.UserRepository;
+import swengineering.team7.issuemanagementsystem.util.Priority;
 import swengineering.team7.issuemanagementsystem.util.SearchType;
 
 
@@ -37,7 +39,7 @@ public class IssueService {
     //새로운 issue 하나를 만드는 작업 ( issue 저장 성공시 True 실패시 False 반환)
     public Boolean createIssue(IssueDTO issueDTO) {
         Issue newIssue = Issue.makeIssueOf(issueDTO.getTitle(), issueDTO.getIssueDescription(), issueDTO.getDate(), issueDTO.getState());
-        User user = userRepository.findById(issueDTO.getUserID()).orElse(null);
+        User user = userRepository.findById(issueDTO.getReporterID()).orElse(null);
         Project project =  projectRepository.findById(issueDTO.getProjectID()).orElse(null);
         if (user == null || project == null) {
             return false;
@@ -58,11 +60,26 @@ public class IssueService {
             return findbyWriter(searchInfoDTO.getSearchValue());
         } else if (searchInfoDTO.getSearchType() == SearchType.STATE) {
             return findbyState(searchInfoDTO.getSearchValue());
-        } else if (searchInfoDTO.getSearchType() == SearchType.IssueID){
+        } else if (searchInfoDTO.getSearchType() == SearchType.ISSUEID){
             return findbyIssueID(Long.parseLong(searchInfoDTO.getSearchValue()));
-        } else {
+        } else if (searchInfoDTO.getSearchType() == SearchType.PRIORITY){
+            return findByPriority(searchInfoDTO.getSearchValue());
+        }else if (searchInfoDTO.getSearchType() == SearchType.ALL){
+            return findALl();
+        }else {
             return null;
         }
+    }
+
+    public List<IssueDTO> findALl(){
+        List<IssueDTO> issueDTOs = new ArrayList<>();
+        List<Issue> issues = issueRepository.findAll();
+
+        for (Issue issue : issues) {
+            issueDTOs.add(IssueDTO.makeDTOFrom(issue));
+        }
+
+        return issueDTOs;
     }
 
     public List<IssueDTO> findbyTitle(String title) {
@@ -98,6 +115,29 @@ public class IssueService {
         return issueDTOs;
     }
 
+    //Priority 기반 검색
+    public List<IssueDTO> findByPriority(String priority) {
+        // 문자열을 Priority Enum으로 변환
+        Priority priorityEnum;
+        try {
+            priorityEnum = Priority.valueOf(priority.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new WrongPriorityException("Invalid priority value: " + priority);
+        }
+
+        // Priority Enum을 사용하여 검색
+        List<Issue> issues = issueRepository.findByPriority(priorityEnum);
+        List<IssueDTO> issueDTOs = new ArrayList<>();
+
+        // 검색된 Issue 객체들을 IssueDTO로 변환
+        for (Issue issue : issues) {
+            issueDTOs.add(IssueDTO.makeDTOFrom(issue));
+        }
+
+        return issueDTOs;
+    }
+
+
     // 이슈 아이디를 통한 Issue 정보 얻기
     public List<IssueDTO> findbyIssueID(Long issueID) {
         List<IssueDTO> issueDTOs = new ArrayList<>();
@@ -122,23 +162,38 @@ public class IssueService {
         issue.setPriority(issueDTO.getPriority());
         issue.setIssueDescription(issueDTO.getIssueDescription());
         issueRepository.save(issue);
-        UpdateState(issueDTO);
+        updateState(issueDTO);
         return true;
     }
 
-    public Boolean UpdateState(IssueDTO issueDTO){
+    //State Update
+    public Boolean updateState(IssueDTO issueDTO){
         Issue issue = issueRepository.findById(issueDTO.getId()).orElse(null);
         if(issue != null) {
             String issueState = issueDTO.getState();
             issue.setState(issueState);
-            if(issueDTO.getState().equals("Complete")){
-                userRepository.findById(issueDTO.getUserID()).ifPresent(issue::setFixer);
+            if(issueDTO.getState().equals("Complete") && issueDTO.getReporterID() != null){
+                userRepository.findById(issueDTO.getReporterID()).ifPresent(issue::setFixer);
             }
             issueRepository.save(issue);
             return true;
         }
 
        return false;
+    }
+
+    //Description 업데이트
+    public Boolean updateDesciprtion(IssueDTO issueDTO){
+        Issue issue = issueRepository.findById(issueDTO.getId()).orElse(null);
+        if(issue != null) {
+            String issueDescription = issueDTO.getIssueDescription();
+            if(issueDTO.getIssueDescription()!=null){
+                issue.setIssueDescription(issueDescription);
+                issueRepository.save(issue);
+            }
+            return true;
+        }
+        return false;
     }
 
     //특정 Issue 삭제
