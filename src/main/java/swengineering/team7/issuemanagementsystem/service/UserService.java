@@ -57,7 +57,7 @@ public class UserService {
         User user_n = userRepository.findById(usernow.getId()).orElse(null);
         // user_t = 변경할 사용자의 계정 정보
         User user_t = userRepository.findById(usertarget.getId()).orElse(null);
-        if(user_n instance of Admin) {
+        if(user_n instanceof Admin) {
             user_t.setRole(newrole);
             this.userRepository.save(user_t);
         }
