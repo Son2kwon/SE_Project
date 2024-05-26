@@ -12,17 +12,19 @@ public class CommentDTO {
     private String writer;
     private LocalDateTime date;
     private Issue issue;
+    private User user;
 
     public CommentDTO() {
 
     }
 
-    public CommentDTO(Long id,String body,String writer,LocalDateTime date,Issue issue) {
+    public CommentDTO(Long id,String body,String writer,LocalDateTime date,Issue issue, User user) {
         this.id=id;
         this.body=body;
         this.writer=writer;
         this.date=date;
         this.issue=issue;
+        this.user=user;
     }
 
     public void setId(Long id) {
@@ -45,6 +47,10 @@ public class CommentDTO {
         this.issue=issue;
     }
 
+    public void setUser(User user) {
+        this.user=user;
+    }
+
     public Long getId() {
         return this.id;
     }
@@ -65,8 +71,12 @@ public class CommentDTO {
         return this.issue;
     }
 
+    public User getUser() {
+        return this.user;
+    }
+
     public static CommentDTO makeDTOfrom(Comment comment) {
         return new CommentDTO(comment.getId(), comment.getContent(), comment.getWriter(), comment.getDate(),
-                comment.getIssue());
+                comment.getIssue(), comment.getUser());
     }
 }

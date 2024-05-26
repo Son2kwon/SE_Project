@@ -2,11 +2,14 @@ package swengineering.team7.issuemanagementsystem.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.stereotype.Repository;
 import swengineering.team7.issuemanagementsystem.entity.Issue;
 import swengineering.team7.issuemanagementsystem.util.Priority;
 
 import java.util.List;
 
+@EnableJpaRepositories
 public interface IssueRepository extends JpaRepository<Issue, Long> {
     // 기본 CRUD 제공
 
@@ -38,7 +41,7 @@ public interface IssueRepository extends JpaRepository<Issue, Long> {
     List<Object[]> countIssuesByDate();
 
     //태그별로 발생한 이슈의 개수를 반환하는 메소드
-    @Query("SELECT t.name, COUNT(i) FROM Issue i JOIN i.tags t GROUP BY t.name")
+    @Query("SELECT i.tag, COUNT(i) FROM Issue i GROUP BY i.tag")
     List<Object[]> countIssuesByTag();
 
 }
