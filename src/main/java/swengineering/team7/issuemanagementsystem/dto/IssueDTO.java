@@ -1,6 +1,6 @@
 package swengineering.team7.issuemanagementsystem.dto;
 
-import swengineering.team7.issuemanagementsystem.entitiy.Issue;
+import swengineering.team7.issuemanagementsystem.entity.Issue;
 import swengineering.team7.issuemanagementsystem.util.Priority;
 
 import java.time.LocalDateTime;

@@ -1,6 +1,9 @@
-package swengineering.team7.issuemanagementsystem.entitiy;
+package swengineering.team7.issuemanagementsystem.entity;
 
 import jakarta.persistence.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -9,9 +12,9 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String body;
+    private String content;
     private String writer;
-    private String date;
+    private LocalDateTime date;
 
     // Comment:Issue 다:1  has many
     @ManyToOne
@@ -33,12 +36,8 @@ public class Comment {
         this.id = id;
     }
 
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
+    public String getContent() {
+        return content;
     }
 
     public String getWriter() {
@@ -49,11 +48,11 @@ public class Comment {
         this.writer = writer;
     }
 
-    public String getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
