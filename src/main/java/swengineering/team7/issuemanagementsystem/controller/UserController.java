@@ -14,9 +14,7 @@ import swengineering.team7.issuemanagementsystem.service.ProjectService;
 import swengineering.team7.issuemanagementsystem.service.UserService;
 import swengineering.team7.issuemanagementsystem.util.JwtCertificate;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @Controller
@@ -84,5 +82,31 @@ public class UserController {
             }
         }
         return ResponseEntity.ok(userResponse);
+    }
+    @GetMapping("/getDev")
+    public ResponseEntity<List<String>> getDevelopers(@RequestParam("token") String token,
+                                                      @RequestParam("projectId") String projectId){
+        List<String> devIds = projectAssignmentService.getDevIdByProjectId(Long.parseLong(projectId));
+        return ResponseEntity.ok(devIds);
+    }
+    @GetMapping("/getRole")
+    public ResponseEntity<Map<String,String>> getRole(@RequestParam("token") String token,
+                                                      @RequestParam("projectId") String projectId){
+        JwtCertificate jwtCertificate = new JwtCertificate();
+        String userId = jwtCertificate.extractId(token);
+        Map<String,String> response = new HashMap<>();
+        UserInformationDTO userInformationDTO = new UserInformationDTO();
+        userInformationDTO.setId(userId);
+        if(userService.isAdmin(userInformationDTO)){
+            response.put("role","admin");
+            return ResponseEntity.ok(response);
+        }
+        for(ProjectAssignmentDTO paDTO: projectAssignmentService.getAssignmentsByUserId(userId)){
+            if(paDTO.getProjectDTO().getId()==Long.parseLong(projectId)){
+                response.put("role",paDTO.getRole().toString());
+                return ResponseEntity.ok(response);
+            }
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error", "Project not found"));
     }
 }
