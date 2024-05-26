@@ -1,23 +1,23 @@
 package swengineering.team7.issuemanagementsystem.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 
 import swengineering.team7.issuemanagementsystem.DTO.IssueDTO;
 import swengineering.team7.issuemanagementsystem.DTO.SearchInfoDTO;
+import swengineering.team7.issuemanagementsystem.DTO.UserInformationDTO;
 import swengineering.team7.issuemanagementsystem.entity.Issue;
 import swengineering.team7.issuemanagementsystem.entity.Project;
 import swengineering.team7.issuemanagementsystem.entity.User;
 import swengineering.team7.issuemanagementsystem.repository.IssueRepository;
 import swengineering.team7.issuemanagementsystem.repository.ProjectRepository;
 import swengineering.team7.issuemanagementsystem.repository.UserRepository;
+import swengineering.team7.issuemanagementsystem.util.Priority;
 import swengineering.team7.issuemanagementsystem.util.SearchType;
 
 
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class IssueService {
@@ -33,10 +33,25 @@ public class IssueService {
         this.projectRepository = projectRepository;
         this.userService = userService;
     }
-
+    @Transactional
+    public Boolean setAssignees(Long issueId, List<String> userIds){
+        Issue issue = issueRepository.findById(issueId).orElse(null);
+        Set<User> assignees = new HashSet<>();
+        for(String userId: userIds){
+            User user = userRepository.findById(userId).orElse(null);
+            assignees.add(user);
+        }
+        if(issue!=null && !assignees.isEmpty()) {
+            issue.setAssignedUsers(assignees);
+            issue.setState("Assigned");
+            return true;
+        }
+        return false;
+    }
     //새로운 issue 하나를 만드는 작업 ( issue 저장 성공시 True 실패시 False 반환)
     public Boolean createIssue(IssueDTO issueDTO) {
-        Issue newIssue = Issue.makeIssueOf(issueDTO.getTitle(), issueDTO.getIssueDescription(), issueDTO.getDate(), issueDTO.getState());
+        Issue newIssue = Issue.makeIssueOf(issueDTO.getTitle(), issueDTO.getIssueDescription(), issueDTO.getDate(), issueDTO.getState(), issueDTO.getPriority());
+        newIssue.setState("NEW");
         User user = userRepository.findById(issueDTO.getUserID()).orElse(null);
         Project project =  projectRepository.findById(issueDTO.getProjectID()).orElse(null);
         if (user == null || project == null) {
@@ -109,7 +124,22 @@ public class IssueService {
 
         return issueDTOs;
     }
-
+    public List<IssueDTO> findbyPriority(Priority priority){
+        List<IssueDTO> issueDTOs = new ArrayList<>();
+        List<Issue> issues = issueRepository.findByPriority(priority);
+        for (Issue issue : issues) {
+            issueDTOs.add(IssueDTO.makeDTOFrom(issue));
+        }
+        return issueDTOs;
+    }
+    public List<IssueDTO> findAll(){
+        List<IssueDTO> issueDTOs = new ArrayList<>();
+        List<Issue> issues = issueRepository.findAll();
+        for (Issue issue : issues) {
+            issueDTOs.add(IssueDTO.makeDTOFrom(issue));
+        }
+        return issueDTOs;
+    }
     //특정 Issue 업데이트
     public Boolean UpdateIssueInfo(IssueDTO issueDTO) {
         Issue issue = issueRepository.findById(issueDTO.getId()).orElse(null);
