@@ -15,10 +15,7 @@ import swengineering.team7.issuemanagementsystem.entity.User;
 import swengineering.team7.issuemanagementsystem.exception.NoPermission;
 import swengineering.team7.issuemanagementsystem.repository.UserRepository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 @Service
@@ -162,5 +159,10 @@ public class UserService {
                 return cb.like(root.get("role"),"%"+input+"%");
             }
         };
+    }
+
+    public User SearchSepcificUser (String name) {
+        Optional<User> user = userRepository.findByUsername(name);
+        return user.orElse(null);
     }
 }
