@@ -18,12 +18,12 @@ const Search = () => {
   const optionsByRole={
     PL:{
      issueStatus: [
-      { value: 'new', label: 'New' },
-      { value: 'assigned', label: 'Assigned' },
-      { value: 'fixed', label: 'Fixed' },
-      { value: 'resolved', label: 'Resolved' },
-      { value: 'closed', label: 'Closed' },
-      { value: 'reopened', label: 'Reopened' },
+      { value: 'NEW', label: 'New' },
+      { value: 'ASSIGNED', label: 'Assigned' },
+      { value: 'FIXED', label: 'Fixed' },
+      { value: 'RESOLVED', label: 'Resolved' },
+      { value: 'CLOSED', label: 'Closed' },
+      { value: 'REOPENED', label: 'Reopened' },
       ],
       personField: [
         { value: 'assignee', label: "Assignee" },
@@ -47,7 +47,7 @@ const Search = () => {
           params:{projectId:projectId,token:sessionStorage.getItem('token'),role:role}
         })
         .then(response=>{
-          setSearchData(response.data.results)
+          setSearchData(response.data)
         }).catch(error=>{console.log(error)})
       }
     }
@@ -156,7 +156,7 @@ const Search = () => {
       </div>
       )}
       <button onClick={handleSearch} style={{ marginTop: '10px' }}>검색</button>
-      {searchData.length > 0 && <SearchResultTable props={searchData} />}
+      {searchData && searchData.length > 0 && <SearchResultTable props={searchData} projectId={projectId} />}
     </div>
   );
 };

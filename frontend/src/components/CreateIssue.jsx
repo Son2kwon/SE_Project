@@ -1,47 +1,39 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 import URLs from '../utils/urls';
 import axios from 'axios';
 
 const CreateIssue = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [priority, setPriority] = useState('blocker');
+  const [priority, setPriority] = useState('');
   const [showIssueCreate, setShowIssueCreate] = useState();
   const {projectId} = useParams()
   const priorities = [
-    { value: 'blocker', label: 'Blocker' },
-    { value: 'critical', label: 'Critical' },
-    { value: 'major', label: 'Major' },
-    { value: 'minor', label: 'Minor' },
-    { value: 'trivial', label: 'Trivial' },
+    { value: 'LOW', label: 'Low' },
+    { value: 'MEDIUM', label: 'Medium' },
+    { value: 'HIGH', label: 'High' },
+    { value: 'CRITICAL', label: 'Critical' },
   ];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setShowIssueCreate(false)
-    setTitle('');
-    setDescription('');
-    
     const token = sessionStorage.getItem('token')
-    const issue = {
-      title: title,
-      description: description,
-      priority: priority,
-    };
     try {
       const response = await axios.post(URLs.CreateIssue, {
         token:token,
         projectId:projectId,
-        issue:issue,
+        title: title,
+        issueDescription: description,
+        priority: priority,
       }, 
       {
         headers: {
           'Content-Type': 'application/json'
         }
       });
-      console.log('Issue created:', response.data);
-      // 성공적으로 생성된 후 추가적인 로직을 추가할 수 있습니다.
+      alert("이슈 생성 완료")
+      setShowIssueCreate(false);
     } catch (error) {
       console.error('There was an error creating the issue!', error);
     }
@@ -74,14 +66,14 @@ const CreateIssue = () => {
         <div>
             <label htmlFor="priority">Priority</label>
             <select
-            id="priority"
-            value={priority}
-            onChange={(e) => setPriority(e.target.value)}
+              id="priority"
+              value={priority}
+              onChange={(e) => setPriority(e.target.value)}
             >
             {priorities.map((p) => (
-                <option key={p.value} value={p.value}>
+              <option key={p.value} value={p.value}>
                 {p.label}
-                </option>
+              </option>
             ))}
             </select>
         </div>

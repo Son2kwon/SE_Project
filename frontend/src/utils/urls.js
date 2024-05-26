@@ -9,5 +9,7 @@ const URLs = {
   DELAccount: base_url + '/deleteAccount',
   GetProjectList: base_url + '/getProjectList',
   CreateIssue: base_url +'/createIssue',
+  GetDev: base_url+'/getDev',
+  AssignDev: base_url +'/assignDev'
 };
 export default URLs;
