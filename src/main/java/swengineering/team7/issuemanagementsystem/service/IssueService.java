@@ -157,53 +157,6 @@ public class IssueService {
 
     }
 
-    public Boolean addComment(CommentDTO commentDTO, IssueDTO issueDTO) {
-        Comment comment = Comment.makeCommentof(commentDTO.getBody(),commentDTO.getWriter(),commentDTO.getDate(),commentDTO.getIssue(),commentDTO.getUser());
-        //올바른 comment 객체가 입력된경우
-        if(commentDTO.getIssue() != null) {
-            Issue issue = issueRepository.findById(issueDTO.getId()).orElse(null);
-            //Comment 객체가 올바른  Issue에 추가되어야함
-            if(issue != null && issue == comment.getIssue()) {
-                issue.addComment(comment);
-                issueRepository.save(issue);
-                commentRepository.save(comment);
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
-        return false;
-    }
-
-    public Boolean modifyComment(CommentDTO dto, String content, LocalDateTime time) {
-        Optional<Comment> C=commentRepository.findById(dto.getId());
-        if(C.isPresent()) {
-            Comment comment=C.get();
-            comment.setBody(content);
-            comment.setDate(time);
-            this.commentRepository.save(comment);
-            return true;
-        }
-        return false;
-    }
-
-    public Boolean deleteComment(CommentDTO dto) {
-        Optional<Comment> C=commentRepository.findById(dto.getId());
-        if(C.isPresent()) {
-            Comment comment=C.get();
-            Issue issue=comment.getIssue();
-            User user=comment.getUser();
-            issue.getComments().remove(comment);
-            user.getComments().remove(comment);
-            this.issueRepository.save(issue);
-            this.commentRepository.delete(comment);
-            this.userRepository.save(user);
-            return true;
-        }
-        return false;
-    }
-
     public List<User> recommendAssignee(ProjectDTO projectDTO, String tag) {
         ///////////////////////////////////////////////////////////////////////
         // 최대 힙 구현을 위해 Comparable 메소드 오버라이딩
