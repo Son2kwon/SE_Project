@@ -3,12 +3,12 @@ package swengineering.team7.issuemanagementsystem.DTO;
 import swengineering.team7.issuemanagementsystem.entity.User;
 
 public class UserInformationDTO {
-    private Long id;
+    private String id;
     private String name;
     private String role;
     private String contract;
 
-    public UserInformationDTO(Long id, String name, String role, String contract) {
+    public UserInformationDTO(String id, String name, String role, String contract) {
         this.id = id;
         this.name = name;
         this.role = role;
@@ -18,11 +18,11 @@ public class UserInformationDTO {
     public UserInformationDTO() {
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
