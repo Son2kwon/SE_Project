@@ -80,7 +80,7 @@ public class UserService {
     //모든 유저 받아오기(admin만 가능)
     public List<UserInformationDTO> getAllUser(String id){
         User user_n = userRepository.findById(id).orElse(null);
-        if(user_n.getRole().equals("admin")) {
+        if(user_n instanceof Admin) {
             List<UserInformationDTO> userInformationDTOS = new ArrayList<>();
             List<User> users = userRepository.findAll();
             for(User user: users){
