@@ -1,25 +1,19 @@
 package swengineering.team7.issuemanagementsystem.controller;
 
-import org.apache.coyote.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import swengineering.team7.issuemanagementsystem.DTO.ProjectAssignedUserDTO;
 import swengineering.team7.issuemanagementsystem.DTO.ProjectDTO;
-import swengineering.team7.issuemanagementsystem.entity.User;
 import swengineering.team7.issuemanagementsystem.service.ProjectService;
-import swengineering.team7.issuemanagementsystem.service.UserService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000")

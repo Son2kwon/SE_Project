@@ -1,14 +1,10 @@
 package swengineering.team7.issuemanagementsystem.controller;
 
-import jakarta.validation.Valid;
-import org.apache.logging.log4j.LogManager;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import jakarta.validation.Valid;
 
 import swengineering.team7.issuemanagementsystem.DTO.IssueDTO;
 import swengineering.team7.issuemanagementsystem.DTO.CommentDTO;
