@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="">
+
+<head>
+  <title>Edit Issue</title>
+</head>
+
+<body>
+<form th:action="@{|/issue/edit/complete/${swengineering.team7.issuemanagementsystem.entity.Issue.id}|}" method="post">
+  <div>
+    <label for>State:</label>
+    <label>
+      <select th:field="*{swengineering.team7.issuemanagementsystem.entity.Issue.state}">
+        <option value="new">New</option>
+        <option value="assigned">Assigned</option>
+        <option value="fixed">Fixed</option>
+        <option value="resolved">Resolved</option>
+      </select>
+    </label>
+  </div>
+  <div>
+    <div>
+      <p><span th:text="${swengineering.team7.issuemanagementsystem.entity.Issue.title}" /></p>
+    </div>
+  </div>
+  <div>
+    <p><span th:text="${swengineering.team7.issuemanagementsystem.entity.Issue.date}" /></p>
+  </div>
+  <div>
+    <p><span th:text="${swengineering.team7.issuemanagementsystem.entity.Issue.reporter}" /></p>
+  </div>
+  <div>
+    <div>
+      <label for="newDescription">newDescription:</label>
+      <textarea id="newDescription" name="newDescription" rows="4" cols="50" th:text="${swengineering.team7.issuemanagementsystem.entity.Issue.getIssueDescription()}"></textarea>
+    </div>
+  </div>
+  <div>
+    <input type = "submit" value="Save Edited Issue">
+  </div>
+</form>
+</body>

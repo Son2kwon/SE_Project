@@ -32,9 +32,11 @@ public class ProjectService {
     // 새로운 Project 생성
     public Long createProject(ProjectDTO projectDTO) {
         Project newProject = Project.makeProjectOf(projectDTO.getName(), projectDTO.getStartDate(),projectDTO.getDueDate());
-        newProject.setStartDate(LocalDateTime.now());
-        projectRepository.save(newProject);
-        return newProject.getId();
+        if(projectDTO.getStartDate()==null){
+            newProject.setStartDate(LocalDateTime.now());
+        }
+        Project savedProject = projectRepository.save(newProject);
+        return savedProject.getId();
     }
 
     // 모든 프로젝트 가져오기

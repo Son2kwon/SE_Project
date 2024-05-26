@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Issue details</title>
+</head>
+<body>
+    <div>
+        <label>State:</label>
+        <p><span th:text="${swengineering.team7.issuemanagementsystem.entity.Issue.state}" /></p>
+    </div>
+    <div>
+        <p><span th:text="${swengineering.team7.issuemanagementsystem.entity.Issue.title}" /></p>
+    </div>
+    <div>
+        <p><span th:text="${swengineering.team7.issuemanagementsystem.entity.Issue.date}" /></p>
+    </div>
+    <div>
+        <p><span th:text="${swengineering.team7.issuemanagementsystem.entity.Issue.reporter}" /></p>
+    </div>
+    <div>
+        <p><span th:text="${swengineering.team7.issuemanagementsystem.entity.Issue.issueDescription}" /></p>
+    </div>
+    <div>
+        <form th:action="@{|/issue/edit/${swengineering.team7.issuemanagementsystem.entity.Issue.id}|}" method="post">
+            <input type="button" value = "Edit Issue">
+        </form>
+    </div>
+<hr />
+<div>
+    <h3>Comments:</h3>
+    <div th:each="comment : ${swengineering.team7.issuemanagementsystem.entity.Issue.comments}">
+        <div>
+            <p><span th:text="${comment.writer}" /></p>
+        </div>
+        <div>
+            <p><span th:text="${comment.body}" /></p>
+        </div>
+        <div>
+            <p><span th:text="${comment.date}" /></p>
+        </div>
+        <div>
+            <form th:action="@{|/comment/edit/${swengineering.team7.issuemanagementsystem.entity.Comment.id}|}" method="post">
+                <input type="button" value = "Fix Comment">
+            </form>
+        </div>
+    </div>
+</div>
+<hr />
+<div>
+    <form th:action="@{/comment/create/${swengineering.team7.issuemanagementsystem.entity.Issue.id}/${swengineering.team7.issuemanagementsystem.entity.Issue.id}|}" method="post">
+        <div>
+            <label for="newComment">Comment:</label>
+            <textarea id="newComment" name="newComment" rows="4" cols="50"></textarea>
+        </div>
+        <input type="submit" value = "Add Comment">
+    </form>
+</div>
+</body>
+</html>

@@ -1,9 +1,12 @@
 package swengineering.team7.issuemanagementsystem.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "User")
+@Table(name = "Admin")
 public class Admin extends User{
-
+        public Admin() {
+            setRole("admin");
+        }
 }

@@ -1,5 +1,6 @@
 package swengineering.team7.issuemanagementsystem.DTO;
 
+import swengineering.team7.issuemanagementsystem.entity.Issue;
 import swengineering.team7.issuemanagementsystem.util.Priority;
 
 import java.time.LocalDateTime;
@@ -12,10 +13,10 @@ public class IssueDTO {
     private String state;
     private String issueDescription;
     private Priority priority;
-    private String UserID;
-    private String Username;
+    private String ReporterID;
+    private String Reportername;
     private Long projectID;
-
+    private String tag;
     private String fixer;
     private String fixerName;
 
@@ -28,26 +29,30 @@ public class IssueDTO {
         if(issue.getFixer()!=null){
         return new IssueDTO(issue.getId(), issue.getTitle(), issue.getDate(),
                 issue.getState(), issue.getIssueDescription(),issue.getPriority(),
-                issue.getReporter().getId(),issue.getReporter().getUsername(),
+                issue.getReporter().getId(),issue.getReporter().getUsername(),issue.getTag()
                 issue.getFixer().getId(), issue.getFixer().getUsername());}
         else return new IssueDTO(issue.getId(), issue.getTitle(), issue.getDate(),
                 issue.getState(), issue.getIssueDescription(),issue.getPriority(),
-                issue.getReporter().getId(),issue.getReporter().getUsername(),
+                issue.getReporter().getId(),issue.getReporter().getUsername(),issue.getTag()
                 "", "");
     }
 
-    public IssueDTO(Long id, String title, LocalDateTime date, String state, String issueDescription, Priority priority, String UserID, String Username,
-                    String fixerId, String fixerName) {
+    public IssueDTO(Long id, String title, LocalDateTime date, String state, String issueDescription, Priority priority, String ReporterID, String Reportername, String tag) {
         this.id = id;
         this.title = title;
         this.date = date;
         this.state = state;
         this.issueDescription = issueDescription;
         this.priority = priority;
-        this.UserID = UserID;
-        this.Username = Username;
-        this.fixer = fixerId;
-        this.fixerName = fixerName;
+        this.ReporterID = ReporterID;
+        this.Reportername = Reportername;
+        this.tag = tag;
+    }
+
+    public IssueDTO(Long id, String state, String issueDescription) {
+        this.id = id;
+        this.state = state;
+        this.issueDescription = issueDescription;
     }
 
     public void setId(Long id) {
@@ -66,6 +71,8 @@ public class IssueDTO {
         this.state = state;
     }
 
+    public void setTag(String tag) { this.tag = tag; }
+
     public void setIssueDescription(String issueDescription) {
         this.issueDescription = issueDescription;
     }
@@ -74,14 +81,13 @@ public class IssueDTO {
         this.priority = priority;
     }
 
-    public void setUserID(String userID) {
-        this.UserID = userID;
+    public void setReporterID(String reporterID) {
+        this.ReporterID = reporterID;
     }
 
-    public void setUsername(String username) {
-        this.Username = username;
+    public void setReportername(String reportername) {
+        this.Reportername = reportername;
     }
-
     public Long getId() {
         return id;
     }
@@ -106,12 +112,12 @@ public class IssueDTO {
         return priority;
     }
 
-    public String getUsername() {
-        return Username;
+    public String getReportername() {
+        return Reportername;
     }
 
-    public String getUserID() {
-        return UserID;
+    public String getReporterID() {
+        return ReporterID;
     }
     public String getFixer(){return fixer;}
     public String getFixerName(){return fixerName;}
@@ -123,4 +129,6 @@ public class IssueDTO {
     public void setProjectID(Long id) {
         this.projectID = id;
     }
+
+    public String getTag() { return tag; }
 }

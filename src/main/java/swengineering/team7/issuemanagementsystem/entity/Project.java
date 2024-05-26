@@ -2,11 +2,10 @@ package swengineering.team7.issuemanagementsystem.entity;
 
 
 import jakarta.persistence.*;
-import org.springframework.cglib.core.Local;
-import swengineering.team7.issuemanagementsystem.entity.User;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -28,6 +27,9 @@ public class Project {
     @OneToMany(mappedBy = "project")
     private Set<Issue> issues;
 
+    // 트렌드 필드 추가
+    private String trend;
+
     // 생성자 메소드
     public static Project makeProjectOf(String name, LocalDateTime startDate, LocalDateTime dueDate ){
         Project project = new Project();
@@ -37,6 +39,22 @@ public class Project {
         return project;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Project project = (Project) o;
+        return Objects.equals(id, project.id)
+                && Objects.equals(name, project.name)
+                && Objects.equals(startDate, project.startDate)
+                && Objects.equals(dueDate, project.dueDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, startDate, dueDate);
+    }
+    
     //Getter & Setter
 
     public Long getId() {
@@ -99,9 +117,12 @@ public class Project {
         issues.remove(issue);
     }
 
+    public String getTrend() {
+        return trend;
+    }
+
+    public void setTrend(String trend) {
+        this.trend = trend;
+    }
+
 }
-
-
-
-
-

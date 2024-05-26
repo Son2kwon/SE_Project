@@ -18,7 +18,7 @@ public class CommentDTO {
 
     }
 
-    public CommentDTO(Long id,String body,String writer,LocalDateTime date,Issue issue,User user) {
+    public CommentDTO(Long id,String body,String writer,LocalDateTime date,Issue issue, User user) {
         this.id=id;
         this.body=body;
         this.writer=writer;

@@ -1,9 +1,11 @@
 package swengineering.team7.issuemanagementsystem.entity;
 
 import jakarta.persistence.*;
+
 import swengineering.team7.issuemanagementsystem.util.Priority;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -15,6 +17,8 @@ public class Issue {
     private String title;
     private LocalDateTime date;
     private String state;
+
+    private String tag;
 
     @Lob // 긴 텍스트 지원
     private String issueDescription;
@@ -61,6 +65,18 @@ public class Issue {
         return issue;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Issue issue = (Issue) o;
+        return Objects.equals(id, issue.id) && Objects.equals(title, issue.title) && Objects.equals(date, issue.date) && Objects.equals(state, issue.state) && Objects.equals(issueDescription, issue.issueDescription) && priority == issue.priority && Objects.equals(project, issue.project) && Objects.equals(reporter, issue.reporter) && Objects.equals(comments, issue.comments) && Objects.equals(assignedUsers, issue.assignedUsers);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, date, state, issueDescription, priority, project, reporter, comments, assignedUsers);
+    }
 
     //Getter & Setter
     public Long getId() {
@@ -147,10 +163,12 @@ public class Issue {
         this.assignedUsers = assignedUsers;
     }
 
-    public void addCommnet(Comment comment) {
+    public void addComment(Comment comment) {
         this.comments.add(comment);
     }
 
+    public void setTag(String tag) { this.tag = tag; }
 
+    public String getTag() { return tag; }
 
 }

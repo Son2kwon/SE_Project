@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="">
+
+<head>
+    <title>Edit Comment</title>
+</head>
+
+<body>
+<form th:action="@{|/comment/edit/complete/${swengineering.team7.issuemanagementsystem.entity.Issue.id}/${swengineering.team7.issuemanagementsystem.entity.Comment.id}|}" method="post">
+
+    <div>
+        <p><span th:text="${swengineering.team7.issuemanagementsystem.entity.Comment.writer}" /></p>
+    </div>
+    <div>
+        <div>
+            <label for="newContent">newContent:</label>
+            <textarea id="newContent" name="newContent" rows="4" cols="50" th:text="${swengineering.team7.issuemanagementsystem.entity.Comment.getContent()}"></textarea>
+        </div>
+    </div>
+    <div>
+        <input type = "submit" value="Save Edited Comment">
+    </div>
+    <div>
+        <p><span th:text="${swengineering.team7.issuemanagementsystem.entity.Comment.date}" /></p>
+    </div>
+
+    <div>
+        <input type="submit" value = "Fix Comment">
+    </div>
+</form>
+</body>

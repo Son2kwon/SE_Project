@@ -4,12 +4,17 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 
-import swengineering.team7.issuemanagementsystem.DTO.IssueDTO;
+import swengineering.team7.issuemanagementsystem.DTO.ProjectDTO;
 import swengineering.team7.issuemanagementsystem.DTO.SearchInfoDTO;
 import swengineering.team7.issuemanagementsystem.DTO.UserInformationDTO;
+import swengineering.team7.issuemanagementsystem.entity.*;
+import swengineering.team7.issuemanagementsystem.repository.CommentRepository;
+import swengineering.team7.issuemanagementsystem.DTO.IssueDTO;
+
 import swengineering.team7.issuemanagementsystem.entity.Issue;
 import swengineering.team7.issuemanagementsystem.entity.Project;
 import swengineering.team7.issuemanagementsystem.entity.User;
+import swengineering.team7.issuemanagementsystem.exception.WrongPriorityException;
 import swengineering.team7.issuemanagementsystem.repository.IssueRepository;
 import swengineering.team7.issuemanagementsystem.repository.ProjectRepository;
 import swengineering.team7.issuemanagementsystem.repository.UserRepository;
@@ -27,11 +32,11 @@ public class IssueService {
     UserRepository userRepository;
     ProjectRepository projectRepository;
 
-    public IssueService(UserRepository userRepository, IssueRepository issueRepository, ProjectRepository projectRepository, UserService userService) {
-        this.userRepository = userRepository;
-        this.issueRepository = issueRepository;
-        this.projectRepository = projectRepository;
+    public IssueService(UserService userService, IssueRepository issueRepository, UserRepository userRepository, ProjectRepository projectRepository) {
         this.userService = userService;
+        this.issueRepository = issueRepository;
+        this.userRepository = userRepository;
+        this.projectRepository = projectRepository;
     }
     @Transactional
     public Boolean setAssignees(Long issueId, List<String> userIds){
@@ -50,6 +55,7 @@ public class IssueService {
     }
     //새로운 issue 하나를 만드는 작업 ( issue 저장 성공시 True 실패시 False 반환)
     public Boolean createIssue(IssueDTO issueDTO) {
+
         Issue newIssue = Issue.makeIssueOf(issueDTO.getTitle(), issueDTO.getIssueDescription(), issueDTO.getDate(), issueDTO.getState(), issueDTO.getPriority());
         newIssue.setState("NEW");
         User user = userRepository.findById(issueDTO.getUserID()).orElse(null);
@@ -73,11 +79,26 @@ public class IssueService {
             return findbyWriter(searchInfoDTO.getSearchValue());
         } else if (searchInfoDTO.getSearchType() == SearchType.STATE) {
             return findbyState(searchInfoDTO.getSearchValue());
-        } else if (searchInfoDTO.getSearchType() == SearchType.IssueID){
+        } else if (searchInfoDTO.getSearchType() == SearchType.ISSUEID){
             return findbyIssueID(Long.parseLong(searchInfoDTO.getSearchValue()));
-        } else {
+        } else if (searchInfoDTO.getSearchType() == SearchType.PRIORITY){
+            return findByPriority(searchInfoDTO.getSearchValue());
+        }else if (searchInfoDTO.getSearchType() == SearchType.ALL){
+            return findALl();
+        }else {
             return null;
         }
+    }
+
+    public List<IssueDTO> findALl(){
+        List<IssueDTO> issueDTOs = new ArrayList<>();
+        List<Issue> issues = issueRepository.findAll();
+
+        for (Issue issue : issues) {
+            issueDTOs.add(IssueDTO.makeDTOFrom(issue));
+        }
+
+        return issueDTOs;
     }
 
     public List<IssueDTO> findbyTitle(String title) {
@@ -112,6 +133,29 @@ public class IssueService {
 
         return issueDTOs;
     }
+
+    //Priority 기반 검색
+    public List<IssueDTO> findByPriority(String priority) {
+        // 문자열을 Priority Enum으로 변환
+        Priority priorityEnum;
+        try {
+            priorityEnum = Priority.valueOf(priority.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new WrongPriorityException("Invalid priority value: " + priority);
+        }
+
+        // Priority Enum을 사용하여 검색
+        List<Issue> issues = issueRepository.findByPriority(priorityEnum);
+        List<IssueDTO> issueDTOs = new ArrayList<>();
+
+        // 검색된 Issue 객체들을 IssueDTO로 변환
+        for (Issue issue : issues) {
+            issueDTOs.add(IssueDTO.makeDTOFrom(issue));
+        }
+
+        return issueDTOs;
+    }
+
 
     // 이슈 아이디를 통한 Issue 정보 얻기
     public List<IssueDTO> findbyIssueID(Long issueID) {
@@ -148,27 +192,52 @@ public class IssueService {
             return false;
         }
 
+        // 만약 issue의 상태가 resolved, 즉 해결된 상태로 바뀐다면
+        // 해당 issue에 배정된 Dev의 해결 이력 업데이트
+        if(issueDTO.getState().equals("closed")) {
+            for(User user : issue.getAssignedUsers()) {
+                if(user instanceof Dev) {
+                    ((Dev) user).incrementResolve(issueDTO.getTag());
+                    userRepository.save(user);
+                }
+            }
+        }
         issue.setTitle(issueDTO.getTitle());
         issue.setPriority(issueDTO.getPriority());
         issue.setIssueDescription(issueDTO.getIssueDescription());
         issueRepository.save(issue);
-        UpdateState(issueDTO);
+        updateState(issueDTO);
         return true;
     }
 
-    public Boolean UpdateState(IssueDTO issueDTO){
+    //State Update
+    public Boolean updateState(IssueDTO issueDTO){
         Issue issue = issueRepository.findById(issueDTO.getId()).orElse(null);
         if(issue != null) {
             String issueState = issueDTO.getState();
             issue.setState(issueState);
-            if(issueDTO.getState().equals("Complete")){
-                userRepository.findById(issueDTO.getUserID()).ifPresent(issue::setFixer);
+            if(issueDTO.getState().equals("Complete") && issueDTO.getReporterID() != null){
+                userRepository.findById(issueDTO.getReporterID()).ifPresent(issue::setFixer);
             }
             issueRepository.save(issue);
             return true;
         }
 
        return false;
+    }
+
+    //Description 업데이트
+    public Boolean updateDesciprtion(IssueDTO issueDTO){
+        Issue issue = issueRepository.findById(issueDTO.getId()).orElse(null);
+        if(issue != null) {
+            String issueDescription = issueDTO.getIssueDescription();
+            if(issueDTO.getIssueDescription()!=null){
+                issue.setIssueDescription(issueDescription);
+                issueRepository.save(issue);
+            }
+            return true;
+        }
+        return false;
     }
 
     //특정 Issue 삭제
@@ -196,4 +265,57 @@ public class IssueService {
 
     }
 
+    public List<User> recommendAssignee(ProjectDTO projectDTO, String tag) {
+        ///////////////////////////////////////////////////////////////////////
+        // 최대 힙 구현을 위해 Comparable 메소드 오버라이딩
+        class PriorityPair implements Comparable<PriorityPair> {
+            private Integer priority;
+            private User user;
+
+            public PriorityPair(Integer priority, User user) {
+                this.priority = priority;
+                this.user = user;
+            }
+
+            public Integer getPriority() {
+                return priority;
+            }
+            public User getUser() {
+                return user;
+            }
+
+            @Override
+            public int compareTo(PriorityPair o) {
+                return o.priority.compareTo(this.priority);
+            }
+        }
+        ///////////////////////////////////////////////////////////////////////
+        String tagset[] = tag.split("#");
+        List<String> temp_tagset = new ArrayList<>(Arrays.asList(tagset));
+        temp_tagset.remove(0);
+        tagset = temp_tagset.toArray(new String[temp_tagset.size()]);
+        
+        PriorityQueue<PriorityPair> queue = new PriorityQueue<>();
+        Optional<Project> optionalProject = projectRepository.findById(projectDTO.getId());
+        if(optionalProject.isPresent()) {
+            Project project = optionalProject.get();
+            for(User user : project.getAssignedUsers()) {
+                if(user instanceof Dev) {
+                    int temp=0;
+                    for(String s : tagset) {
+                        if(((Dev) user).getIssueResolve().containsKey(s)){
+                            temp=temp+((Dev) user).getIssueResolve().get(s);
+                        }
+                    }
+                    queue.offer(new PriorityPair(temp,user));
+                }
+            }
+        }
+        List<User> ret = new ArrayList<>();
+        // 상위 3명을 반환하거나, 프로젝트에 있는 Dev들이 모두 추가되기전까지 반복
+        for(int i=0;i<3&&!queue.isEmpty();i++) {
+            ret.add(queue.poll().getUser());
+        }
+        return ret;
+    }
 }
