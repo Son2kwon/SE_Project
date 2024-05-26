@@ -62,6 +62,18 @@ public class Issue {
         return issue;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Issue issue = (Issue) o;
+        return Objects.equals(id, issue.id) && Objects.equals(title, issue.title) && Objects.equals(date, issue.date) && Objects.equals(state, issue.state) && Objects.equals(issueDescription, issue.issueDescription) && priority == issue.priority && Objects.equals(project, issue.project) && Objects.equals(reporter, issue.reporter) && Objects.equals(comments, issue.comments) && Objects.equals(assignedUsers, issue.assignedUsers);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, date, state, issueDescription, priority, project, reporter, comments, assignedUsers);
+    }
 
     //Getter & Setter
     public Long getId() {
