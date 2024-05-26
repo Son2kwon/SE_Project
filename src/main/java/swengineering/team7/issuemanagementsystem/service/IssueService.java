@@ -1,10 +1,17 @@
 package swengineering.team7.issuemanagementsystem.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import swengineering.team7.issuemanagementsystem.DTO.*;
+import swengineering.team7.issuemanagementsystem.entity.Comment;
+import swengineering.team7.issuemanagementsystem.entity.Issue;
+import swengineering.team7.issuemanagementsystem.entity.Project;
+import swengineering.team7.issuemanagementsystem.entity.User;
+import swengineering.team7.issuemanagementsystem.repository.CommentRepository;
 import swengineering.team7.issuemanagementsystem.DTO.IssueDTO;
-import swengineering.team7.issuemanagementsystem.DTO.SearchInfoDTO;
+import swengineering.team7.issuemanagementsystem.dto.SearchInfoDTO;
 import swengineering.team7.issuemanagementsystem.entity.Issue;
 import swengineering.team7.issuemanagementsystem.entity.Project;
 import swengineering.team7.issuemanagementsystem.entity.User;
@@ -15,8 +22,7 @@ import swengineering.team7.issuemanagementsystem.repository.UserRepository;
 import swengineering.team7.issuemanagementsystem.util.Priority;
 import swengineering.team7.issuemanagementsystem.util.SearchType;
 
-
-
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +34,7 @@ public class IssueService {
     IssueRepository issueRepository;
     UserRepository userRepository;
     ProjectRepository projectRepository;
+    CommentRepository commentRepository;
 
     public IssueService(UserRepository userRepository, IssueRepository issueRepository, ProjectRepository projectRepository, UserService userService) {
         this.userRepository = userRepository;
@@ -95,7 +102,7 @@ public class IssueService {
 
     public List<IssueDTO> findbyWriter(String writer) {
         List<IssueDTO> issueDTOs = new ArrayList<>();
-        List<Issue> issues = issueRepository.findByReporter_usernameContainingOrderByDateDesc(writer);
+        List<Issue> issues = issueRepository.findByReporter_NameContainingOrderByDateDesc(writer);
 
         for (Issue issue : issues) {
             issueDTOs.add(IssueDTO.makeDTOFrom(issue));
@@ -221,4 +228,50 @@ public class IssueService {
 
     }
 
+    public Boolean addComment(CommentDTO commentDTO, IssueDTO issueDTO) {
+        Comment comment = Comment.makeCommentof(commentDTO.getBody(),commentDTO.getWriter(),commentDTO.getDate(),commentDTO.getIssue(),commentDTO.getUser());
+        //올바른 comment 객체가 입력된경우
+        if(commentDTO.getIssue() != null) {
+            Issue issue = issueRepository.findById(issueDTO.getId()).orElse(null);
+            //Comment 객체가 올바른  Issue에 추가되어야함
+            if(issue != null && issue == comment.getIssue()) {
+                issue.addComment(comment);
+                issueRepository.save(issue);
+                commentRepository.save(comment);
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    public Boolean modifyComment(CommentDTO dto, String content, LocalDateTime time) {
+        Optional<Comment> C=commentRepository.findById(dto.getId());
+        if(C.isPresent()) {
+            Comment comment=C.get();
+            comment.setBody(content);
+            comment.setDate(time);
+            this.commentRepository.save(comment);
+            return true;
+        }
+        return false;
+    }
+
+    public Boolean deleteComment(CommentDTO dto) {
+        Optional<Comment> C=commentRepository.findById(dto.getId());
+        if(C.isPresent()) {
+            Comment comment=C.get();
+            Issue issue=comment.getIssue();
+            User user=comment.getUser();
+            issue.getComments().remove(comment);
+            user.getComments().remove(comment);
+            this.issueRepository.save(issue);
+            this.commentRepository.delete(comment);
+            this.userRepository.save(user);
+            return true;
+        }
+        return false;
+    }
 }

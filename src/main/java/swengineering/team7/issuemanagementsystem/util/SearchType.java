@@ -7,6 +7,4 @@ public enum SearchType {
     PRIORITY,
     ISSUEID,
     ALL
-
 }
-

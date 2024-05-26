@@ -2,8 +2,6 @@ package swengineering.team7.issuemanagementsystem.entity;
 
 
 import jakarta.persistence.*;
-import org.springframework.cglib.core.Local;
-import swengineering.team7.issuemanagementsystem.entity.User;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -27,6 +25,9 @@ public class Project {
     // Project:Issue   1:다      has many
     @OneToMany(mappedBy = "project")
     private Set<Issue> issues;
+
+    // 트렌드 필드 추가
+    private String trend;
 
     // 생성자 메소드
     public static Project makeProjectOf(String name, LocalDateTime startDate, LocalDateTime dueDate ){
@@ -99,9 +100,12 @@ public class Project {
         issues.remove(issue);
     }
 
+    public String getTrend() {
+        return trend;
+    }
+
+    public void setTrend(String trend) {
+        this.trend = trend;
+    }
+
 }
-
-
-
-
-

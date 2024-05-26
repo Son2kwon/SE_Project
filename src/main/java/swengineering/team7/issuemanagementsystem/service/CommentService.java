@@ -1,13 +1,15 @@
 package swengineering.team7.issuemanagementsystem.service;
 
 import swengineering.team7.issuemanagementsystem.DTO.IssueDTO;
-import swengineering.team7.issuemanagementsystem.DTO.ProjectDTO;
+import swengineering.team7.issuemanagementsystem.dto.ProjectDTO;
 import swengineering.team7.issuemanagementsystem.DTO.UserInformationDTO;
 import swengineering.team7.issuemanagementsystem.entity.Comment;
 import swengineering.team7.issuemanagementsystem.entity.Issue;
 import swengineering.team7.issuemanagementsystem.entity.Project;
 import swengineering.team7.issuemanagementsystem.entity.User;
 import swengineering.team7.issuemanagementsystem.exception.NoBelong;
+import swengineering.team7.issuemanagementsystem.DTO.CommentDTO;
+import swengineering.team7.issuemanagementsystem.entity.Issue;
 import swengineering.team7.issuemanagementsystem.repository.CommentRepository;
 import swengineering.team7.issuemanagementsystem.repository.IssueRepository;
 import swengineering.team7.issuemanagementsystem.repository.ProjectRepository;
@@ -39,28 +41,40 @@ public class CommentService {
         this.commentRepository = commentRepository;
     }
 
-    public Boolean addComment(ProjectDTO p, IssueDTO i, UserInformationDTO u,
-                              String content, String Writer, LocalDateTime Time) {
-        Optional<Issue> I=issueRepository.findById(i.getId());
-        Optional<Project> P=projectRepository.findById(p.getId());
-        Optional<User> U=userRepository.findById(u.getId());
-        if(I.isPresent()&&P.isPresent()&&U.isPresent()) {
-            Issue issue=I.get();
-            Project project=P.get();
-            User user=U.get();
-            //User가 해당 프로젝트에 소속되어있는 경우
-            if(project.getAssignedUsers().contains(user)) {
-                Comment newcomment=Comment.makeCommentof(content,Writer,Time,issue,user);
-                issue.addCommnet(newcomment);
-                user.addComment(newcomment);
-                this.issueRepository.save(issue);
-                this.commentRepository.save(newcomment);
-                this.userRepository.save(user);
-            }
-            else {
-                throw new NoBelong("해당 프로젝트에 소속되어있지 않은 사용자입니다.");
+//    public Boolean addComment(ProjectDTO p, IssueDTO i, UserInformationDTO u,
+//                              String content, String Writer, LocalDateTime Time) {
+//        Optional<Issue> I = issueRepository.findById(i.getId());
+//        Optional<Project> P = projectRepository.findById(p.getId());
+//        Optional<User> U = userRepository.findById(u.getId());
+//        if (I.isPresent() && P.isPresent() && U.isPresent()) {
+//            Issue issue = I.get();
+//            Project project = P.get();
+//            User user = U.get();
+//            //User가 해당 프로젝트에 소속되어있는 경우
+//            if (project.getAssignedUsers().contains(user)) {
+//                Comment newcomment = Comment.makeCommentof(content, Writer, Time, issue, user);
+//                issue.addCommnet(newcomment);
+//                user.addComment(newcomment);
+//                this.issueRepository.save(issue);
+//                this.commentRepository.save(newcomment);
+//                this.userRepository.save(user);
+//            } else {
+//                throw new NoBelong("해당 프로젝트에 소속되어있지 않은 사용자입니다.");
+//            }
+//        }
+//        return false;
+//    }
+
+    public CommentDTO getComment(Long IssueID, Long CommentID) {
+        Optional<Issue> issue = issueRepository.findById(IssueID);
+        Optional<Comment> comment = commentRepository.findById(CommentID);
+        // 두 ID로 찾은 Issue와 Comment가 존재하고, Issue에 해당 Comment가 있는경우
+        // CommentDTO 생성해서 반환
+        if(issue.isPresent()&&comment.isPresent()){
+            if(issue.get().getComments().contains(comment.get())){
+                return CommentDTO.makeDTOfrom(comment.get());
             }
         }
-        return false;
+        return null;
     }
 }

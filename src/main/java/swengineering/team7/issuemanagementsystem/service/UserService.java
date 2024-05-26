@@ -44,26 +44,27 @@ public class UserService {
         return user != null && user.getPassword().equals(userInformationDTO.getPassword());
     }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     // 사용자 계정 정보 수정
     public void modifyUsername(UserInformationDTO userDTO, String newname) {
-       User user = userRepository.findById(userDTO.getId()).orElse(null);
-       if(user != null) {
-           user.setUsername(newname);
-           this.userRepository.save(user);
-       }
+        User user = userRepository.findById(userDTO.getId()).orElse(null);
+        if(user != null) {
+            user.setUsername(newname);
+            this.userRepository.save(user);
+        }
     }
 
     public void modifyUserpassword(UserInformationDTO userDTO, String newpassword) {
-       User user = userRepository.findById(userDTO.getId()).orElse(null);
-       if(user != null) {
+        User user = userRepository.findById(userDTO.getId()).orElse(null);
+        if(user != null) {
             user.setPassword(newpassword);
             this.userRepository.save(user);
-       }
+        }
     }
 
     // role 수정은 admin만 가능
     public void modifyUserrole(UserInformationDTO usernow,UserInformationDTO usertarget, String newrole) {
-       // user_n = 현재 로그인된 사용자 계정 정보
+        // user_n = 현재 로그인된 사용자 계정 정보
         User user_n = userRepository.findById(usernow.getId()).orElse(null);
         // user_t = 변경할 사용자의 계정 정보
         User user_t = userRepository.findById(usertarget.getId()).orElse(null);
@@ -75,6 +76,7 @@ public class UserService {
             throw new NoPermission("관리자 권한이 있어야합니다.");
         }
     }
+
     //모든 유저 받아오기(admin만 가능)
     public List<UserInformationDTO> getAllUser(String id){
         User user_n = userRepository.findById(id).orElse(null);
@@ -130,34 +132,34 @@ public class UserService {
     }
     //사용자 이름으로 검색 하는 메소드
     public Specification<User> searchname(String input) {
-       return new Specification<User>() {
-           @Override
-           public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-               query.distinct(true);
-               return cb.like(root.get("username"),"%"+input+"%");
-           }
-       };
+        return new Specification<User>() {
+            @Override
+            public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                query.distinct(true);
+                return cb.like(root.get("username"),"%"+input+"%");
+            }
+        };
     }
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //사용자 권한으로 검색된 리스트 DTO 반환
     public List<UserInformationDTO> searchByUserrole(String input) {
-    Specification<User> spec = searchrole(input);
-    List<User> users = userRepository.findAll(spec);
+        Specification<User> spec = searchrole(input);
+        List<User> users = userRepository.findAll(spec);
 
-    List<UserInformationDTO> userInformationDTOS = new ArrayList<>();
-    for (User user : users) {
-        userInformationDTOS.add(UserInformationDTO.from(user));
+        List<UserInformationDTO> userInformationDTOS = new ArrayList<>();
+        for (User user : users) {
+            userInformationDTOS.add(UserInformationDTO.from(user));
+        }
+
+        return userInformationDTOS;
     }
-
-    return userInformationDTOS;
-}
     //사용자 권한(admin, PL, dev, tester) 으로 검색
     public Specification<User> searchrole(String input) {
         return new Specification<User>() {
-          @Override
-          public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-              query.distinct(true);
-              return cb.like(root.get("role"),"%"+input+"%");
+            @Override
+            public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                query.distinct(true);
+                return cb.like(root.get("role"),"%"+input+"%");
             }
         };
     }
