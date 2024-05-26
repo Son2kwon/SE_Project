@@ -30,10 +30,6 @@ public class UserService {
    //회원가입
     public void createUser(String id, String password, String username,  String contract) {
        User user = new User(id, username,password,contract);
-       /*user.setId(id);
-       user.setUsername(username);
-       user.setPassword(password);
-       user.setContract(contract);*/
        this.userRepository.save(user);
     }
     public boolean login(UserInformationDTO userInformationDTO){

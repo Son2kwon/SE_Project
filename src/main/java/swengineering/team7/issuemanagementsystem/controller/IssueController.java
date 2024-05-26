@@ -39,7 +39,7 @@ public class IssueController {
         issueDTO.setIssueDescription((String) payload.get("issueDescription"));
         issueDTO.setPriority(Priority.valueOf((String) payload.get("priority")));
         issueDTO.setDate(LocalDateTime.now());
-        issueDTO.setUserID(id);
+        issueDTO.setReporterID(id);
         issueDTO.setProjectID(Long.parseLong((String) payload.get("projectId")));
 
         if(issueService.createIssue(issueDTO)){
@@ -84,7 +84,7 @@ public class IssueController {
             tmp.put("status",issue.getState());
             tmp.put("priority",issue.getPriority().toString());
             tmp.put("date",issue.getDate().toString());
-            tmp.put("reporter",issue.getUserID());
+            tmp.put("reporter",issue.getReporterID());
             tmp.put("fixer",issue.getFixer());
             response.add(tmp);
         }

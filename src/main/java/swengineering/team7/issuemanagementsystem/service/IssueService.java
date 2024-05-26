@@ -58,7 +58,7 @@ public class IssueService {
 
         Issue newIssue = Issue.makeIssueOf(issueDTO.getTitle(), issueDTO.getIssueDescription(), issueDTO.getDate(), issueDTO.getState(), issueDTO.getPriority());
         newIssue.setState("NEW");
-        User user = userRepository.findById(issueDTO.getUserID()).orElse(null);
+        User user = userRepository.findById(issueDTO.getReporterID()).orElse(null);
         Project project =  projectRepository.findById(issueDTO.getProjectID()).orElse(null);
         if (user == null || project == null) {
             return false;

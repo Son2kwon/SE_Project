@@ -5,18 +5,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 import swengineering.team7.issuemanagementsystem.DTO.ProjectAssignedUserDTO;
 import swengineering.team7.issuemanagementsystem.DTO.ProjectAssignmentDTO;
 import swengineering.team7.issuemanagementsystem.DTO.ProjectDTO;
 import swengineering.team7.issuemanagementsystem.service.ProjectAssignmentService;
 import swengineering.team7.issuemanagementsystem.service.ProjectService;
 import swengineering.team7.issuemanagementsystem.service.UserService;
+import swengineering.team7.issuemanagementsystem.util.JwtCertificate;
+import swengineering.team7.issuemanagementsystem.util.Role;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000")
