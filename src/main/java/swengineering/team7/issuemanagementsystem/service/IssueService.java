@@ -28,13 +28,12 @@ public class IssueService {
     IssueRepository issueRepository;
     UserRepository userRepository;
     ProjectRepository projectRepository;
-    CommentRepository commentRepository;
 
-    public IssueService(UserRepository userRepository, IssueRepository issueRepository, ProjectRepository projectRepository, UserService userService) {
-        this.userRepository = userRepository;
-        this.issueRepository = issueRepository;
-        this.projectRepository = projectRepository;
+    public IssueService(UserService userService, IssueRepository issueRepository, UserRepository userRepository, ProjectRepository projectRepository) {
         this.userService = userService;
+        this.issueRepository = issueRepository;
+        this.userRepository = userRepository;
+        this.projectRepository = projectRepository;
     }
 
     //새로운 issue 하나를 만드는 작업 ( issue 저장 성공시 True 실패시 False 반환)
@@ -96,7 +95,7 @@ public class IssueService {
 
     public List<IssueDTO> findbyWriter(String writer) {
         List<IssueDTO> issueDTOs = new ArrayList<>();
-        List<Issue> issues = issueRepository.findByReporter_NameContainingOrderByDateDesc(writer);
+        List<Issue> issues = issueRepository.findByReporter_usernameContainingOrderByDateDesc(writer);
 
         for (Issue issue : issues) {
             issueDTOs.add(IssueDTO.makeDTOFrom(issue));
