@@ -6,7 +6,8 @@ import axios from 'axios';
 const CreateIssue = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [priority, setPriority] = useState('');
+  //초기값 LOW
+  const [priority, setPriority] = useState('LOW');
   const [showIssueCreate, setShowIssueCreate] = useState();
   const {projectId} = useParams()
   const priorities = [
@@ -33,7 +34,11 @@ const CreateIssue = () => {
         }
       });
       alert("이슈 생성 완료")
+      //issue 필드 값 초기화
       setShowIssueCreate(false);
+      setTitle('')
+      setDescription('')
+      setPriority('LOW')
     } catch (error) {
       console.error('There was an error creating the issue!', error);
     }
