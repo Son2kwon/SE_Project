@@ -152,6 +152,8 @@ public class Issue {
         this.comments.add(comment);
     }
 
+    public void setTag(String tag) { this.tag = tag; }
 
+    public String getTag() { return tag; }
 
 }

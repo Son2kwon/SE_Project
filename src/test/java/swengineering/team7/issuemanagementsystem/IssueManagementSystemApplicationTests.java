@@ -3,9 +3,10 @@ package swengineering.team7.issuemanagementsystem;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.beans.factory.annotation.Autowired;
+import swengineering.team7.issuemanagementsystem.entity.Dev;
 import swengineering.team7.issuemanagementsystem.entity.User;
 
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -14,10 +15,12 @@ class IssueManagementSystemApplicationTests {
 
     @Test
     void testJpa() {
-        User user = User.makeUserOf("1","1","1","1");
-        User user1 = User.makeUserOf("1","1","1","1");
+        Dev dev=new Dev();
+        dev.incrementResolve("#a#b#c#d#e#f");
+        dev.incrementResolve("#a#c#d#f");
 
-        Set<User> users = Set.of(user);
-        System.out.println(users.contains(user1));
+        for(String key : dev.getIssueResolve().keySet()) {
+            System.out.println(key + ":" + dev.getIssueResolve().get(key));
+        }
     }
 }

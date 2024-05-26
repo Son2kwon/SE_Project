@@ -2,11 +2,13 @@ package swengineering.team7.issuemanagementsystem.entity;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
+import java.util.Objects;
 import java.util.Set;
-
 
 @Entity
 @Table(name = "User")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User {
     @Id
     private String id;
@@ -46,7 +48,32 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Comment> comments;
 
+    public static User makeUserOf(String id, String username, String password, String role, String contract) {
+        User user = new User();
+        user.id = id;
+        user.username = username;
+        user.password = password;
+        user.role = role;
+        user.Contract = contract;
+        return user;
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id)
+                && Objects.equals(username, user.username)
+                && Objects.equals(password, user.password)
+                && Objects.equals(role, user.role)
+                && Objects.equals(Contract, user.Contract);
+    }
+  
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, password, role, Contract);
+    }
 
     //Getter & Setter
     public String getId() {
@@ -140,6 +167,5 @@ public class User {
     public void removeinchargeProjects(Project project){
         inchargeProjects.remove(project);
     }
-
 
 }

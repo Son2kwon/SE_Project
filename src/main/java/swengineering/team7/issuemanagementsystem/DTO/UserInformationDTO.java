@@ -60,6 +60,7 @@ public class UserInformationDTO {
         userInformationDTO.setName(user.getUsername());
         userInformationDTO.setRole(user.getRole());
         userInformationDTO.setContract(user.getContract());
+        userInformationDTO.setPassword(user.getPassword());
         return userInformationDTO;
     }
 }

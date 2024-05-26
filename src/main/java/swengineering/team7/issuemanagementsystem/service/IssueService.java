@@ -5,10 +5,7 @@ import org.springframework.stereotype.Service;
 
 
 import swengineering.team7.issuemanagementsystem.DTO.*;
-import swengineering.team7.issuemanagementsystem.entity.Comment;
-import swengineering.team7.issuemanagementsystem.entity.Issue;
-import swengineering.team7.issuemanagementsystem.entity.Project;
-import swengineering.team7.issuemanagementsystem.entity.User;
+import swengineering.team7.issuemanagementsystem.entity.*;
 import swengineering.team7.issuemanagementsystem.repository.CommentRepository;
 import swengineering.team7.issuemanagementsystem.DTO.IssueDTO;
 import swengineering.team7.issuemanagementsystem.dto.SearchInfoDTO;
@@ -23,9 +20,7 @@ import swengineering.team7.issuemanagementsystem.util.Priority;
 import swengineering.team7.issuemanagementsystem.util.SearchType;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class IssueService {
@@ -165,6 +160,16 @@ public class IssueService {
             return false;
         }
 
+        // 만약 issue의 상태가 resolved, 즉 해결된 상태로 바뀐다면
+        // 해당 issue에 배정된 Dev의 해결 이력 업데이트
+        if(issueDTO.getState().equals("closed")) {
+            for(User user : issue.getAssignedUsers()) {
+                if(user instanceof Dev) {
+                    ((Dev) user).incrementResolve(issueDTO.getTag());
+                    userRepository.save(user);
+                }
+            }
+        }
         issue.setTitle(issueDTO.getTitle());
         issue.setPriority(issueDTO.getPriority());
         issue.setIssueDescription(issueDTO.getIssueDescription());
@@ -228,50 +233,57 @@ public class IssueService {
 
     }
 
-    public Boolean addComment(CommentDTO commentDTO, IssueDTO issueDTO) {
-        Comment comment = Comment.makeCommentof(commentDTO.getBody(),commentDTO.getWriter(),commentDTO.getDate(),commentDTO.getIssue(),commentDTO.getUser());
-        //올바른 comment 객체가 입력된경우
-        if(commentDTO.getIssue() != null) {
-            Issue issue = issueRepository.findById(issueDTO.getId()).orElse(null);
-            //Comment 객체가 올바른  Issue에 추가되어야함
-            if(issue != null && issue == comment.getIssue()) {
-                issue.addComment(comment);
-                issueRepository.save(issue);
-                commentRepository.save(comment);
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
-        return false;
-    }
+    public List<User> recommendAssignee(ProjectDTO projectDTO, String tag) {
+        ///////////////////////////////////////////////////////////////////////
+        // 최대 힙 구현을 위해 Comparable 메소드 오버라이딩
+        class PriorityPair implements Comparable<PriorityPair> {
+            private Integer priority;
+            private User user;
 
-    public Boolean modifyComment(CommentDTO dto, String content, LocalDateTime time) {
-        Optional<Comment> C=commentRepository.findById(dto.getId());
-        if(C.isPresent()) {
-            Comment comment=C.get();
-            comment.setBody(content);
-            comment.setDate(time);
-            this.commentRepository.save(comment);
-            return true;
-        }
-        return false;
-    }
+            public PriorityPair(Integer priority, User user) {
+                this.priority = priority;
+                this.user = user;
+            }
 
-    public Boolean deleteComment(CommentDTO dto) {
-        Optional<Comment> C=commentRepository.findById(dto.getId());
-        if(C.isPresent()) {
-            Comment comment=C.get();
-            Issue issue=comment.getIssue();
-            User user=comment.getUser();
-            issue.getComments().remove(comment);
-            user.getComments().remove(comment);
-            this.issueRepository.save(issue);
-            this.commentRepository.delete(comment);
-            this.userRepository.save(user);
-            return true;
+            public Integer getPriority() {
+                return priority;
+            }
+            public User getUser() {
+                return user;
+            }
+
+            @Override
+            public int compareTo(PriorityPair o) {
+                return o.priority.compareTo(this.priority);
+            }
         }
-        return false;
+        ///////////////////////////////////////////////////////////////////////
+        String tagset[] = tag.split("#");
+        List<String> temp_tagset = new ArrayList<>(Arrays.asList(tagset));
+        temp_tagset.remove(0);
+        tagset = temp_tagset.toArray(new String[temp_tagset.size()]);
+        
+        PriorityQueue<PriorityPair> queue = new PriorityQueue<>();
+        Optional<Project> optionalProject = projectRepository.findById(projectDTO.getId());
+        if(optionalProject.isPresent()) {
+            Project project = optionalProject.get();
+            for(User user : project.getAssignedUsers()) {
+                if(user instanceof Dev) {
+                    int temp=0;
+                    for(String s : tagset) {
+                        if(((Dev) user).getIssueResolve().containsKey(s)){
+                            temp=temp+((Dev) user).getIssueResolve().get(s);
+                        }
+                    }
+                    queue.offer(new PriorityPair(temp,user));
+                }
+            }
+        }
+        List<User> ret = new ArrayList<>();
+        // 상위 3명을 반환하거나, 프로젝트에 있는 Dev들이 모두 추가되기전까지 반복
+        for(int i=0;i<3&&!queue.isEmpty();i++) {
+            ret.add(queue.poll().getUser());
+        }
+        return ret;
     }
 }
