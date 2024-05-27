@@ -2,15 +2,18 @@ package swengineering.team7.issuemanagementsystem.DTO;
 
 import swengineering.team7.issuemanagementsystem.entity.Issue;
 import swengineering.team7.issuemanagementsystem.util.Priority;
+import swengineering.team7.issuemanagementsystem.util.State;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 
 public class IssueDTO {
 
     private Long id;
     private String title;
     private LocalDateTime date;
-    private String state;
+    private State state;
     private String issueDescription;
     private Priority priority;
     private String ReporterID;
@@ -19,6 +22,7 @@ public class IssueDTO {
     private String tag;
     private String fixer;
     private String fixerName;
+    private Set<String> assignees;
 
 
     public IssueDTO() {
@@ -31,13 +35,15 @@ public class IssueDTO {
                 issue.getState(), issue.getIssueDescription(),issue.getPriority(),
                 issue.getReporter().getId(),issue.getReporter().getUsername(),issue.getTag(),
                 issue.getFixer().getId(), issue.getFixer().getUsername());}
+
         else return new IssueDTO(issue.getId(), issue.getTitle(), issue.getDate(),
                 issue.getState(), issue.getIssueDescription(),issue.getPriority(),
                 issue.getReporter().getId(),issue.getReporter().getUsername(),issue.getTag(),
                 "", "");
     }
 
-    public IssueDTO(Long id, String title, LocalDateTime date, String state, String issueDescription, Priority priority, String ReporterID, String Reportername, String tag) {
+    public IssueDTO(Long id, String title, LocalDateTime date, State state, String issueDescription, Priority priority, String ReporterID, String Reportername,
+                    String tag) {
         this.id = id;
         this.title = title;
         this.date = date;
@@ -49,7 +55,8 @@ public class IssueDTO {
         this.tag = tag;
     }
 
-    public IssueDTO(Long id, String title, LocalDateTime date, String state, String issueDescription, Priority priority, String ReporterID, String Reportername, String tag, String fixerId, String fixerName) {
+    public IssueDTO(Long id, String title, LocalDateTime date, State state, String issueDescription, Priority priority, String ReporterID, String Reportername,
+                    String tag, String fixerId, String fixerName) {
         this.id = id;
         this.title = title;
         this.date = date;
@@ -63,7 +70,7 @@ public class IssueDTO {
         this.fixerName = fixerName;
     }
 
-    public IssueDTO(Long id, String state, String issueDescription) {
+    public IssueDTO(Long id, State state, String issueDescription) {
         this.id = id;
         this.state = state;
         this.issueDescription = issueDescription;
@@ -81,7 +88,7 @@ public class IssueDTO {
         this.date = date;
     }
 
-    public void setState(String state) {
+    public void setState(State state) {
         this.state = state;
     }
 
@@ -114,7 +121,7 @@ public class IssueDTO {
         return date;
     }
 
-    public String getState() {
+    public State getState() {
         return state;
     }
 
@@ -145,4 +152,6 @@ public class IssueDTO {
     }
 
     public String getTag() { return tag; }
+    public void setAssignees(Set<String> assignees){this.assignees=assignees;}
+    public Set<String> getAssignees(){return this.assignees;}
 }
