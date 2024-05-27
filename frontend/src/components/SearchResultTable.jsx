@@ -81,7 +81,7 @@ const SearchResultTable=({ props,projectId }) =>{
                 }))}
                 isMulti
               />
-              : item.assignee
+              : item.assignees
               }
             </td>
             <td>{item.fixer}</td>
