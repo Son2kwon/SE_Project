@@ -20,6 +20,7 @@ import swengineering.team7.issuemanagementsystem.repository.ProjectRepository;
 import swengineering.team7.issuemanagementsystem.repository.UserRepository;
 import swengineering.team7.issuemanagementsystem.util.Priority;
 import swengineering.team7.issuemanagementsystem.util.SearchType;
+import swengineering.team7.issuemanagementsystem.util.State;
 
 
 import java.util.*;
@@ -48,7 +49,7 @@ public class IssueService {
         }
         if(issue!=null && !assignees.isEmpty()) {
             issue.setAssignedUsers(assignees);
-            issue.setState("Assigned");
+            issue.setState(State.ASSIGNED);
             return true;
         }
         return false;
@@ -57,7 +58,7 @@ public class IssueService {
     public Boolean createIssue(IssueDTO issueDTO) {
 
         Issue newIssue = Issue.makeIssueOf(issueDTO.getTitle(), issueDTO.getIssueDescription(), issueDTO.getDate(), issueDTO.getState(), issueDTO.getPriority());
-        newIssue.setState("NEW");
+        newIssue.setState(State.NEW);
         User user = userRepository.findById(issueDTO.getReporterID()).orElse(null);
         Project project =  projectRepository.findById(issueDTO.getProjectID()).orElse(null);
         if (user == null || project == null) {
@@ -84,21 +85,18 @@ public class IssueService {
         } else if (searchInfoDTO.getSearchType() == SearchType.PRIORITY){
             return findByPriority(searchInfoDTO.getSearchValue());
         }else if (searchInfoDTO.getSearchType() == SearchType.ALL){
-            return findALl();
+            return findAll();
         }else {
             return null;
         }
     }
 
-    public List<IssueDTO> findALl(){
-        List<IssueDTO> issueDTOs = new ArrayList<>();
-        List<Issue> issues = issueRepository.findAll();
-
-        for (Issue issue : issues) {
-            issueDTOs.add(IssueDTO.makeDTOFrom(issue));
+    public Set<String> getAssignedUsers(Set<User> assignedUsers){
+        Set<String> result = new HashSet<>();
+        for(User user: assignedUsers){
+            result.add(user.getId());
         }
-
-        return issueDTOs;
+        return result;
     }
 
     public List<IssueDTO> findbyTitle(String title) {
@@ -125,12 +123,13 @@ public class IssueService {
 
     public List<IssueDTO> findbyState(String state) {
         List<IssueDTO> issueDTOs = new ArrayList<>();
-        List<Issue> issues = issueRepository.findByStateContainingOrderByDateDesc(state);
-
-        for (Issue issue : issues) {
-            issueDTOs.add(IssueDTO.makeDTOFrom(issue));
+        State stateEnum = State.valueOf(state.toUpperCase());
+        if(stateEnum instanceof State) {
+            List<Issue> issues = issueRepository.findByStateOrderByDateDesc(stateEnum);
+            for (Issue issue : issues) {
+                issueDTOs.add(IssueDTO.makeDTOFrom(issue));
+            }
         }
-
         return issueDTOs;
     }
 
@@ -180,10 +179,18 @@ public class IssueService {
         List<IssueDTO> issueDTOs = new ArrayList<>();
         List<Issue> issues = issueRepository.findAll();
         for (Issue issue : issues) {
-            issueDTOs.add(IssueDTO.makeDTOFrom(issue));
+            IssueDTO issueDTO = IssueDTO.makeDTOFrom(issue);
+            Set<User> assignees = issue.getAssignedUsers();
+            Set<String> assigneeSet = new HashSet<>();
+            for(User user:assignees){
+                assigneeSet.add(user.getId());
+            }
+            issueDTO.setAssignees(assigneeSet);
+            issueDTOs.add(issueDTO);
         }
         return issueDTOs;
     }
+
     //특정 Issue 업데이트
     public Boolean UpdateIssueInfo(IssueDTO issueDTO) {
         Issue issue = issueRepository.findById(issueDTO.getId()).orElse(null);
@@ -214,7 +221,7 @@ public class IssueService {
     public Boolean updateState(IssueDTO issueDTO){
         Issue issue = issueRepository.findById(issueDTO.getId()).orElse(null);
         if(issue != null) {
-            String issueState = issueDTO.getState();
+            State issueState = issueDTO.getState();
             issue.setState(issueState);
             if(issueDTO.getState().equals("Complete") && issueDTO.getReporterID() != null){
                 userRepository.findById(issueDTO.getReporterID()).ifPresent(issue::setFixer);

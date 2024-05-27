@@ -115,7 +115,7 @@ const Search = () => {
         params:{...searchParam,projectId:projectId,token:sessionStorage.getItem('token')}
       })
       .then(response=>{
-        setSearchData(response.data.results)
+        setSearchData(response.data)
       })
     }catch(error){
       alert('검색어를 선택하세요!')

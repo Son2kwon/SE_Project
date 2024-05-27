@@ -1,11 +1,12 @@
 package swengineering.team7.issuemanagementsystem.repository;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.stereotype.Repository;
 import swengineering.team7.issuemanagementsystem.entity.Issue;
 import swengineering.team7.issuemanagementsystem.util.Priority;
+import swengineering.team7.issuemanagementsystem.util.State;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +16,8 @@ public interface IssueRepository extends JpaRepository<Issue, Long> {
     // 기본 CRUD 제공
     // 기본 CRUD 제공
     Optional<Issue> findById(Long id);
+    @EntityGraph(attributePaths = "assignedUsers")
+    List<Issue> findAll();
 
     //ID 기준 정렬
     List<Issue> findByTitleContaining(String keyword);
@@ -24,7 +27,8 @@ public interface IssueRepository extends JpaRepository<Issue, Long> {
 
     //최근순 정렬
     List<Issue> findByTitleContainingOrderByDateDesc(String keyword);
-    List<Issue> findByStateContainingOrderByDateDesc(String state);
+    List<Issue> findByState(State state);
+    List<Issue> findByStateOrderByDateDesc(State state);
     List<Issue> findByReporter_usernameContainingOrderByDateDesc(String partialUserName);
     List<Issue> findByPriorityOrderByDateDesc(Priority priority);
 

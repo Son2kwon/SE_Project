@@ -3,6 +3,7 @@ package swengineering.team7.issuemanagementsystem.entity;
 import jakarta.persistence.*;
 
 import swengineering.team7.issuemanagementsystem.util.Priority;
+import swengineering.team7.issuemanagementsystem.util.State;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -16,7 +17,8 @@ public class Issue {
 
     private String title;
     private LocalDateTime date;
-    private String state;
+    @Enumerated(EnumType.STRING)
+    private State state;
 
     private String tag;
 
@@ -55,7 +57,7 @@ public class Issue {
     public Issue(){};
 
 
-    public static Issue makeIssueOf(String title, String issueDescription,LocalDateTime date, String state, Priority priority){
+    public static Issue makeIssueOf(String title, String issueDescription,LocalDateTime date, State state, Priority priority){
         Issue issue = new Issue();
         issue.setTitle(title);
         issue.setIssueDescription(issueDescription);
@@ -103,11 +105,11 @@ public class Issue {
         this.date = date;
     }
 
-    public String getState() {
+    public State getState() {
         return state;
     }
 
-    public void setState(String state) {
+    public void setState(State state) {
         this.state = state;
     }
 
