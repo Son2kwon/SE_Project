@@ -57,9 +57,12 @@ public class IssueController {
             @RequestParam(required = false, value="id") String userId,
             @RequestParam(required = false, value="priority") String priority){
         SearchInfoDTO searchInfoDTO;
-        List<IssueDTO> searchResult = new ArrayList<>();
+        List<IssueDTO> searchResult;
 
         switch(lowerRoute) {
+            default:
+                searchResult = new ArrayList<>();
+                break;
             case "byIssueStatus":
                 searchInfoDTO = new SearchInfoDTO(status, SearchType.STATE);
                 searchResult = issueService.searchIssueInfo(searchInfoDTO);
@@ -77,15 +80,20 @@ public class IssueController {
         }
         List<HashMap<String,String>> response = new ArrayList<>();
 
-        for(IssueDTO issue: searchResult){
+        for(IssueDTO issueDTO: searchResult){
             HashMap<String,String> tmp = new HashMap<>();
-            tmp.put("id",issue.getId().toString());
-            tmp.put("title",issue.getTitle());
-            tmp.put("status",issue.getState());
-            tmp.put("priority",issue.getPriority().toString());
-            tmp.put("date",issue.getDate().toString());
-            tmp.put("reporter",issue.getReporterID());
-            tmp.put("fixer",issue.getFixer());
+            tmp.put("id",issueDTO.getId().toString());
+            tmp.put("title",issueDTO.getTitle());
+            tmp.put("status",issueDTO.getState().toString());
+            tmp.put("priority",issueDTO.getPriority().toString());
+            tmp.put("date",issueDTO.getDate().toString());
+            tmp.put("reporter",issueDTO.getReporterID());
+            tmp.put("fixer",issueDTO.getFixer());
+            if(issueDTO.getAssignees()!=null){
+                tmp.put("assignees",String.join(", ", issueDTO.getAssignees()));
+            }else{
+                tmp.put("assignees","");
+            }
             response.add(tmp);
         }
         return ResponseEntity.ok(response);
