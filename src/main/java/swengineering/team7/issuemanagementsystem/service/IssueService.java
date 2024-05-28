@@ -190,6 +190,15 @@ public class IssueService {
         }
         return issueDTOs;
     }
+    public List<IssueDTO> selectByProjectID(List<IssueDTO> issues,Long projectId){
+        List<IssueDTO> result = new ArrayList<>();
+        for(IssueDTO issue: issues){
+            if(Objects.equals(issue.getProjectID(), projectId)){
+                result.add(issue);
+            }
+        }
+        return result;
+    }
 
     //특정 Issue 업데이트
     public Boolean UpdateIssueInfo(IssueDTO issueDTO) {
@@ -201,7 +210,7 @@ public class IssueService {
 
         // 만약 issue의 상태가 resolved, 즉 해결된 상태로 바뀐다면
         // 해당 issue에 배정된 Dev의 해결 이력 업데이트
-        if(issueDTO.getState().equals("closed")) {
+        if(issueDTO.getState()==State.CLOSED) {
             for(User user : issue.getAssignedUsers()) {
                 if(user instanceof Dev) {
                     ((Dev) user).incrementResolve(issueDTO.getTag());
