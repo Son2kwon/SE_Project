@@ -1,6 +1,6 @@
 package swengineering.team7.issuemanagementsystem.DTO;
 
-import swengineering.team7.issuemanagementsystem.entity.Comment;
+import swengineering.team7.issuemanagementsystem.entity.User;
 import swengineering.team7.issuemanagementsystem.util.Priority;
 import swengineering.team7.issuemanagementsystem.util.State;
 import swengineering.team7.issuemanagementsystem.DTO.CommentDTO;
@@ -8,6 +8,7 @@ import swengineering.team7.issuemanagementsystem.DTO.CommentDTO;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class IssueDTO {
 
@@ -34,20 +35,29 @@ public class IssueDTO {
     //Entity -> DTO로 바꿔주는 생성자 메소드
     static public IssueDTO makeDTOFrom(swengineering.team7.issuemanagementsystem.entity.Issue issue){
         if(issue.getFixer()!=null){
-        return new IssueDTO(issue.getId(), issue.getTitle(), issue.getDate(),
+        return new IssueDTO(issue.getId(),issue.getProject().getId(), issue.getTitle(), issue.getDate(),
                 issue.getState(), issue.getIssueDescription(),issue.getPriority(),
                 issue.getReporter().getId(),issue.getReporter().getUsername(),issue.getTag(),
-                issue.getFixer().getId(), issue.getFixer().getUsername());}
+                issue.getFixer().getId(), issue.getFixer().getUsername(),
+                issue.getAssignedUsers().stream()
+                    .map(User::getId)
+                    .collect(Collectors.toSet())
+                );}
 
-        else return new IssueDTO(issue.getId(), issue.getTitle(), issue.getDate(),
+        else return new IssueDTO(issue.getId(), issue.getProject().getId(), issue.getTitle(), issue.getDate(),
                 issue.getState(), issue.getIssueDescription(),issue.getPriority(),
                 issue.getReporter().getId(),issue.getReporter().getUsername(),issue.getTag(),
-                "", "");
+                "", "",
+                issue.getAssignedUsers().stream()
+                    .map(User::getId)
+                    .collect(Collectors.toSet())
+                );
     }
 
-    public IssueDTO(Long id, String title, LocalDateTime date, State state, String issueDescription, Priority priority, String ReporterID, String Reportername,
+    public IssueDTO(Long id, Long projectID, String title, LocalDateTime date, State state, String issueDescription, Priority priority, String ReporterID, String Reportername,
                     String tag) {
         this.id = id;
+        this.projectID = projectID;
         this.title = title;
         this.date = date;
         this.state = state;
@@ -58,9 +68,10 @@ public class IssueDTO {
         this.tag = tag;
     }
 
-    public IssueDTO(Long id, String title, LocalDateTime date, State state, String issueDescription, Priority priority, String ReporterID, String Reportername,
-                    String tag, String fixerId, String fixerName) {
+    public IssueDTO(Long id, Long projectID, String title, LocalDateTime date, State state, String issueDescription, Priority priority, String ReporterID, String Reportername,
+                    String tag, String fixerId, String fixerName, Set<String> assignees) {
         this.id = id;
+        this.projectID = projectID;
         this.title = title;
         this.date = date;
         this.state = state;
@@ -71,6 +82,7 @@ public class IssueDTO {
         this.tag = tag;
         this.fixer = fixerId;
         this.fixerName = fixerName;
+        this.assignees = assignees;
     }
 
     public IssueDTO(Long id, State state, String issueDescription) {

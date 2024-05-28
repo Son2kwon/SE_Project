@@ -6,33 +6,47 @@
 </head>
 
 <body>
-<form th:action="@{|/issue/edit/complete/${swengineering.team7.issuemanagementsystem.entity.Issue.id}|}" method="post">
+<form th:action="@{|/issue/edit/complete/${issue.id}|}" method="post">
   <div>
-    <label for>State:</label>
-    <label>
-      <select th:field="*{swengineering.team7.issuemanagementsystem.entity.Issue.state}">
-        <option value="new">New</option>
-        <option value="assigned">Assigned</option>
-        <option value="fixed">Fixed</option>
-        <option value="resolved">Resolved</option>
-      </select>
-    </label>
+    <span id="currentState" th:text="${issue.state}" style="display: none;"></span>
+    State:
+    <select id="state" name="state">
+      <option value="NEW">New</option>
+      <option value="ASSIGNED">Assigned</option>
+      <option value="FIXED">Fixed</option>
+      <option value="RESOLVED">Resolved</option>
+    </select>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var stateSelect = document.getElementById('state');
+        var currentState = document.getElementById('currentState').innerText;
+
+        console.log(currentState);
+        if (currentState === 'NEW') {
+          stateSelect.innerHTML = '<option value="NEW" selected>New</option>';
+        } else {
+          console.log(currentState);
+              stateSelect.remove(0);
+        }
+      });
+    </script>
   </div>
+
   <div>
     <div>
-      <p><span th:text="${swengineering.team7.issuemanagementsystem.entity.Issue.title}" /></p>
+      <p>Title: <span th:text="${issue.title}" /></p>
     </div>
   </div>
   <div>
-    <p><span th:text="${swengineering.team7.issuemanagementsystem.entity.Issue.date}" /></p>
+    <p>Date: <span th:text="${issue.date}" /></p>
   </div>
   <div>
-    <p><span th:text="${swengineering.team7.issuemanagementsystem.entity.Issue.reporter}" /></p>
+    <p>Reporter ID: <span th:text="${issue.ReporterID}" /></p>
   </div>
   <div>
     <div>
-      <label for="newDescription">newDescription:</label>
-      <textarea id="newDescription" name="newDescription" rows="4" cols="50" th:text="${swengineering.team7.issuemanagementsystem.entity.Issue.getIssueDescription()}"></textarea>
+      <label for="newDescription">Edit Description: </label>
+      <textarea id="newDescription" name="newDescription" rows="4" cols="50" th:text="${issue.getIssueDescription()}"></textarea>
     </div>
   </div>
   <div>

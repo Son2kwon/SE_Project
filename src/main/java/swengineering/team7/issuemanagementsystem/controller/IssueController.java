@@ -78,7 +78,9 @@ public class IssueController {
                 searchResult = issueService.findAll();
                 break;
         }
+        searchResult = issueService.selectByProjectID(searchResult,Long.parseLong(projectId));
         List<HashMap<String,String>> response = new ArrayList<>();
+
 
         for(IssueDTO issueDTO: searchResult){
             HashMap<String,String> tmp = new HashMap<>();

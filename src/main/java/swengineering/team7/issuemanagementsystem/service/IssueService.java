@@ -167,6 +167,7 @@ public class IssueService {
         }
         return issueDTOs;
     }
+
     public List<IssueDTO> findbyPriority(Priority priority){
         List<IssueDTO> issueDTOs = new ArrayList<>();
         List<Issue> issues = issueRepository.findByPriority(priority);
@@ -179,16 +180,18 @@ public class IssueService {
         List<IssueDTO> issueDTOs = new ArrayList<>();
         List<Issue> issues = issueRepository.findAll();
         for (Issue issue : issues) {
-            IssueDTO issueDTO = IssueDTO.makeDTOFrom(issue);
-            Set<User> assignees = issue.getAssignedUsers();
-            Set<String> assigneeSet = new HashSet<>();
-            for(User user:assignees){
-                assigneeSet.add(user.getId());
-            }
-            issueDTO.setAssignees(assigneeSet);
-            issueDTOs.add(issueDTO);
+            issueDTOs.add(IssueDTO.makeDTOFrom(issue));
         }
         return issueDTOs;
+    }
+    public List<IssueDTO> selectByProjectID(List<IssueDTO> issues,Long projectId){
+        List<IssueDTO> result = new ArrayList<>();
+        for(IssueDTO issue: issues){
+            if(Objects.equals(issue.getProjectID(), projectId)){
+                result.add(issue);
+            }
+        }
+        return result;
     }
 
     //특정 Issue 업데이트
@@ -201,7 +204,7 @@ public class IssueService {
 
         // 만약 issue의 상태가 resolved, 즉 해결된 상태로 바뀐다면
         // 해당 issue에 배정된 Dev의 해결 이력 업데이트
-        if(issueDTO.getState().equals("closed")) {
+        if(issueDTO.getState()==State.CLOSED) {
             for(User user : issue.getAssignedUsers()) {
                 if(user instanceof Dev) {
                     ((Dev) user).incrementResolve(issueDTO.getTag());
@@ -221,9 +224,8 @@ public class IssueService {
     public Boolean updateState(IssueDTO issueDTO){
         Issue issue = issueRepository.findById(issueDTO.getId()).orElse(null);
         if(issue != null) {
-            State issueState = issueDTO.getState();
-            issue.setState(issueState);
-            if(issueDTO.getState().equals("Complete") && issueDTO.getReporterID() != null){
+            issue.setState(issueDTO.getState());
+            if(issueDTO.getState()==State.FIXED && issueDTO.getReporterID() != null){
                 userRepository.findById(issueDTO.getReporterID()).ifPresent(issue::setFixer);
             }
             issueRepository.save(issue);
