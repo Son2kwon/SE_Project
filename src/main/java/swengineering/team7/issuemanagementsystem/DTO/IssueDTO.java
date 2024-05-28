@@ -1,8 +1,9 @@
 package swengineering.team7.issuemanagementsystem.DTO;
 
-import swengineering.team7.issuemanagementsystem.entity.Issue;
+import swengineering.team7.issuemanagementsystem.entity.Comment;
 import swengineering.team7.issuemanagementsystem.util.Priority;
 import swengineering.team7.issuemanagementsystem.util.State;
+import swengineering.team7.issuemanagementsystem.DTO.CommentDTO;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,6 +24,8 @@ public class IssueDTO {
     private String fixer;
     private String fixerName;
     private Set<String> assignees;
+
+    private Set<CommentDTO> comments;
 
 
     public IssueDTO() {
@@ -154,4 +157,7 @@ public class IssueDTO {
     public String getTag() { return tag; }
     public void setAssignees(Set<String> assignees){this.assignees=assignees;}
     public Set<String> getAssignees(){return this.assignees;}
+
+    public Set<CommentDTO> getComments(){return this.comments;}
+    public void setComments(Set<CommentDTO> comments){this.comments=comments;}
 }
