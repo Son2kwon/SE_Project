@@ -1,9 +1,13 @@
 package swengineering.team7.issuemanagementsystem.entity;
 
 import jakarta.persistence.*;
+
 import swengineering.team7.issuemanagementsystem.util.Priority;
+import swengineering.team7.issuemanagementsystem.util.State;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -14,7 +18,8 @@ public class Issue {
 
     private String title;
     private LocalDateTime date;
-    private String state;
+    @Enumerated(EnumType.STRING)
+    private State state;
 
     private String tag;
 
@@ -39,7 +44,7 @@ public class Issue {
 
     // Issue:Comment 1:다    has many
     @OneToMany(mappedBy = "issue")
-    private Set<Comment> comments;
+    private Set<Comment> comments = new HashSet<>();
 
     //Issue:User 다:다    Assign
     @ManyToMany
@@ -53,12 +58,13 @@ public class Issue {
     public Issue(){};
 
 
-    public static Issue makeIssueOf(String title, String issueDescription,LocalDateTime date, String state){
+    public static Issue makeIssueOf(String title, String issueDescription,LocalDateTime date, State state, Priority priority){
         Issue issue = new Issue();
         issue.setTitle(title);
         issue.setIssueDescription(issueDescription);
         issue.setDate(date);
         issue.setState(state);
+        issue.setPriority(priority);
         return issue;
     }
 
@@ -100,11 +106,11 @@ public class Issue {
         this.date = date;
     }
 
-    public String getState() {
+    public State getState() {
         return state;
     }
 
-    public void setState(String state) {
+    public void setState(State state) {
         this.state = state;
     }
 

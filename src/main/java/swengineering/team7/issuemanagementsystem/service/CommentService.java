@@ -1,16 +1,10 @@
 package swengineering.team7.issuemanagementsystem.service;
 
 import swengineering.team7.issuemanagementsystem.DTO.IssueDTO;
-import swengineering.team7.issuemanagementsystem.dto.ProjectDTO;
-import swengineering.team7.issuemanagementsystem.DTO.UserInformationDTO;
 import swengineering.team7.issuemanagementsystem.entity.Comment;
 import swengineering.team7.issuemanagementsystem.entity.Issue;
-import swengineering.team7.issuemanagementsystem.entity.Tester;
-import swengineering.team7.issuemanagementsystem.entity.Project;
 import swengineering.team7.issuemanagementsystem.entity.User;
-import swengineering.team7.issuemanagementsystem.exception.NoBelong;
 import swengineering.team7.issuemanagementsystem.DTO.CommentDTO;
-import swengineering.team7.issuemanagementsystem.entity.Issue;
 
 import swengineering.team7.issuemanagementsystem.repository.CommentRepository;
 import swengineering.team7.issuemanagementsystem.repository.IssueRepository;
@@ -101,5 +95,10 @@ public class CommentService {
             }
         }
         return null;
+    }
+
+    public CommentDTO createCommentDTO(Long id,String body,String writer,LocalDateTime date,Long issueID,User user) {
+        Issue issue = issueRepository.findById(issueID).orElse(null);
+        return new CommentDTO(id,body,writer,date,issue,user);
     }
 }

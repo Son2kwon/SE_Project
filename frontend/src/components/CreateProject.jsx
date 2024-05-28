@@ -55,7 +55,7 @@ const CreateProject=()=>{
           }
         }
       );
-      if (response.status === 200) {
+      if (response.status === 201) {
         alert('프로젝트 생성 성공');
         navigate('/admin');
       }

@@ -3,6 +3,7 @@ package swengineering.team7.issuemanagementsystem.entity;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -24,8 +25,6 @@ public class User {
         this.username=username;
         this.password=password;
         this.Contract=contract;
-        //test: 일단은 admin
-        this.role = "admin";
     }
     // User:Project 다:다     두 엔터티 연결하는 중간 테이블 생성
     @ManyToMany
@@ -34,19 +33,19 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "project_id")
     )
-    private Set<Project> inchargeProjects;
+    private Set<Project> inchargeProjects = new HashSet<>();
 
     // User:Issue 1:다   create
     @OneToMany(mappedBy = "reporter", cascade = CascadeType.ALL)
-    private Set<Issue> issues;
+    private Set<Issue> issues = new HashSet<>();
 
     // User:Issue 1:다   Assign
     @ManyToMany(mappedBy = "assignedUsers")
-    private Set<Issue> assignedIssues;
+    private Set<Issue> assignedIssues = new HashSet<>();
 
     // User:Comment 1:다
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Comment> comments;
+    private Set<Comment> comments = new HashSet<>();
 
     public static User makeUserOf(String id, String username, String password, String role, String contract) {
         User user = new User();
@@ -63,11 +62,7 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id)
-                && Objects.equals(username, user.username)
-                && Objects.equals(password, user.password)
-                && Objects.equals(role, user.role)
-                && Objects.equals(Contract, user.Contract);
+        return Objects.equals(id, user.id);
     }
   
     @Override
@@ -147,9 +142,7 @@ public class User {
         this.Contract=contract;
     }
 
-    public void addIssue(Issue newissue) {
-        issues.add(newissue);
-    }
+    public void addIssue(Issue newissue) { this.issues.add(newissue); };
 
     public void removeIssue(Issue target) {
         issues.remove(target);

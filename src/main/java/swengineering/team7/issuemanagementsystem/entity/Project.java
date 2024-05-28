@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -24,7 +25,7 @@ public class Project {
 
     // Project:Issue   1:다      has many
     @OneToMany(mappedBy = "project")
-    private Set<Issue> issues;
+    private Set<Issue> issues = new HashSet<>();
 
     // 트렌드 필드 추가
     private String trend;

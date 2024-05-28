@@ -13,17 +13,17 @@ const Search = () => {
   const [nextSelectedOption, setNextSelectedOption] = useState({});
   const [nextDropdownOptions, setNextDropdownOptions] = useState([]);
   let role = sessionStorage.getItem('role')
-  if(role==='admin') role='pl'
+  if(role==='admin') role='PL'
 
   const optionsByRole={
-    pl:{
+    PL:{
      issueStatus: [
-      { value: 'new', label: 'New' },
-      { value: 'assigned', label: 'Assigned' },
-      { value: 'fixed', label: 'Fixed' },
-      { value: 'resolved', label: 'Resolved' },
-      { value: 'closed', label: 'Closed' },
-      { value: 'reopened', label: 'Reopened' },
+      { value: 'NEW', label: 'New' },
+      { value: 'ASSIGNED', label: 'Assigned' },
+      { value: 'FIXED', label: 'Fixed' },
+      { value: 'RESOLVED', label: 'Resolved' },
+      { value: 'CLOSED', label: 'Closed' },
+      { value: 'REOPENED', label: 'Reopened' },
       ],
       personField: [
         { value: 'assignee', label: "Assignee" },
@@ -42,29 +42,29 @@ const Search = () => {
   }
   useEffect(()=>{
     const fetchFirstData=async()=>{
-      if(role==='pl'){
+      if(role==='PL'){
         await axios.get(URLs.SEARCH+'/all',{
           params:{projectId:projectId,token:sessionStorage.getItem('token'),role:role}
         })
         .then(response=>{
-          setSearchData(response.data.results)
-        })
+          setSearchData(response.data)
+        }).catch(error=>{console.log(error)})
       }
     }
     fetchFirstData();
   },[])
 
   useEffect(() => {
-    if (role==='pl'&& selectedOption && selectedOption.value !== '') {
+    if (role==='PL'&& selectedOption && selectedOption.value !== '') {
       switch (selectedOption.value) {
         case 'issueStatus':
-          setNextDropdownOptions(optionsByRole['pl'].issueStatus);
+          setNextDropdownOptions(optionsByRole['PL'].issueStatus);
           break;
         case 'personField':
-          setNextDropdownOptions(optionsByRole['pl'].personField);
+          setNextDropdownOptions(optionsByRole['PL'].personField);
           break;
         case 'priorityField':
-          setNextDropdownOptions(optionsByRole['pl'].priorityField);
+          setNextDropdownOptions(optionsByRole['PL'].priorityField);
           break;
         default:
           setNextDropdownOptions([]);
@@ -84,11 +84,11 @@ const Search = () => {
     try{
       let url,searchParam
       //tester일 경우는 자신이 report하고 fixed된 이슈만 검색.
-      if (role==='tester'){
+      if (role==='TESTER'){
         url = URLs.SEARCH + '/byIssueStatus'
         searchParam = {status:'fixed', reporter: sessionStorage.getItem('id')}
       }
-      else if (role==='dev'){
+      else if (role==='DEV'){
         url = URLs.SEARCH + '/byIssueStatus'
         searchParam = {status:'assigned', assignee: sessionStorage.getItem('id')}
       }
@@ -125,7 +125,7 @@ const Search = () => {
   return (
     <div>
       Project {projectId}<br/>
-      {role==='pl' && (
+      { (
         <Select
           placeholder="검색 조건 선택"
           value={selectedOption}
@@ -136,27 +136,27 @@ const Search = () => {
             { value: 'priorityField', label: '우선순위' }
           ]}
         />
-        )}
-        {nextDropdownOptions.length > 0 && (
-        <div style={{ marginTop: '10px' }}>
-          <Select
-            placeholder="선택"
-            options={nextDropdownOptions}
-            onChange={(selected)=>{setNextSelectedOption(selected)}}
+      )}
+      {nextDropdownOptions.length > 0 && (
+      <div style={{ marginTop: '10px' }}>
+        <Select
+          placeholder="선택"
+          options={nextDropdownOptions}
+          onChange={(selected)=>{setNextSelectedOption(selected)}}
+        />
+        {selectedOption.value === 'personField' && (
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={handleTermChange}
+            placeholder="id"
+            style={{ marginTop: '10px' }}
           />
-          {selectedOption.value === 'personField' && (
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={handleTermChange}
-              placeholder="id"
-              style={{ marginTop: '10px' }}
-            />
-          )}
-        </div>
+        )}
+      </div>
       )}
       <button onClick={handleSearch} style={{ marginTop: '10px' }}>검색</button>
-      {searchData.length > 0 && <SearchResultTable props={searchData} />}
+      {searchData && searchData.length > 0 && <SearchResultTable props={searchData} projectId={projectId} />}
     </div>
   );
 };

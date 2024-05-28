@@ -1,14 +1,16 @@
 package swengineering.team7.issuemanagementsystem.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 
-import swengineering.team7.issuemanagementsystem.DTO.*;
+import swengineering.team7.issuemanagementsystem.DTO.ProjectDTO;
+import swengineering.team7.issuemanagementsystem.DTO.SearchInfoDTO;
+import swengineering.team7.issuemanagementsystem.DTO.UserInformationDTO;
 import swengineering.team7.issuemanagementsystem.entity.*;
 import swengineering.team7.issuemanagementsystem.repository.CommentRepository;
 import swengineering.team7.issuemanagementsystem.DTO.IssueDTO;
-import swengineering.team7.issuemanagementsystem.dto.SearchInfoDTO;
+
 import swengineering.team7.issuemanagementsystem.entity.Issue;
 import swengineering.team7.issuemanagementsystem.entity.Project;
 import swengineering.team7.issuemanagementsystem.entity.User;
@@ -18,8 +20,9 @@ import swengineering.team7.issuemanagementsystem.repository.ProjectRepository;
 import swengineering.team7.issuemanagementsystem.repository.UserRepository;
 import swengineering.team7.issuemanagementsystem.util.Priority;
 import swengineering.team7.issuemanagementsystem.util.SearchType;
+import swengineering.team7.issuemanagementsystem.util.State;
 
-import java.time.LocalDateTime;
+
 import java.util.*;
 
 @Service
@@ -29,18 +32,33 @@ public class IssueService {
     IssueRepository issueRepository;
     UserRepository userRepository;
     ProjectRepository projectRepository;
-    CommentRepository commentRepository;
 
-    public IssueService(UserRepository userRepository, IssueRepository issueRepository, ProjectRepository projectRepository, UserService userService) {
-        this.userRepository = userRepository;
-        this.issueRepository = issueRepository;
-        this.projectRepository = projectRepository;
+    public IssueService(UserService userService, IssueRepository issueRepository, UserRepository userRepository, ProjectRepository projectRepository) {
         this.userService = userService;
+        this.issueRepository = issueRepository;
+        this.userRepository = userRepository;
+        this.projectRepository = projectRepository;
     }
-
+    @Transactional
+    public Boolean setAssignees(Long issueId, List<String> userIds){
+        Issue issue = issueRepository.findById(issueId).orElse(null);
+        Set<User> assignees = new HashSet<>();
+        for(String userId: userIds){
+            User user = userRepository.findById(userId).orElse(null);
+            assignees.add(user);
+        }
+        if(issue!=null && !assignees.isEmpty()) {
+            issue.setAssignedUsers(assignees);
+            issue.setState(State.ASSIGNED);
+            return true;
+        }
+        return false;
+    }
     //새로운 issue 하나를 만드는 작업 ( issue 저장 성공시 True 실패시 False 반환)
     public Boolean createIssue(IssueDTO issueDTO) {
-        Issue newIssue = Issue.makeIssueOf(issueDTO.getTitle(), issueDTO.getIssueDescription(), issueDTO.getDate(), issueDTO.getState());
+
+        Issue newIssue = Issue.makeIssueOf(issueDTO.getTitle(), issueDTO.getIssueDescription(), issueDTO.getDate(), issueDTO.getState(), issueDTO.getPriority());
+        newIssue.setState(State.NEW);
         User user = userRepository.findById(issueDTO.getReporterID()).orElse(null);
         Project project =  projectRepository.findById(issueDTO.getProjectID()).orElse(null);
         if (user == null || project == null) {
@@ -97,7 +115,7 @@ public class IssueService {
 
     public List<IssueDTO> findbyWriter(String writer) {
         List<IssueDTO> issueDTOs = new ArrayList<>();
-        List<Issue> issues = issueRepository.findByReporter_NameContainingOrderByDateDesc(writer);
+        List<Issue> issues = issueRepository.findByReporter_usernameContainingOrderByDateDesc(writer);
 
         for (Issue issue : issues) {
             issueDTOs.add(IssueDTO.makeDTOFrom(issue));
@@ -151,7 +169,22 @@ public class IssueService {
 
         return issueDTOs;
     }
-
+    public List<IssueDTO> findbyPriority(Priority priority){
+        List<IssueDTO> issueDTOs = new ArrayList<>();
+        List<Issue> issues = issueRepository.findByPriority(priority);
+        for (Issue issue : issues) {
+            issueDTOs.add(IssueDTO.makeDTOFrom(issue));
+        }
+        return issueDTOs;
+    }
+    public List<IssueDTO> findAll(){
+        List<IssueDTO> issueDTOs = new ArrayList<>();
+        List<Issue> issues = issueRepository.findAll();
+        for (Issue issue : issues) {
+            issueDTOs.add(IssueDTO.makeDTOFrom(issue));
+        }
+        return issueDTOs;
+    }
     //특정 Issue 업데이트
     public Boolean UpdateIssueInfo(IssueDTO issueDTO) {
         Issue issue = issueRepository.findById(issueDTO.getId()).orElse(null);
@@ -160,14 +193,13 @@ public class IssueService {
             return false;
         }
 
-        // 만약 issue의 상태가 resolved, 즉 해결된 상태로 바뀐다면
+        // 만약 issue의 상태가 closed, 즉 해결된 상태로 바뀐다면
         // 해당 issue에 배정된 Dev의 해결 이력 업데이트
-        if(issueDTO.getState().equals("closed")) {
-            for(User user : issue.getAssignedUsers()) {
-                if(user instanceof Dev) {
-                    ((Dev) user).incrementResolve(issueDTO.getTag());
-                    userRepository.save(user);
-                }
+        if(issueDTO.getState().equals(State.CLOSED)) {
+            User dev = userRepository.findById(issueDTO.getFixer()).get();
+            if (dev instanceof Dev) {
+                ((Dev) dev).incrementResolve(issueDTO.getTag());
+                userRepository.save(dev);
             }
         }
         issue.setTitle(issueDTO.getTitle());
@@ -182,7 +214,7 @@ public class IssueService {
     public Boolean updateState(IssueDTO issueDTO){
         Issue issue = issueRepository.findById(issueDTO.getId()).orElse(null);
         if(issue != null) {
-            String issueState = issueDTO.getState();
+            State issueState = issueDTO.getState();
             issue.setState(issueState);
             if(issueDTO.getState().equals("Complete") && issueDTO.getReporterID() != null){
                 userRepository.findById(issueDTO.getReporterID()).ifPresent(issue::setFixer);

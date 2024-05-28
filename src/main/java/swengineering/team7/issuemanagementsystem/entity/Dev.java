@@ -1,6 +1,7 @@
 package swengineering.team7.issuemanagementsystem.entity;
 
 import jakarta.persistence.*;
+import swengineering.team7.issuemanagementsystem.DTO.IssueDTO;
 
 import java.util.*;
 
@@ -11,6 +12,13 @@ public class Dev extends User{
         private Map<String,Integer> IssueResolve = new HashMap<>();
 
         public Dev() {
+            setRole("dev");
+        }
+        public Dev(String id, String username, String password, String contract){
+            setId(id);
+            setUsername(username);
+            setPassword(password);
+            setContract(contract);
             setRole("dev");
         }
         public void incrementResolve(String tag) {

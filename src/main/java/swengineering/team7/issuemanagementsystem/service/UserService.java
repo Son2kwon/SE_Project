@@ -8,17 +8,14 @@ import jakarta.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import swengineering.team7.issuemanagementsystem.DTO.IssueDTO;
 import swengineering.team7.issuemanagementsystem.DTO.UserInformationDTO;
+import swengineering.team7.issuemanagementsystem.entity.Admin;
 import swengineering.team7.issuemanagementsystem.entity.Project;
 import swengineering.team7.issuemanagementsystem.entity.User;
 import swengineering.team7.issuemanagementsystem.exception.NoPermission;
 import swengineering.team7.issuemanagementsystem.repository.UserRepository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 @Service
@@ -33,15 +30,15 @@ public class UserService {
    //회원가입
     public void createUser(String id, String password, String username,  String contract) {
        User user = new User(id, username,password,contract);
-       /*user.setId(id);
-       user.setUsername(username);
-       user.setPassword(password);
-       user.setContract(contract);*/
        this.userRepository.save(user);
     }
     public boolean login(UserInformationDTO userInformationDTO){
        User user = userRepository.findById(userInformationDTO.getId()).orElse(null);
         return user != null && user.getPassword().equals(userInformationDTO.getPassword());
+    }
+    public boolean isAdmin(UserInformationDTO userInformationDTO){
+       User user = userRepository.findById(userInformationDTO.getId()).orElse(null);
+       return user.getRole()!=null&&user.getRole().equals("admin");
     }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -80,7 +77,7 @@ public class UserService {
     //모든 유저 받아오기(admin만 가능)
     public List<UserInformationDTO> getAllUser(String id){
         User user_n = userRepository.findById(id).orElse(null);
-        if(user_n instanceof Admin) {
+        if(user_n.getRole()!=null && user_n.getRole().equals("admin")) {
             List<UserInformationDTO> userInformationDTOS = new ArrayList<>();
             List<User> users = userRepository.findAll();
             for(User user: users){
@@ -91,7 +88,7 @@ public class UserService {
             throw new NoPermission("관리자 권한이 있어야합니다.");
         }
     }
-    //해당 유저와 연관이 있는 프로젝트 아이디들을 반환.
+    //해당 유저와 연관이 있는 프로젝트 아이디, Role들을 반환.
     public List<HashMap<String,String>> mapToUserResponse(UserInformationDTO userInformationDTO) {
         User user = userRepository.findById(userInformationDTO.getId()).orElse(null);
         Set<Project> projectSet = user.getInchargeProjects();
@@ -162,5 +159,10 @@ public class UserService {
                 return cb.like(root.get("role"),"%"+input+"%");
             }
         };
+    }
+
+    public User SearchSepcificUser (String name) {
+        Optional<User> user = userRepository.findByUsername(name);
+        return user.orElse(null);
     }
 }
