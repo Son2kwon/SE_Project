@@ -167,6 +167,7 @@ public class IssueService {
         }
         return issueDTOs;
     }
+
     public List<IssueDTO> findbyPriority(Priority priority){
         List<IssueDTO> issueDTOs = new ArrayList<>();
         List<Issue> issues = issueRepository.findByPriority(priority);
@@ -179,14 +180,7 @@ public class IssueService {
         List<IssueDTO> issueDTOs = new ArrayList<>();
         List<Issue> issues = issueRepository.findAll();
         for (Issue issue : issues) {
-            IssueDTO issueDTO = IssueDTO.makeDTOFrom(issue);
-            Set<User> assignees = issue.getAssignedUsers();
-            Set<String> assigneeSet = new HashSet<>();
-            for(User user:assignees){
-                assigneeSet.add(user.getId());
-            }
-            issueDTO.setAssignees(assigneeSet);
-            issueDTOs.add(issueDTO);
+            issueDTOs.add(IssueDTO.makeDTOFrom(issue));
         }
         return issueDTOs;
     }
@@ -230,9 +224,8 @@ public class IssueService {
     public Boolean updateState(IssueDTO issueDTO){
         Issue issue = issueRepository.findById(issueDTO.getId()).orElse(null);
         if(issue != null) {
-            State issueState = issueDTO.getState();
-            issue.setState(issueState);
-            if(issueDTO.getState().equals("Complete") && issueDTO.getReporterID() != null){
+            issue.setState(issueDTO.getState());
+            if(issueDTO.getState()==State.FIXED && issueDTO.getReporterID() != null){
                 userRepository.findById(issueDTO.getReporterID()).ifPresent(issue::setFixer);
             }
             issueRepository.save(issue);
