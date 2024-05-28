@@ -68,7 +68,8 @@ const SearchResultTable=({ props,projectId }) =>{
       <tbody>
         {props.map((item, index) => (
           <tr key={index}>
-            <td>{item.title}</td>
+            <td><a href={`http://localhost:8080/issue/detail/${item.id}`} target="_blank" rel="noopener noreferrer">
+            {item.title}</a></td>
             <td>{item.status}</td>
             <td>{item.reporter}</td>
             <td>
