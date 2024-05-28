@@ -4,42 +4,52 @@
     <title>Issue details</title>
 </head>
 <body>
+<input type="hidden" id="token" th:value="${token}" />
 <div>
     <label>State:</label>
-    <p><span th:text="${issue.state.name()}" /></p>
+    <span th:text="${issue.state.name()}" />
 </div>
 <div>
-    <p><span th:text="${issue.title}" /></p>
+    <p>Title: <span th:text="${issue.title}" /></p>
 </div>
 <div>
-    <p><span th:text="${issue.date}" /></p>
+    <p>Date: <span th:text="${issue.date}" /></p>
 </div>
 <div>
-    <p><span th:text="${issue.ReporterID}" /></p>
+    <p>Reporter: <span th:text="${issue.ReporterID}" /></p>
 </div>
 <div>
-    <p><span th:text="${issue.issueDescription}" /></p>
+    <p>Issue Description: <span th:text="${issue.issueDescription}" /></p>
 </div>
 <div>
-    <form th:action="@{|/issue/edit/${issue.id}|}" method="post">
-        <input type="button" value="Edit Issue">
+    <input type="hidden" id="issueId" th:value="${issue.id}">
+    <form id="editForm">
+        <input type="button" value="Edit Issue" id="editButton">
     </form>
+
+    <script>
+        document.getElementById('editButton').addEventListener('click', function() {
+            var issueId = document.getElementById('issueId').value;
+            window.location.href = "/issue/edit/" + issueId;
+        });
+    </script>
 </div>
 <hr />
 <div>
     <h3>Comments:</h3>
     <div th:each="comment : ${issue.comments}">
         <div>
-            <p><span th:text="${comment.writer}" /></p>
+            <p>Writer: <span th:text="${comment.writer}" /></p>
         </div>
         <div>
-            <p><span th:text="${comment.body}" /></p>
+            <p>Contents: <span th:text="${comment.body}" /></p>
         </div>
         <div>
-            <p><span th:text="${comment.date}" /></p>
+            <p>Date: <span th:text="${comment.date}" /></p>
         </div>
         <div>
             <form th:action="@{|/comment/edit/${comment.id}|}" method="post">
+                <input type="hidden" name="token" th:value="${token}" />
                 <input type="button" value="Fix Comment">
             </form>
         </div>
@@ -49,6 +59,7 @@
 <div>
     <form th:action="@{|/comment/create/${issue.id}|}" method="post">
         <div>
+            <input type="hidden" name="token" th:value="${token}" />
             <label for="newComment">Comment:</label>
             <textarea id="newComment" name="newComment" rows="4" cols="50"></textarea>
         </div>
