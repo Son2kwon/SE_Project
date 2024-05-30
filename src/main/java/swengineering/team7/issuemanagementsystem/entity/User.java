@@ -67,7 +67,7 @@ public class User {
   
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, password, role, Contract);
+        return Objects.hash(id);
     }
 
     //Getter & Setter
