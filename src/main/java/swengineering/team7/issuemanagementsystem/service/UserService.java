@@ -161,8 +161,8 @@ public class UserService {
         };
     }
 
-    public User SearchSepcificUser (String name) {
-        Optional<User> user = userRepository.findByUsername(name);
+    public User SearchSepcificUser (String id) {
+        Optional<User> user = userRepository.findById(id);
         return user.orElse(null);
     }
 }

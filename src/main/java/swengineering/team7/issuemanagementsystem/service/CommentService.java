@@ -1,5 +1,7 @@
 package swengineering.team7.issuemanagementsystem.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import swengineering.team7.issuemanagementsystem.DTO.IssueDTO;
 import swengineering.team7.issuemanagementsystem.entity.Comment;
 import swengineering.team7.issuemanagementsystem.entity.Issue;
@@ -12,8 +14,12 @@ import swengineering.team7.issuemanagementsystem.repository.ProjectRepository;
 import swengineering.team7.issuemanagementsystem.repository.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
+@Service
 public class CommentService {
 
     IssueRepository issueRepository;
@@ -29,7 +35,7 @@ public class CommentService {
         comment.setIssue(issue);
         this.commentRepository.save(comment);
     }
-
+    @Autowired
     public CommentService(UserRepository userRepository, IssueRepository issueRepository, ProjectRepository projectRepository, CommentRepository commentRepository) {
         this.userRepository = userRepository;
         this.issueRepository = issueRepository;
@@ -95,6 +101,18 @@ public class CommentService {
             }
         }
         return null;
+    }
+  
+    public Set<CommentDTO> getAllCommentsByIssueID(Long IssueID){
+        Optional<Issue> issue = issueRepository.findById(IssueID);
+        Set<CommentDTO> result = new HashSet<>();
+        if(issue.isPresent()) {
+            List<Comment> comments = commentRepository.findByIssue(issue);
+            for(Comment comment: comments){
+                result.add(CommentDTO.makeDTOfrom(comment));
+            }
+        }
+        return result;
     }
 
     public CommentDTO createCommentDTO(Long id,String body,String writer,LocalDateTime date,Long issueID,User user) {

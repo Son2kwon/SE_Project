@@ -12,7 +12,6 @@ const ManageAccount=()=>{
       params: {token: sessionStorage.getItem('token')}
     }).then(response=>{
         setAccountList(response.data)
-        console.log(response.data)
         }
       )
       .catch(error => {

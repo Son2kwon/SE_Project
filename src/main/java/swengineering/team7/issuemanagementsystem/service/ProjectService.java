@@ -7,6 +7,8 @@ import swengineering.team7.issuemanagementsystem.entity.Project;
 import swengineering.team7.issuemanagementsystem.entity.ProjectAssignment;
 import swengineering.team7.issuemanagementsystem.entity.ProjectAssignmentKey;
 import swengineering.team7.issuemanagementsystem.entity.User;
+import swengineering.team7.issuemanagementsystem.exception.ProjectNotFoundException;
+import swengineering.team7.issuemanagementsystem.exception.UserNotFoundException;
 import swengineering.team7.issuemanagementsystem.repository.ProjectAssignmentRepository;
 import swengineering.team7.issuemanagementsystem.repository.ProjectRepository;
 import swengineering.team7.issuemanagementsystem.repository.UserRepository;
@@ -77,7 +79,31 @@ public class ProjectService {
         return true;
     }
 
-    // Project에 유저 배정하기
+    public boolean assignUserToProject(Long projectId, String userId, Role role) {
+    //        Project project = projectRepository.findById(projectId).orElseThrow(() -> new RuntimeException("Project not found"));
+    //        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ProjectNotFoundException("Project not found"));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+
+        ProjectAssignmentKey id = new ProjectAssignmentKey(projectId, userId);
+        ProjectAssignment assignment = new ProjectAssignment();
+        assignment.setId(id);
+        assignment.setProject(project);
+        assignment.setUser(user);
+        assignment.setRole(role);
+
+        projectAssignmentRepository.save(assignment);
+        return true;
+    }
+
+
+
+// Project에 유저 배정하기
     public Boolean addAssignedUser(ProjectAssignedUserDTO projectAssignedUserDTO) {
 
         Project project = projectRepository.findById(projectAssignedUserDTO.getProjectId()).orElse(null);

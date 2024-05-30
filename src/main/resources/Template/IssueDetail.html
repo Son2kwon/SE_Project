@@ -4,55 +4,66 @@
     <title>Issue details</title>
 </head>
 <body>
-    <div>
-        <label>State:</label>
-        <p><span th:text="${swengineering.team7.issuemanagementsystem.entity.Issue.state}" /></p>
-    </div>
-    <div>
-        <p><span th:text="${swengineering.team7.issuemanagementsystem.entity.Issue.title}" /></p>
-    </div>
-    <div>
-        <p><span th:text="${swengineering.team7.issuemanagementsystem.entity.Issue.date}" /></p>
-    </div>
-    <div>
-        <p><span th:text="${swengineering.team7.issuemanagementsystem.entity.Issue.reporter}" /></p>
-    </div>
-    <div>
-        <p><span th:text="${swengineering.team7.issuemanagementsystem.entity.Issue.issueDescription}" /></p>
-    </div>
-    <div>
-        <form th:action="@{|/issue/edit/${swengineering.team7.issuemanagementsystem.entity.Issue.id}|}" method="post">
-            <input type="button" value = "Edit Issue">
-        </form>
-    </div>
+<input type="hidden" id="token" th:value="${token}" />
+<div>
+    <label>State:</label>
+    <span th:text="${issue.state.name()}" />
+</div>
+<div>
+    <p>Title: <span th:text="${issue.title}" /></p>
+</div>
+<div>
+    <p>Date: <span th:text="${issue.date}" /></p>
+</div>
+<div>
+    <p>Reporter: <span th:text="${issue.ReporterID}" /></p>
+</div>
+<div>
+    <p>Issue Description: <span th:text="${issue.issueDescription}" /></p>
+</div>
+<div>
+    <input type="hidden" id="issueId" th:value="${issue.id}">
+    <form id="editForm">
+        <input type="button" value="Edit Issue" id="editButton">
+    </form>
+
+    <script>
+        document.getElementById('editButton').addEventListener('click', function() {
+            var issueId = document.getElementById('issueId').value;
+            window.location.href = "/issue/edit/" + issueId;
+        });
+    </script>
+</div>
 <hr />
 <div>
     <h3>Comments:</h3>
-    <div th:each="comment : ${swengineering.team7.issuemanagementsystem.entity.Issue.comments}">
+    <div th:each="comment : ${issue.comments}">
         <div>
-            <p><span th:text="${comment.writer}" /></p>
+            <p>Writer: <span th:text="${comment.writer}" /></p>
         </div>
         <div>
-            <p><span th:text="${comment.body}" /></p>
+            <p>Contents: <span th:text="${comment.body}" /></p>
         </div>
         <div>
-            <p><span th:text="${comment.date}" /></p>
+            <p>Date: <span th:text="${comment.date}" /></p>
         </div>
         <div>
-            <form th:action="@{|/comment/edit/${swengineering.team7.issuemanagementsystem.entity.Comment.id}|}" method="post">
-                <input type="button" value = "Fix Comment">
+            <form th:action="@{|/comment/edit/${comment.id}|}" method="post">
+                <input type="hidden" name="token" th:value="${token}" />
+                <input type="button" value="Fix Comment">
             </form>
         </div>
     </div>
 </div>
 <hr />
 <div>
-    <form th:action="@{/comment/create/${swengineering.team7.issuemanagementsystem.entity.Issue.id}/${swengineering.team7.issuemanagementsystem.entity.Issue.id}|}" method="post">
+    <form th:action="@{|/comment/create/${issue.id}|}" method="post">
         <div>
+            <input type="hidden" name="token" th:value="${token}" />
             <label for="newComment">Comment:</label>
             <textarea id="newComment" name="newComment" rows="4" cols="50"></textarea>
         </div>
-        <input type="submit" value = "Add Comment">
+        <input type="submit" value="Add Comment">
     </form>
 </div>
 </body>

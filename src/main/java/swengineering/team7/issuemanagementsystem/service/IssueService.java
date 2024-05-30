@@ -85,21 +85,18 @@ public class IssueService {
         } else if (searchInfoDTO.getSearchType() == SearchType.PRIORITY){
             return findByPriority(searchInfoDTO.getSearchValue());
         }else if (searchInfoDTO.getSearchType() == SearchType.ALL){
-            return findALl();
+            return findAll();
         }else {
             return null;
         }
     }
 
-    public List<IssueDTO> findALl(){
-        List<IssueDTO> issueDTOs = new ArrayList<>();
-        List<Issue> issues = issueRepository.findAll();
-
-        for (Issue issue : issues) {
-            issueDTOs.add(IssueDTO.makeDTOFrom(issue));
+    public Set<String> getAssignedUsers(Set<User> assignedUsers){
+        Set<String> result = new HashSet<>();
+        for(User user: assignedUsers){
+            result.add(user.getId());
         }
-
-        return issueDTOs;
+        return result;
     }
 
     public List<IssueDTO> findbyTitle(String title) {
@@ -126,12 +123,13 @@ public class IssueService {
 
     public List<IssueDTO> findbyState(String state) {
         List<IssueDTO> issueDTOs = new ArrayList<>();
-        List<Issue> issues = issueRepository.findByStateContainingOrderByDateDesc(state);
-
-        for (Issue issue : issues) {
-            issueDTOs.add(IssueDTO.makeDTOFrom(issue));
+        State stateEnum = State.valueOf(state.toUpperCase());
+        if(stateEnum instanceof State) {
+            List<Issue> issues = issueRepository.findByStateOrderByDateDesc(stateEnum);
+            for (Issue issue : issues) {
+                issueDTOs.add(IssueDTO.makeDTOFrom(issue));
+            }
         }
-
         return issueDTOs;
     }
 
@@ -167,9 +165,9 @@ public class IssueService {
             issue.setProjectID(findIssue.getProject().getId());
             issueDTOs.add(issue);
         }
-
         return issueDTOs;
     }
+
     public List<IssueDTO> findbyPriority(Priority priority){
         List<IssueDTO> issueDTOs = new ArrayList<>();
         List<Issue> issues = issueRepository.findByPriority(priority);
@@ -186,6 +184,17 @@ public class IssueService {
         }
         return issueDTOs;
     }
+  
+    public List<IssueDTO> selectByProjectID(List<IssueDTO> issues,Long projectId){
+        List<IssueDTO> result = new ArrayList<>();
+        for(IssueDTO issue: issues){
+            if(Objects.equals(issue.getProjectID(), projectId)){
+                result.add(issue);
+            }
+        }
+        return result;
+    }
+
     //특정 Issue 업데이트
     public Boolean UpdateIssueInfo(IssueDTO issueDTO) {
         Issue issue = issueRepository.findById(issueDTO.getId()).orElse(null);
@@ -196,11 +205,12 @@ public class IssueService {
 
         // 만약 issue의 상태가 closed, 즉 해결된 상태로 바뀐다면
         // 해당 issue에 배정된 Dev의 해결 이력 업데이트
-        if(issueDTO.getState().equals(State.CLOSED)) {
-            User dev = userRepository.findById(issueDTO.getFixer()).get();
-            if (dev instanceof Dev) {
-                ((Dev) dev).incrementResolve(issueDTO.getTag());
-                userRepository.save(dev);
+        if(issueDTO.getState()==State.CLOSED) {
+            for(User user : issue.getAssignedUsers()) {
+                if(user instanceof Dev) {
+                    ((Dev) user).incrementResolve(issueDTO.getTag());
+                    userRepository.save(user);
+                }
             }
         }
         issue.setTitle(issueDTO.getTitle());
@@ -215,9 +225,8 @@ public class IssueService {
     public Boolean updateState(IssueDTO issueDTO){
         Issue issue = issueRepository.findById(issueDTO.getId()).orElse(null);
         if(issue != null) {
-            State issueState = issueDTO.getState();
-            issue.setState(issueState);
-            if(issueDTO.getState().equals("Complete") && issueDTO.getReporterID() != null){
+            issue.setState(issueDTO.getState());
+            if(issueDTO.getState()==State.FIXED && issueDTO.getReporterID() != null){
                 userRepository.findById(issueDTO.getReporterID()).ifPresent(issue::setFixer);
             }
             issueRepository.save(issue);
