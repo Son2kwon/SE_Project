@@ -208,6 +208,7 @@ public class IssueService {
         }
         return issueDTOs;
     }
+  
     public List<IssueDTO> selectByProjectID(List<IssueDTO> issues,Long projectId){
         List<IssueDTO> result = new ArrayList<>();
         for(IssueDTO issue: issues){
@@ -226,7 +227,7 @@ public class IssueService {
             return false;
         }
 
-        // 만약 issue의 상태가 resolved, 즉 해결된 상태로 바뀐다면
+        // 만약 issue의 상태가 closed, 즉 해결된 상태로 바뀐다면
         // 해당 issue에 배정된 Dev의 해결 이력 업데이트
         if(issueDTO.getState()==State.CLOSED) {
             for(User user : issue.getAssignedUsers()) {

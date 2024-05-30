@@ -3,7 +3,9 @@ package swengineering.team7.issuemanagementsystem.entity;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "User")
@@ -32,15 +34,15 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "project_id")
     )
-    private Set<Project> inchargeProjects;
+    private Set<Project> inchargeProjects = new HashSet<>();
 
     // User:Issue 1:다   create
     @OneToMany(mappedBy = "reporter", cascade = CascadeType.ALL)
-    private Set<Issue> issues;
+    private Set<Issue> issues = new HashSet<>();
 
     // User:Issue 1:다   Assign
     @ManyToMany(mappedBy = "assignedUsers")
-    private Set<Issue> assignedIssues;
+    private Set<Issue> assignedIssues = new HashSet<>();
 
     // User:Comment 1:다
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -82,16 +84,12 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id)
-                && Objects.equals(username, user.username)
-                && Objects.equals(password, user.password)
-                && Objects.equals(role, user.role)
-                && Objects.equals(Contract, user.Contract);
+        return Objects.equals(id, user.id);
     }
   
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, password, role, Contract);
+        return Objects.hash(id);
     }
 
     //Getter & Setter
@@ -166,9 +164,7 @@ public class User {
         this.Contract=contract;
     }
 
-    public void addIssue(Issue newissue) {
-        issues.add(newissue);
-    }
+    public void addIssue(Issue newissue) { this.issues.add(newissue); };
 
     public void removeIssue(Issue target) {
         issues.remove(target);

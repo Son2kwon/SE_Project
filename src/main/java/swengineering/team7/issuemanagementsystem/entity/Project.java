@@ -25,7 +25,7 @@ public class Project {
 
     // Project:Issue   1:다      has many
     @OneToMany(mappedBy = "project")
-    private Set<Issue> issues;
+    private Set<Issue> issues = new HashSet<>();
 
     // 트렌드 필드 추가
     private String trend;
@@ -39,20 +39,17 @@ public class Project {
         return project;
     }
 
-    @Override
+   @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Project project = (Project) o;
-        return Objects.equals(id, project.id)
-                && Objects.equals(name, project.name)
-                && Objects.equals(startDate, project.startDate)
-                && Objects.equals(dueDate, project.dueDate);
+        return Objects.equals(id, project.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, startDate, dueDate);
+        return Objects.hash(id);
     }
     
     //Getter & Setter
