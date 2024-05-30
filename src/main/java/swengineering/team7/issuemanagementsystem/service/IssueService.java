@@ -165,6 +165,7 @@ public class IssueService {
         if(findIssue != null) {
             IssueDTO issue = IssueDTO.makeDTOFrom(findIssue);
             issue.setProjectID(findIssue.getProject().getId());
+            issueDTOs.add(issue);
         }
 
         return issueDTOs;
