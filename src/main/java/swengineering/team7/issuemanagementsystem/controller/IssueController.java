@@ -7,8 +7,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import swengineering.team7.issuemanagementsystem.DTO.IssueCountByDateDTO;
+import swengineering.team7.issuemanagementsystem.DTO.IssueCountByTagDTO;
 import swengineering.team7.issuemanagementsystem.DTO.IssueDTO;
 import swengineering.team7.issuemanagementsystem.DTO.SearchInfoDTO;
+import swengineering.team7.issuemanagementsystem.service.IssueAnalyticsService;
 import swengineering.team7.issuemanagementsystem.service.IssueService;
 import swengineering.team7.issuemanagementsystem.service.UserService;
 import swengineering.team7.issuemanagementsystem.util.JwtCertificate;
@@ -23,11 +26,12 @@ import java.util.*;
 public class IssueController {
     IssueService issueService;
     UserService userService;
+    IssueAnalyticsService issueAnalyticsService;
     @Autowired
-    public IssueController(UserService userService, IssueService issueService) {
-
+    public IssueController(UserService userService, IssueService issueService, IssueAnalyticsService issueAnalyticsService) {
         this.userService = userService;
         this.issueService = issueService;
+        this.issueAnalyticsService=issueAnalyticsService;
     }
     @PostMapping("/createIssue")
     public ResponseEntity<Void> create(@RequestBody Map<String, Object> payload){
@@ -68,7 +72,18 @@ public class IssueController {
                 searchResult = issueService.searchIssueInfo(searchInfoDTO);
                 break;
             case "byPerson":
-                searchInfoDTO = new SearchInfoDTO(userId, SearchType.WRITER);
+                switch(role){
+                    default:
+                    case "reporter":
+                        searchInfoDTO = new SearchInfoDTO(userId, SearchType.WRITER);
+                        break;
+                    case "assignee":
+                        searchInfoDTO = new SearchInfoDTO(userId, SearchType.ASSIGNEE);
+                        break;
+                    case "fixer":
+                        searchInfoDTO = new SearchInfoDTO(userId, SearchType.FIXER);
+                        break;
+                }
                 searchResult = issueService.searchIssueInfo(searchInfoDTO);
                 break;
             case "byPriority":
@@ -125,5 +140,21 @@ public class IssueController {
             }
         }
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+    @GetMapping("/getIssueCountByDate")
+    public ResponseEntity<List<Map<String,String>>> getIssueCountByDate(){
+        List<Map<String,String>> response = new ArrayList<>();
+        List<IssueCountByDateDTO> result = issueAnalyticsService.getIssueCountsByDate();
+        for(IssueCountByDateDTO r: result){
+            Map<String,String> map = new HashMap<>();
+            map.put("date",r.getDate().toString());
+            map.put("count",r.getCount().toString());
+            response.add(map);
+        }
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("/getIssueCountByTag")
+    public ResponseEntity<List<IssueCountByTagDTO>> getIssueCountByTag(){
+        return ResponseEntity.ok(issueAnalyticsService.getIssueCountsByTag());
     }
 }
