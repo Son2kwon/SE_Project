@@ -78,11 +78,15 @@ public class IssueService {
             return findbyTitle(searchInfoDTO.getSearchValue());
         } else if (searchInfoDTO.getSearchType() == SearchType.WRITER) {
             return findbyWriter(searchInfoDTO.getSearchValue());
-        } else if (searchInfoDTO.getSearchType() == SearchType.STATE) {
+        }else if (searchInfoDTO.getSearchType()==SearchType.ASSIGNEE) {
+            return findByAssignee(searchInfoDTO.getSearchValue());
+        }else if(searchInfoDTO.getSearchType()==SearchType.FIXER){
+            return findByFixerID(searchInfoDTO.getSearchValue());
+        }else if (searchInfoDTO.getSearchType() == SearchType.STATE) {
             return findbyState(searchInfoDTO.getSearchValue());
         } else if (searchInfoDTO.getSearchType() == SearchType.ISSUEID){
             return findbyIssueID(Long.parseLong(searchInfoDTO.getSearchValue()));
-        } else if (searchInfoDTO.getSearchType() == SearchType.PRIORITY){
+        } else if (searchInfoDTO.getSearchType() == SearchType.PRIORITY) {
             return findByPriority(searchInfoDTO.getSearchValue());
         }else if (searchInfoDTO.getSearchType() == SearchType.ALL){
             return findAll();
@@ -118,6 +122,22 @@ public class IssueService {
             issueDTOs.add(IssueDTO.makeDTOFrom(issue));
         }
 
+        return issueDTOs;
+    }
+    public List<IssueDTO> findByAssignee(String assigneeID){
+        List<IssueDTO> issueDTOs = new ArrayList<>();
+        List<Issue> issues = issueRepository.findByAssignedUserId(assigneeID);
+        for(Issue issue:issues){
+            issueDTOs.add(IssueDTO.makeDTOFrom(issue));
+        }
+        return issueDTOs;
+    }
+    public List<IssueDTO> findByFixerID(String fixerID){
+        List<IssueDTO> issueDTOs = new ArrayList<>();
+        List<Issue> issues = issueRepository.findByFixerId(fixerID);
+        for(Issue issue:issues){
+            issueDTOs.add(IssueDTO.makeDTOFrom(issue));
+        }
         return issueDTOs;
     }
 
@@ -176,6 +196,7 @@ public class IssueService {
         }
         return issueDTOs;
     }
+
     public List<IssueDTO> findAll(){
         List<IssueDTO> issueDTOs = new ArrayList<>();
         List<Issue> issues = issueRepository.findAll();
@@ -216,17 +237,18 @@ public class IssueService {
         issue.setPriority(issueDTO.getPriority());
         issue.setIssueDescription(issueDTO.getIssueDescription());
         issueRepository.save(issue);
-        updateState(issueDTO);
+        //updateState(issueDTO);
+        //무슨 함수인지??
         return true;
     }
 
     //State Update
-    public Boolean updateState(IssueDTO issueDTO){
+    public Boolean updateState(IssueDTO issueDTO, String updaterID){
         Issue issue = issueRepository.findById(issueDTO.getId()).orElse(null);
         if(issue != null) {
             issue.setState(issueDTO.getState());
             if(issueDTO.getState()==State.FIXED && issueDTO.getReporterID() != null){
-                userRepository.findById(issueDTO.getReporterID()).ifPresent(issue::setFixer);
+                userRepository.findById(updaterID).ifPresent(issue::setFixer);
             }
             issueRepository.save(issue);
             return true;
