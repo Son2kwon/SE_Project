@@ -7,10 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import swengineering.team7.issuemanagementsystem.DTO.IssueCountByDateDTO;
-import swengineering.team7.issuemanagementsystem.DTO.IssueCountByTagDTO;
-import swengineering.team7.issuemanagementsystem.DTO.IssueDTO;
-import swengineering.team7.issuemanagementsystem.DTO.SearchInfoDTO;
+import swengineering.team7.issuemanagementsystem.DTO.*;
 import swengineering.team7.issuemanagementsystem.service.IssueAnalyticsService;
 import swengineering.team7.issuemanagementsystem.service.IssueService;
 import swengineering.team7.issuemanagementsystem.service.UserService;
@@ -45,6 +42,7 @@ public class IssueController {
         issueDTO.setDate(LocalDateTime.now());
         issueDTO.setReporterID(id);
         issueDTO.setProjectID(Long.parseLong((String) payload.get("projectId")));
+        issueDTO.setTag((String)payload.get("tag"));
 
         if(issueService.createIssue(issueDTO)){
             return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -106,6 +104,7 @@ public class IssueController {
             tmp.put("date",issueDTO.getDate().toString());
             tmp.put("reporter",issueDTO.getReporterID());
             tmp.put("fixer",issueDTO.getFixer());
+            tmp.put("tag",issueDTO.getTag());
             if(issueDTO.getAssignees()!=null){
                 tmp.put("assignees",String.join(", ", issueDTO.getAssignees()));
             }else{
@@ -156,5 +155,15 @@ public class IssueController {
     @GetMapping("/getIssueCountByTag")
     public ResponseEntity<List<IssueCountByTagDTO>> getIssueCountByTag(){
         return ResponseEntity.ok(issueAnalyticsService.getIssueCountsByTag());
+    }
+    @GetMapping("/getRecommendDev")
+    public ResponseEntity<List<String>> getRecommendUser(
+            @RequestParam("projectID") String projectID,
+            @RequestParam("tag") String tag
+    ){
+        List<UserInformationDTO> users = issueService.recommendAssignee(Long.parseLong(projectID),tag);
+        List<String> response = new ArrayList<>();
+        for(UserInformationDTO user:users){response.add(user.getId());}
+        return ResponseEntity.ok(response);
     }
 }
