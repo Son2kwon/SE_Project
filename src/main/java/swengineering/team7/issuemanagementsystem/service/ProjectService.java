@@ -64,6 +64,20 @@ public class ProjectService {
         projectRepository.save(project);
         return true;
     }
+    public boolean assignUserToProject(Long projectId, String userId, Role role) {
+        Project project = projectRepository.findById(projectId).orElseThrow(() -> new RuntimeException("Project not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+
+        ProjectAssignmentKey id = new ProjectAssignmentKey(projectId, userId);
+        ProjectAssignment assignment = new ProjectAssignment();
+        assignment.setId(id);
+        assignment.setProject(project);
+        assignment.setUser(user);
+        assignment.setRole(role);
+
+        projectAssignmentRepository.save(assignment);
+        return true;
+    }
 
     public boolean assignUserToProject(Long projectId, String userId, Role role) {
     //        Project project = projectRepository.findById(projectId).orElseThrow(() -> new RuntimeException("Project not found"));

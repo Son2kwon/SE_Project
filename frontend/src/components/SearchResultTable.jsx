@@ -18,6 +18,8 @@ const SearchResultTable=({ props,projectId }) =>{
     })
       .then(response => {
         setAssigneeList(response.data);
+        console.log(assigneeList);
+        console.log(role);
       })
       .catch(error => {
         console.error('Error fetching assignees:', error);

@@ -15,12 +15,9 @@ class IssueManagementSystemApplicationTests {
 
     @Test
     void testJpa() {
-        Dev dev=new Dev();
-        dev.incrementResolve("#a#b#c#d#e#f");
-        dev.incrementResolve("#a#c#d#f");
+        Dev dev1=new Dev();
+        Dev dev2=new Dev();
 
-        for(String key : dev.getIssueResolve().keySet()) {
-            System.out.println(key + ":" + dev.getIssueResolve().get(key));
-        }
+
     }
 }

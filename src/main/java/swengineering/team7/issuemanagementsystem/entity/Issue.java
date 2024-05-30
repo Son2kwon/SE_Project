@@ -6,6 +6,7 @@ import swengineering.team7.issuemanagementsystem.util.Priority;
 import swengineering.team7.issuemanagementsystem.util.State;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -43,7 +44,7 @@ public class Issue {
 
     // Issue:Comment 1:다    has many
     @OneToMany(mappedBy = "issue")
-    private Set<Comment> comments;
+    private Set<Comment> comments = new HashSet<>();
 
     //Issue:User 다:다    Assign
     @ManyToMany
@@ -52,7 +53,7 @@ public class Issue {
             joinColumns = @JoinColumn(name = "issue_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private Set<User> assignedUsers;
+    private Set<User> assignedUsers = new HashSet<>();
 
     public Issue(){};
 
@@ -72,12 +73,12 @@ public class Issue {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Issue issue = (Issue) o;
-        return Objects.equals(id, issue.id) && Objects.equals(title, issue.title) && Objects.equals(date, issue.date) && Objects.equals(state, issue.state) && Objects.equals(issueDescription, issue.issueDescription) && priority == issue.priority && Objects.equals(project, issue.project) && Objects.equals(reporter, issue.reporter) && Objects.equals(comments, issue.comments) && Objects.equals(assignedUsers, issue.assignedUsers);
+        return Objects.equals(id, issue.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, date, state, issueDescription, priority, project, reporter, comments, assignedUsers);
+        return Objects.hash(id);
     }
 
     //Getter & Setter

@@ -9,4 +9,11 @@ public class Tester extends User{
         public Tester () {
             setRole("tester");
         }
+        public Tester(String id, String username, String password, String contract){
+            setId(id);
+            setUsername(username);
+            setPassword(password);
+            setContract(contract);
+            setRole("Tester");
+        }
 }

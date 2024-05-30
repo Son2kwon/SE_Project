@@ -49,9 +49,9 @@ public class IssueDTO {
                 issue.getReporter().getId(),issue.getReporter().getUsername(),issue.getTag(),
                 "", "",
                 issue.getAssignedUsers().stream()
-                    .map(User::getId)
-                    .collect(Collectors.toSet())
-                );
+                      .map(User::getId)
+                      .collect(Collectors.toSet())
+                 );
     }
 
     public IssueDTO(Long id, Long projectID, String title, LocalDateTime date, State state, String issueDescription, Priority priority, String ReporterID, String Reportername,
