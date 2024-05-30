@@ -139,4 +139,29 @@ public class IssueServiceTest {
         List<User> users = issueService.recommendAssignee(projectDTO,"#tag1#tag2#tag3");
         assertTrue(ans.equals(users));
     }
+
+    @Test
+    void testFindIssueByID() {
+        Issue now = Issue.makeIssueOf("title", "description", LocalDateTime.now(), State.CLOSED, Priority.HIGH);
+        now.setId(1L);
+
+        Project p = new Project();
+        p.setId(1L);
+        now.setProject(p);
+
+        User user = new User();
+        user.setId("id1");
+        now.setReporter(user);
+        IssueDTO nowdto = IssueDTO.makeDTOFrom(now);
+
+        IssueDTO target = new IssueDTO();
+        target.setProjectID(1L);
+        target.setId(1L);
+
+        when(issueRepository.findById(1L)).thenReturn(Optional.of(now));
+        List<IssueDTO> ans = issueService.findbyIssueID(1L);
+
+        assertFalse(ans.isEmpty());
+        assertEquals(ans.get(0).getId(),nowdto.getId());
+    }
 }
