@@ -8,7 +8,9 @@ import swengineering.team7.issuemanagementsystem.DTO.CommentDTO;
 import swengineering.team7.issuemanagementsystem.DTO.IssueDTO;
 import swengineering.team7.issuemanagementsystem.service.CommentService;
 import swengineering.team7.issuemanagementsystem.service.IssueService;
+import swengineering.team7.issuemanagementsystem.service.ProjectAssignmentService;
 import swengineering.team7.issuemanagementsystem.util.JwtCertificate;
+import swengineering.team7.issuemanagementsystem.util.Role;
 import swengineering.team7.issuemanagementsystem.util.State;
 
 import java.util.List;
@@ -19,16 +21,23 @@ import java.util.Set;
 public class IssueDetailController {
     IssueService issueService;
     CommentService commentService;
+    ProjectAssignmentService projectAssignmentService;
     @Autowired
-    public IssueDetailController(IssueService issueService, CommentService commentService) {
+    public IssueDetailController(IssueService issueService, CommentService commentService, ProjectAssignmentService projectAssignmentService) {
         this.issueService=issueService;
         this.commentService=commentService;
+        this.projectAssignmentService=projectAssignmentService;
     }
-    @GetMapping("/detail/{id}")
-    public String detail(@PathVariable("id") Long id, Model model, @RequestParam("token") String token) {
+    @GetMapping("/detail/{projectId}/{id}")
+    public String detail(
+            @PathVariable("projectId") Long projectId,
+            @PathVariable("id") Long id,
+            @RequestParam("token") String token,
+            Model model) {
         JwtCertificate jwtCertificate = new JwtCertificate();
         String userID = jwtCertificate.extractId(token);
 
+        Role role = projectAssignmentService.getRoleByProjectIdAndUserId(projectId,userID);
         List<IssueDTO> issues = issueService.findbyIssueID(id);
         IssueDTO issue = issues.get(0);
         List<CommentDTO> commentDTOs = commentService.sortCommentsByDate(commentService.getAllCommentsByIssueID(issue.getId()));
@@ -36,16 +45,20 @@ public class IssueDetailController {
         issue.setComments(commentDTOs);
 
         model.addAttribute("issue", issue);
+        model.addAttribute("state", issue.getState().toString());
         model.addAttribute("token", token);
+        model.addAttribute("projectId", projectId);
         model.addAttribute("userID", userID);
+        model.addAttribute("role",role.toString());
         return "IssueDetailAndEdit";
     }
 
-    @PostMapping("/edit/complete/{id}")
-    public String SaveEditedIssue(@PathVariable("id") Long id, Model model,
+    @PostMapping("/edit/complete/{projectId}/{id}")
+    public String SaveEditedIssue(@PathVariable("projectId") Long projectId,
+                                  @PathVariable("id") Long id, Model model,
                                   @RequestParam("token") String token,
-                                  @RequestParam(value="newDescription") String newDescription,
-                                  @RequestParam("state") String newState
+                                  @RequestParam("selectState") String newState,
+                                  @RequestParam(value="newDescription") String newDescription
                                   ) {
         JwtCertificate jwtCertificate = new JwtCertificate();
         String updaterID = jwtCertificate.extractId(token);
@@ -54,6 +67,6 @@ public class IssueDetailController {
         issue.setIssueDescription(newDescription);
         issueService.updateDesciprtion(issue);
         issueService.updateState(issue,updaterID);
-        return String.format("redirect:/issue/detail/%d?token=%s", id,token);
+        return String.format("redirect:/issue/detail/%d/%d?token=%s", projectId,id,token);
     }
 }
