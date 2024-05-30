@@ -165,6 +165,7 @@ public class IssueService {
         if(findIssue != null) {
             IssueDTO issue = IssueDTO.makeDTOFrom(findIssue);
             issue.setProjectID(findIssue.getProject().getId());
+            issueDTOs.add(issue);
         }
 
         return issueDTOs;
@@ -299,8 +300,10 @@ public class IssueService {
         Optional<Project> optionalProject = projectRepository.findById(projectDTO.getId());
         if(optionalProject.isPresent()) {
             Project project = optionalProject.get();
-            for(User user : project.getAssignedUsers()) {
+            Set<User> tmpuser = project.getAssignedUsers();
+            for(User user : tmpuser) {
                 if(user instanceof Dev) {
+
                     int temp=0;
                     for(String s : tagset) {
                         if(((Dev) user).getIssueResolve().containsKey(s)){
