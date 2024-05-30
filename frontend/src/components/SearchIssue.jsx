@@ -125,15 +125,7 @@ const Search = () => {
   
 
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div>
-          <strong>My ID:</strong> {email ? email : ""} <strong>역할:</strong> {role ? role : ""}<br/>
-          <strong>Project:</strong> {projectName}<br/>
-        </div>
-        <LogOut/>
-      </div>
-      <br/>
+    <div>  
       <div>
         <StyledSelect
           placeholder={placeholder}
