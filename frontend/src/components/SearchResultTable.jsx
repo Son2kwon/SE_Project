@@ -18,8 +18,6 @@ const SearchResultTable=({ props,projectId }) =>{
     })
       .then(response => {
         setAssigneeList(response.data);
-        console.log(assigneeList);
-        console.log(role);
       })
       .catch(error => {
         console.error('Error fetching assignees:', error);
@@ -68,7 +66,8 @@ const SearchResultTable=({ props,projectId }) =>{
       <tbody>
         {props.map((item, index) => (
           <tr key={index}>
-            <td>{item.title}</td>
+            <td><a href={`http://localhost:8080/issue/detail/${item.id}?token=${sessionStorage.getItem('token')}`} target="_blank" rel="noopener noreferrer">
+            {item.title}</a></td>
             <td>{item.status}</td>
             <td>{item.reporter}</td>
             <td>
@@ -81,7 +80,7 @@ const SearchResultTable=({ props,projectId }) =>{
                 }))}
                 isMulti
               />
-              : item.assignee
+              : item.assignees
               }
             </td>
             <td>{item.fixer}</td>

@@ -37,3 +37,6 @@ out/
 .vscode/
 
 /node_modules/
+
+#secret settings
+/src/main/resources/application-secret.properties

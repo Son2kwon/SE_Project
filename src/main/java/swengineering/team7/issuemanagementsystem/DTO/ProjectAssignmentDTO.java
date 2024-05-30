@@ -10,6 +10,7 @@ public class ProjectAssignmentDTO {
     public ProjectAssignmentDTO(ProjectDTO projectDTO, String userId, Role role){
         this.projectDTO = projectDTO;
         this.role=role;
+        this.userId = userId;
     }
     public ProjectDTO getProjectDTO(){return projectDTO;}
     public String getUserId(){return userId;}

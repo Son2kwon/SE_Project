@@ -9,13 +9,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import swengineering.team7.issuemanagementsystem.DTO.ProjectDTO;
+import swengineering.team7.issuemanagementsystem.entity.ProjectAssignment;
+import swengineering.team7.issuemanagementsystem.entity.User;
+import swengineering.team7.issuemanagementsystem.repository.ProjectAssignmentRepository;
 import swengineering.team7.issuemanagementsystem.repository.ProjectRepository;
 import swengineering.team7.issuemanagementsystem.repository.UserRepository;
 import swengineering.team7.issuemanagementsystem.entity.Project;
+import swengineering.team7.issuemanagementsystem.util.Role;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -27,6 +33,9 @@ public class ProjectServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private ProjectAssignmentRepository projectAssignmentRepository;
 
     @InjectMocks
     private ProjectService projectService;
@@ -54,4 +63,32 @@ public class ProjectServiceTest {
         // ProjectRepository로 save 메소드가 정확히 1번 호출되었는가?
         verify(projectRepository, times(1)).save(any(Project.class));
     }
+
+    @Test
+    void assignUserToProject() {
+        // given
+        Long projectId = 1L;
+        String userId = "user1";
+        Role role = Role.DEV;
+
+        Project project = new Project();
+        project.setId(projectId);
+
+        User user = new User();
+        user.setId(userId);
+
+        //각 Repository에서 findById() 메소드를 호출하는 경우 Mock object가 반환하는 결과값들
+        when(projectRepository.findById(projectId)).thenReturn(Optional.of(project));
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        // when
+        boolean result = projectService.assignUserToProject(projectId, userId, role);
+
+        // then
+        assertTrue(result);
+        verify(projectRepository, times(1)).findById(projectId);
+        verify(userRepository, times(1)).findById(userId);
+        verify(projectAssignmentRepository, times(1)).save(any(ProjectAssignment.class));
+    }
+
 }

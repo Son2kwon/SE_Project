@@ -35,23 +35,23 @@ public class IssueDTO {
     //Entity -> DTO로 바꿔주는 생성자 메소드
     static public IssueDTO makeDTOFrom(swengineering.team7.issuemanagementsystem.entity.Issue issue){
         if(issue.getFixer()!=null){
-            return new IssueDTO(issue.getId(),issue.getProject().getId(), issue.getTitle(), issue.getDate(),
-                    issue.getState(), issue.getIssueDescription(),issue.getPriority(),
-                    issue.getReporter().getId(),issue.getReporter().getUsername(),issue.getTag(),
-                    issue.getFixer().getId(), issue.getFixer().getUsername(),
-                    issue.getAssignedUsers().stream()
-                            .map(User::getId)
-                            .collect(Collectors.toSet())
-            );}
+        return new IssueDTO(issue.getId(),issue.getProject().getId(), issue.getTitle(), issue.getDate(),
+                issue.getState(), issue.getIssueDescription(),issue.getPriority(),
+                issue.getReporter().getId(),issue.getReporter().getUsername(),issue.getTag(),
+                issue.getFixer().getId(), issue.getFixer().getUsername(),
+                issue.getAssignedUsers().stream()
+                    .map(User::getId)
+                    .collect(Collectors.toSet())
+                );}
 
         else return new IssueDTO(issue.getId(), issue.getProject().getId(), issue.getTitle(), issue.getDate(),
                 issue.getState(), issue.getIssueDescription(),issue.getPriority(),
                 issue.getReporter().getId(),issue.getReporter().getUsername(),issue.getTag(),
                 "", "",
                 issue.getAssignedUsers().stream()
-                        .map(User::getId)
-                        .collect(Collectors.toSet())
-        );
+                    .map(User::getId)
+                    .collect(Collectors.toSet())
+                );
     }
 
     public IssueDTO(Long id, Long projectID, String title, LocalDateTime date, State state, String issueDescription, Priority priority, String ReporterID, String Reportername,

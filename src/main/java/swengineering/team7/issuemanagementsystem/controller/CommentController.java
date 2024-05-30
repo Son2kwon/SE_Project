@@ -1,5 +1,6 @@
 package swengineering.team7.issuemanagementsystem.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,7 @@ import swengineering.team7.issuemanagementsystem.repository.UserRepository;
 import swengineering.team7.issuemanagementsystem.service.CommentService;
 import swengineering.team7.issuemanagementsystem.service.IssueService;
 import swengineering.team7.issuemanagementsystem.service.UserService;
+import swengineering.team7.issuemanagementsystem.util.JwtCertificate;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,19 +26,26 @@ import java.util.List;
 @RequestMapping("/comment")
 @Controller
 public class CommentController {
-    private UserRepository userRepository;
+
     private IssueService issueService;
     private CommentService commentService;
     private UserService userService;
 
-    public CommentController(UserRepository userRepository) {
+    @Autowired
+    public CommentController(IssueService issueService,CommentService commentService,UserService userService ) {
+        this.issueService=issueService;
+        this.userService=userService;
+        this.commentService=commentService;
     }
 
     @PostMapping("/create/{id}")
-    public String createComment(@PathVariable("id") Long id, Model model, @RequestParam(value = "newComment") String newComment, Principal principal) {
+    public String createComment(@PathVariable("id") Long id, Model model,
+                                @RequestParam(value = "newComment") String newComment,
+                                @RequestParam("token") String token) {
         List<IssueDTO> issues = issueService.findbyIssueID(id);
         IssueDTO issue = issues.get(0);
-        String writer = principal.getName();
+        JwtCertificate jwtCertificate = new JwtCertificate();
+        String writer = jwtCertificate.extractId(token);
         User user = userService.SearchSepcificUser(writer);
 
 
@@ -44,7 +53,7 @@ public class CommentController {
 
         commentService.addComment(commentDTO, issue);
 
-        return String.format("redirect:/issue/detail/%d", id);
+        return String.format("redirect:/issue/detail/%d?token=%s", id,token);
     }
 
     @ResponseBody

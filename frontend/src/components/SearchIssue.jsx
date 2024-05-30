@@ -16,7 +16,6 @@ const Search = () => {
   if(role==='admin') role='PL'
 
   const optionsByRole={
-    PL:{
      issueStatus: [
       { value: 'NEW', label: 'New' },
       { value: 'ASSIGNED', label: 'Assigned' },
@@ -31,14 +30,11 @@ const Search = () => {
         { value: 'fixer', label: "Fixer" },
       ],
       priorityField: [
-        { value: 'blocker', label: "Blocker" },
-        { value: 'critical', label: "Critical" },
-        { value: 'major', label: "Major" },
-        { value: 'minor', label: "Minor" },
-        { value: 'trivial', label: "Trivial"}
-      ],},
-      tester: [{ value: 'fixed', label: 'fixed' }],
-      dev: [{ value: 'assigned', label: 'assigned' }]
+        { value: 'LOW', label: "Low" },
+        { value: 'MEDIUM', label: "Medium" },
+        { value: 'HIGH', label: "High" },
+        { value: 'CRITICAL', label: "Critical" },
+      ]
   }
   useEffect(()=>{
     const fetchFirstData=async()=>{
@@ -55,16 +51,16 @@ const Search = () => {
   },[])
 
   useEffect(() => {
-    if (role==='PL'&& selectedOption && selectedOption.value !== '') {
+    if (selectedOption && selectedOption.value !== '') {
       switch (selectedOption.value) {
         case 'issueStatus':
-          setNextDropdownOptions(optionsByRole['PL'].issueStatus);
+          setNextDropdownOptions(optionsByRole.issueStatus);
           break;
         case 'personField':
-          setNextDropdownOptions(optionsByRole['PL'].personField);
+          setNextDropdownOptions(optionsByRole.personField);
           break;
         case 'priorityField':
-          setNextDropdownOptions(optionsByRole['PL'].priorityField);
+          setNextDropdownOptions(optionsByRole.priorityField);
           break;
         default:
           setNextDropdownOptions([]);
@@ -83,39 +79,28 @@ const Search = () => {
     event.preventDefault();
     try{
       let url,searchParam
-      //tester일 경우는 자신이 report하고 fixed된 이슈만 검색.
-      if (role==='TESTER'){
-        url = URLs.SEARCH + '/byIssueStatus'
-        searchParam = {status:'fixed', reporter: sessionStorage.getItem('id')}
-      }
-      else if (role==='DEV'){
-        url = URLs.SEARCH + '/byIssueStatus'
-        searchParam = {status:'assigned', assignee: sessionStorage.getItem('id')}
-      }
-      else{
-        switch (selectedOption.value){
-          case 'issueStatus':
-            url = URLs.SEARCH + "/byIssueStatus"
-            searchParam = {status: nextSelectedOption.value}
-            break;
-          case 'personField':
-            url = URLs.SEARCH + "/byPerson"
-            searchParam = {
-              role: nextSelectedOption.value,
-              id: searchTerm,
-            }
-            break;
-          case 'priorityField':
-            url = URLs.SEARCH + "/byPriority"
-            searchParam = {priority: nextSelectedOption.value}
-            break;
-        }
+      switch (selectedOption.value){
+        case 'issueStatus':
+          url = URLs.SEARCH + "/byIssueStatus"
+          searchParam = {status: nextSelectedOption.value}
+          break;
+        case 'personField':
+          url = URLs.SEARCH + "/byPerson"
+          searchParam = {
+            role: nextSelectedOption.value,
+            id: searchTerm,
+          }
+          break;
+        case 'priorityField':
+          url = URLs.SEARCH + "/byPriority"
+          searchParam = {priority: nextSelectedOption.value}
+          break;
       }
       await axios.get(url,{
         params:{...searchParam,projectId:projectId,token:sessionStorage.getItem('token')}
       })
       .then(response=>{
-        setSearchData(response.data.results)
+        setSearchData(response.data)
       })
     }catch(error){
       alert('검색어를 선택하세요!')
