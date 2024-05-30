@@ -38,16 +38,14 @@ public class IssueServiceTest {
     private IssueService issueService;
 
     @BeforeEach
-    void setUp() {
-    }
+    void setUp() {}
 
     @AfterEach
-    void tearDown() {
-    }
+    void tearDown(){}
 
     @Test
     void testCreateIssue() {
-        IssueDTO issueDTO = new IssueDTO(1L, 1L, "title", LocalDateTime.now(), State.NEW, "description", Priority.HIGH, "reporterid", "reportername", "#tag1");
+        IssueDTO issueDTO = new IssueDTO(1L,1L,"title",LocalDateTime.now(),State.NEW,"description",Priority.HIGH,"reporterid","reportername","#tag1");
         Tester tester = new Tester();
         tester.setId("reporterid");
         issueDTO.setProjectID(1L);
@@ -55,7 +53,7 @@ public class IssueServiceTest {
 
         Project project = new Project();
         project.setId(1L);
-        Issue terminal_issue = Issue.makeIssueOf("title", "description", LocalDateTime.now(), State.NEW, Priority.HIGH);
+        Issue terminal_issue = Issue.makeIssueOf("title","description",LocalDateTime.now(),State.NEW,Priority.HIGH);
         terminal_issue.setReporter(tester);
         terminal_issue.setProject(project);
 
@@ -71,11 +69,11 @@ public class IssueServiceTest {
     void testUpdateIssue() {
         Set<String> A = new HashSet<>();
         A.add("assignee");
-        IssueDTO issueDTO = new IssueDTO(1L, 1L, "title", LocalDateTime.now(), State.CLOSED, "description", Priority.HIGH, "reporterid", "reportername", "#tag1#tag2#tag3", "fixerid", "fixername", A);
+        IssueDTO issueDTO = new IssueDTO(1L,1L,"title", LocalDateTime.now(),State.CLOSED,"description", Priority.HIGH,"reporterid","reportername","#tag1#tag2#tag3","fixerid","fixername",A);
         Dev dev1 = new Dev();
         dev1.setId("fixerid");
 
-        Issue terminal_issue = Issue.makeIssueOf("old_title", "old_description", LocalDateTime.now(), State.FIXED, Priority.HIGH);
+        Issue terminal_issue = Issue.makeIssueOf("old_title","old_description",LocalDateTime.now(),State.FIXED,Priority.HIGH);
         terminal_issue.setId(1L);
         terminal_issue.setFixer(dev1);
 
@@ -88,9 +86,9 @@ public class IssueServiceTest {
         Boolean result = issueService.UpdateIssueInfo(issueDTO);
 
         assertTrue(result);
-        assertEquals(1, dev1.getIssueResolve().get("tag1"));
-        assertEquals(1, dev1.getIssueResolve().get("tag2"));
-        assertEquals(1, dev1.getIssueResolve().get("tag3"));
+        assertEquals(1,dev1.getIssueResolve().get("tag1"));
+        assertEquals(1,dev1.getIssueResolve().get("tag2"));
+        assertEquals(1,dev1.getIssueResolve().get("tag3"));
         verify(issueRepository, times(2)).save(terminal_issue);
         verify(userRepository, times(1)).save(dev1);
     }
@@ -98,29 +96,25 @@ public class IssueServiceTest {
     @Test
     void testRecommendAssignee() {
         Dev dev1 = new Dev();
-        dev1.setId("1");
         dev1.setUsername("dev1");
 
         Dev dev2 = new Dev();
-        dev2.setId("2");
         dev2.setUsername("dev2");
-        dev2.getIssueResolve().put("tag1", 1);
-        dev2.getIssueResolve().put("tag2", 1);
-        dev2.getIssueResolve().put("tag3", 1);
+        dev2.getIssueResolve().put("tag1",1);
+        dev2.getIssueResolve().put("tag2",1);
+        dev2.getIssueResolve().put("tag3",1);
 
         Dev dev3 = new Dev();
-        dev3.setId("3");
         dev3.setUsername("dev3");
-        dev3.getIssueResolve().put("tag1", 2);
-        dev3.getIssueResolve().put("tag2", 2);
-        dev3.getIssueResolve().put("tag3", 2);
+        dev3.getIssueResolve().put("tag1",2);
+        dev3.getIssueResolve().put("tag2",2);
+        dev3.getIssueResolve().put("tag3",2);
 
         Dev dev4 = new Dev();
-        dev4.setId("4");
         dev4.setUsername("dev4");
-        dev4.getIssueResolve().put("tag1", 3);
-        dev4.getIssueResolve().put("tag2", 3);
-        dev4.getIssueResolve().put("tag3", 3);
+        dev4.getIssueResolve().put("tag1",3);
+        dev4.getIssueResolve().put("tag2",3);
+        dev4.getIssueResolve().put("tag3",3);
 
         // 반환되는 개발자 3명
         List<User> ans = new ArrayList<>();
@@ -129,7 +123,7 @@ public class IssueServiceTest {
         ans.add(dev2);
 
         // 임시 프로젝트 생성
-        ProjectDTO projectDTO = new ProjectDTO(1L, "name", LocalDateTime.now(), LocalDateTime.now());
+        ProjectDTO projectDTO = new ProjectDTO(1L,"name",LocalDateTime.now(),LocalDateTime.now());
         Project project = new Project();
         project.setId(1L);
         project.setName("name");
@@ -141,8 +135,8 @@ public class IssueServiceTest {
         project.addAssignedUser(dev4);
 
         when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
-        List<User> users = issueService.recommendAssignee(projectDTO, "#tag1#tag2#tag3");
-        assertEquals(users, ans);
+        List<User> users = issueService.recommendAssignee(projectDTO,"#tag1#tag2#tag3");
+        assertTrue(ans.equals(users));
     }
 
     @Test

@@ -102,6 +102,7 @@ public class CommentService {
         }
         return null;
     }
+  
     public Set<CommentDTO> getAllCommentsByIssueID(Long IssueID){
         Optional<Issue> issue = issueRepository.findById(IssueID);
         Set<CommentDTO> result = new HashSet<>();
