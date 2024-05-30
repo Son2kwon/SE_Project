@@ -10,6 +10,8 @@ const URLs = {
   GetProjectList: base_url + '/getProjectList',
   CreateIssue: base_url +'/createIssue',
   GetDev: base_url+'/getDev',
-  AssignDev: base_url +'/assignDev'
+  AssignDev: base_url +'/assignDev',
+  GetIssueCountByDate: base_url + '/getIssueCountByDate',
+  GetIssueCountByTag:  base_url + '/getIssueCountByTag',
 };
 export default URLs;

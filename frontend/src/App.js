@@ -1,4 +1,5 @@
 import './styles/App.css';
+import './styles/issueStyle.css'
 import {useState,useEffect} from 'react'
 import { Routes, Route, Navigate,useNavigate,} from 'react-router-dom';
 import SignUp from './login/Register'
@@ -11,6 +12,7 @@ import FallbackRoute from './components/FallbackRoute.tsx'
 import CreateProject from './components/CreateProject';
 import ManageAccount from './components/ManageAccount.jsx';
 import CreateIssue from './components/CreateIssue.jsx';
+import IssueStatistics from './components/IssueStatistics/IssueStatistics';
 
 function App() {
   const navigate = useNavigate();
@@ -53,14 +55,23 @@ function App() {
               isAllow={token&&role==='admin'}
             />}
           />
+
           <Route path="/" element={<HomePage/>}/>
-          <Route path="/project/:projectId" element={
+          <Route path="/project/:projectId/:projectName" element={
             <>
-              <Search/>
-              <CreateIssue/>
+              <div className="search-container">
+                <Search/>
+              </div>
+              <div className="create-issue-container">
+                <CreateIssue/>
+              </div>
             </>
           }/>
+          <Route path="/issue-analysis" element={
+          <IssueStatistics/>
+        }/>
         </Route>
+        
       </Routes>
     </div>
   );
