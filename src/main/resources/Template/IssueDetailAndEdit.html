@@ -4,32 +4,23 @@
   <title>Issue details</title>
 </head>
 <body>
-<form th:action="@{|/issue/edit/complete/${issue.id}|}" method="post">
+<form th:action="@{|/issue/edit/complete/${projectId}/${issue.id}|}" method="post">
   <input type="hidden" id="token" name="token" th:value="${token}" />
   <div>
     <span id="currentState" th:text="${issue.state}" style="display: none;"></span>
     State:
-    <select id="state" name="state">
-      <option value="NEW">New</option>
-      <option value="ASSIGNED">Assigned</option>
-      <option value="FIXED">Fixed</option>
-      <option value="RESOLVED">Resolved</option>
-      <option value="CLOSED">Closed</option>
-    </select>
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        var stateSelect = document.getElementById('state');
-        var currentState = document.getElementById('currentState').innerText;
+    <select id="selectState" name="selectState">
+      <option th:if="${state eq 'NEW'}" value="NEW" selected>New</option>
+      <option th:if="${state eq 'ASSIGNED'}" value="ASSIGNED" selected>Assigned</option>
+      <option th:if="${state eq 'FIXED'}" value="FIXED" selected>Fixed</option>
+      <option th:if="${state eq 'RESOLVED'}" value="RESOLVED" selected>Resolved</option>
+      <option th:if="${state eq 'CLOSED'}" value="CLOSED" selected>Closed</option>
 
-        console.log(currentState);
-        if (currentState === 'NEW') {
-          stateSelect.innerHTML = '<option value="NEW" selected>New</option>';
-        } else {
-          console.log(currentState);
-          stateSelect.remove(0);
-        }
-      });
-    </script>
+      <option th:if="${role eq 'TESTER' and state eq 'FIXED'}" value="RESOLVED">Resolved</option>
+      <option th:if="${role eq 'PL' and state eq 'RESOLVED'}" value="CLOSED">Closed</option>
+      <option th:if="${role eq 'DEV' and state eq 'ASSIGNED'}" value="FIXED">Fixed</option>
+    </select>
+    <input type="hidden" id="role" th:value="${role}" />
   </div>
 <div>
   <p>Title: <span th:text="${issue.title}" /></p>
@@ -110,8 +101,6 @@
       // 댓글 작성자의 ID를 가져옵니다.
       if (commentWriterIDElement) {
         const commentWriterID = commentWriterIDElement.value;
-        console.log(commentWriterID); // Log the commentWriterID
-
         // Ensure commentWriterID is not null before comparison
         if (commentWriterID !== null && commentWriterID !== userID) {
           const editButton = container.querySelector('.edit-button');
