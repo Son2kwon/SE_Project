@@ -67,7 +67,7 @@ public class User {
   
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, password, role, Contract);
+        return Objects.hash(id);
     }
 
     //Getter & Setter
@@ -142,7 +142,7 @@ public class User {
         this.Contract=contract;
     }
 
-    public void addIssue(Issue newissue) { this.issues.add(newissue); };
+    public void addIssue(Issue newissue) { this.issues.add(newissue); }
 
     public void removeIssue(Issue target) {
         issues.remove(target);
