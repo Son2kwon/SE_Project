@@ -8,6 +8,7 @@ import swengineering.team7.issuemanagementsystem.DTO.CommentDTO;
 import swengineering.team7.issuemanagementsystem.DTO.IssueDTO;
 import swengineering.team7.issuemanagementsystem.service.CommentService;
 import swengineering.team7.issuemanagementsystem.service.IssueService;
+import swengineering.team7.issuemanagementsystem.util.JwtCertificate;
 import swengineering.team7.issuemanagementsystem.util.State;
 
 import java.util.List;
@@ -25,32 +26,34 @@ public class IssueDetailController {
     }
     @GetMapping("/detail/{id}")
     public String detail(@PathVariable("id") Long id, Model model, @RequestParam("token") String token) {
+        JwtCertificate jwtCertificate = new JwtCertificate();
+        String userID = jwtCertificate.extractId(token);
+
         List<IssueDTO> issues = issueService.findbyIssueID(id);
         IssueDTO issue = issues.get(0);
-        Set<CommentDTO> commentDTOSet = commentService.getAllCommentsByIssueID(issue.getId());
-        issue.setComments(commentDTOSet);
+        List<CommentDTO> commentDTOs = commentService.sortCommentsByDate(commentService.getAllCommentsByIssueID(issue.getId()));
+
+        issue.setComments(commentDTOs);
 
         model.addAttribute("issue", issue);
         model.addAttribute("token", token);
-        return "IssueDetail";
-    }
-    @GetMapping("/edit/{id}")
-    public String edit(@PathVariable("id") Long id, Model model) {
-        IssueDTO issue = issueService.findbyIssueID(id).get(0);
-        model.addAttribute("issue", issue);
-        return "EditIssue";
+        model.addAttribute("userID", userID);
+        return "IssueDetailAndEdit";
     }
 
     @PostMapping("/edit/complete/{id}")
     public String SaveEditedIssue(@PathVariable("id") Long id, Model model,
+                                  @RequestParam("token") String token,
                                   @RequestParam(value="newDescription") String newDescription,
-                                  @RequestParam("state") String newState) {
+                                  @RequestParam("state") String newState
+                                  ) {
+        JwtCertificate jwtCertificate = new JwtCertificate();
+        String updaterID = jwtCertificate.extractId(token);
         IssueDTO issue = issueService.findbyIssueID(id).get(0);
         issue.setState(State.valueOf(newState));
         issue.setIssueDescription(newDescription);
         issueService.updateDesciprtion(issue);
-        issueService.updateState(issue);
-
-        return String.format("redirect:/issue/detail/%d", id);
+        issueService.updateState(issue,updaterID);
+        return String.format("redirect:/issue/detail/%d?token=%s", id,token);
     }
 }
