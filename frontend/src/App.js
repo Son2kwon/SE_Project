@@ -59,11 +59,11 @@ function App() {
           <Route path="/" element={<HomePage/>}/>
           <Route path="/project/:projectId/:projectName" element={
             <>
-              <div className="search-container">
-                <Search/>
-              </div>
               <div className="create-issue-container">
                 <CreateIssue/>
+              </div>
+              <div className="search-container">
+                <Search/>
               </div>
             </>
           }/>
