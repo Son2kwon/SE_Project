@@ -3,15 +3,14 @@ package swengineering.team7.issuemanagementsystem.entity;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "User")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class User {
     @Id
-    private String id;
+    protected String id;
 
     @Column(unique = true)
     private String username;
@@ -46,6 +45,27 @@ public class User {
     // User:Comment 1:다
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Comment> comments;
+
+    @ElementCollection
+    private Map<String,Integer> IssueResolve = new HashMap<>();
+
+    public void incrementResolve(String tag) {
+        if(tag!=null){
+            String tagset[] = tag.split("#");
+            List<String> temp = new ArrayList<>(Arrays.asList(tagset));
+            temp.remove(0);
+            tagset = temp.toArray(new String[temp.size()]);
+            for (String s : tagset) {
+                if (IssueResolve.containsKey(s)) {
+                    IssueResolve.put(s, IssueResolve.get(s) + 1);
+                } else {
+                    IssueResolve.put(s, 1);
+                }
+            }
+        }
+    }
+
+    public Map<String,Integer> getIssueResolve() { return IssueResolve; }
 
     public static User makeUserOf(String id, String username, String password, String role, String contract) {
         User user = new User();
