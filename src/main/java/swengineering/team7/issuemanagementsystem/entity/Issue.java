@@ -57,13 +57,14 @@ public class Issue {
     public Issue(){};
 
 
-    public static Issue makeIssueOf(String title, String issueDescription,LocalDateTime date, State state, Priority priority){
+    public static Issue makeIssueOf(String title, String issueDescription,LocalDateTime date, State state, Priority priority, String tag){
         Issue issue = new Issue();
         issue.setTitle(title);
         issue.setIssueDescription(issueDescription);
         issue.setDate(date);
         issue.setState(state);
         issue.setPriority(priority);
+        issue.setTag(tag);
         return issue;
     }
 

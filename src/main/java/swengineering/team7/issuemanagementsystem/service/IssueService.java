@@ -32,12 +32,15 @@ public class IssueService {
     IssueRepository issueRepository;
     UserRepository userRepository;
     ProjectRepository projectRepository;
+    ProjectAssignmentService projectAssignmentService;
 
-    public IssueService(UserService userService, IssueRepository issueRepository, UserRepository userRepository, ProjectRepository projectRepository) {
+    public IssueService(UserService userService, IssueRepository issueRepository, UserRepository userRepository,
+                        ProjectRepository projectRepository, ProjectAssignmentService projectAssignmentService) {
         this.userService = userService;
         this.issueRepository = issueRepository;
         this.userRepository = userRepository;
         this.projectRepository = projectRepository;
+        this.projectAssignmentService = projectAssignmentService;
     }
     @Transactional
     public Boolean setAssignees(Long issueId, List<String> userIds){
@@ -57,7 +60,7 @@ public class IssueService {
     //새로운 issue 하나를 만드는 작업 ( issue 저장 성공시 True 실패시 False 반환)
     public Boolean createIssue(IssueDTO issueDTO) {
 
-        Issue newIssue = Issue.makeIssueOf(issueDTO.getTitle(), issueDTO.getIssueDescription(), issueDTO.getDate(), issueDTO.getState(), issueDTO.getPriority());
+        Issue newIssue = Issue.makeIssueOf(issueDTO.getTitle(), issueDTO.getIssueDescription(), issueDTO.getDate(), issueDTO.getState(), issueDTO.getPriority(), issueDTO.getTag());
         newIssue.setState(State.NEW);
         User user = userRepository.findById(issueDTO.getReporterID()).orElse(null);
         Project project =  projectRepository.findById(issueDTO.getProjectID()).orElse(null);
@@ -228,7 +231,7 @@ public class IssueService {
         if(issueDTO.getState()==State.CLOSED) {
             for(User user : issue.getAssignedUsers()) {
                 if(user instanceof Dev) {
-                    ((Dev) user).incrementResolve(issueDTO.getTag());
+                    //((Dev) user).incrementResolve(issueDTO.getTag());
                     userRepository.save(user);
                 }
             }
@@ -248,7 +251,13 @@ public class IssueService {
         if(issue != null) {
             issue.setState(issueDTO.getState());
             if(issueDTO.getState()==State.FIXED && issueDTO.getReporterID() != null){
-                userRepository.findById(updaterID).ifPresent(issue::setFixer);
+                //Fixer로 정하고, 해결 이력 업데이트하고 저장.
+                User user = userRepository.findById(updaterID).orElse(null);
+                if(user!=null){
+                    issue.setFixer(user);
+                    user.incrementResolve(issueDTO.getTag());
+                    userRepository.save(user);
+                }
             }
             issueRepository.save(issue);
             return true;
@@ -296,7 +305,7 @@ public class IssueService {
 
     }
 
-    public List<User> recommendAssignee(ProjectDTO projectDTO, String tag) {
+    public List<UserInformationDTO> recommendAssignee(Long projectID, String tag) {
         ///////////////////////////////////////////////////////////////////////
         // 최대 힙 구현을 위해 Comparable 메소드 오버라이딩
         class PriorityPair implements Comparable<PriorityPair> {
@@ -327,25 +336,25 @@ public class IssueService {
         tagset = temp_tagset.toArray(new String[temp_tagset.size()]);
         
         PriorityQueue<PriorityPair> queue = new PriorityQueue<>();
-        Optional<Project> optionalProject = projectRepository.findById(projectDTO.getId());
+        List<String> devIDs= projectAssignmentService.getDevIdByProjectId(projectID);
+        Optional<Project> optionalProject = projectRepository.findById(projectID);
         if(optionalProject.isPresent()) {
             Project project = optionalProject.get();
-            for(User user : project.getAssignedUsers()) {
-                if(user instanceof Dev) {
-                    int temp=0;
-                    for(String s : tagset) {
-                        if(((Dev) user).getIssueResolve().containsKey(s)){
-                            temp=temp+((Dev) user).getIssueResolve().get(s);
-                        }
+            for(String devId: devIDs) {
+                User user = userRepository.findById(devId).orElse(null);
+                int temp=0;
+                for(String s : tagset) {
+                    if(user!=null && user.getIssueResolve().containsKey(s)){
+                        temp=temp+user.getIssueResolve().get(s);
                     }
-                    queue.offer(new PriorityPair(temp,user));
                 }
+                queue.offer(new PriorityPair(temp,user));
             }
         }
-        List<User> ret = new ArrayList<>();
+        List<UserInformationDTO> ret = new ArrayList<>();
         // 상위 3명을 반환하거나, 프로젝트에 있는 Dev들이 모두 추가되기전까지 반복
         for(int i=0;i<3&&!queue.isEmpty();i++) {
-            ret.add(queue.poll().getUser());
+            ret.add(UserInformationDTO.from(queue.poll().getUser()));
         }
         return ret;
     }
