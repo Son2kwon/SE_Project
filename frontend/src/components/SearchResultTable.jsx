@@ -44,7 +44,7 @@ const SearchResultTable=({ props,projectId }) =>{
   const handleClick=()=>{
     const windowHeight = window.innerHeight;
 
-    window.open(url, '_blank', `width=600,height=${windowHeight},top=${windowHeight - 100}`);
+    //window.open(url, '_blank', `width=600,height=${windowHeight},top=${windowHeight - 100}`);
   };
 
   const handleChangeAssignee = (selectedOptions, issueId) => {
@@ -92,7 +92,7 @@ const SearchResultTable=({ props,projectId }) =>{
           <tr key={index}>
             <td><a href={`http://localhost:8080/issue/detail/${projectId}/${item.id}?token=${sessionStorage.getItem('token')}`} target="_blank" rel="noopener noreferrer">
             {item.title}</a></td>
-            <td onClick={role=='PL'&&item.status=='NEW' ? this.handleClick : null}>{item.tag}</td>
+            <td onClick={role=='PL'&&item.status=='NEW' ? ()=>handleClick() : null}>{item.tag}</td>
             <td>{item.status}</td>
             <td>{item.reporter}</td>
             <td>
