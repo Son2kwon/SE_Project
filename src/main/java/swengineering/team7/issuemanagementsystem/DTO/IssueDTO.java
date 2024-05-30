@@ -26,7 +26,7 @@ public class IssueDTO {
     private String fixerName;
     private Set<String> assignees;
 
-    private Set<CommentDTO> comments;
+    private List<CommentDTO> comments;
 
 
     public IssueDTO() {
@@ -170,6 +170,6 @@ public class IssueDTO {
     public void setAssignees(Set<String> assignees){this.assignees=assignees;}
     public Set<String> getAssignees(){return this.assignees;}
 
-    public Set<CommentDTO> getComments(){return this.comments;}
-    public void setComments(Set<CommentDTO> comments){this.comments=comments;}
+    public List<CommentDTO> getComments(){return this.comments;}
+    public void setComments(List<CommentDTO> comments){this.comments=comments;}
 }
