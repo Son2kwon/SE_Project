@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import URLs from '../utils/urls'
+import '../styles/LoginForm.css'
 
 const Login = () => {
   const navigate = useNavigate();
@@ -31,7 +32,7 @@ const Login = () => {
       // Store token in local storage
       await Promise.all([
         sessionStorage.setItem("token", result.token),
-        //sessionStorage.setItem("email", result.email), // Save userId here
+        sessionStorage.setItem("email", result.email), // Save userId here
         sessionStorage.setItem("role",result.role),
       ])
 
@@ -52,7 +53,7 @@ const Login = () => {
     <div className="login-container">
       <form className="login-form" onSubmit={handleLogin}>
         <h1>Login</h1>
-        <label htmlFor="username">이메일</label>
+        <label htmlFor="username">아이디</label>
         <input
           type="text"
           id="username"

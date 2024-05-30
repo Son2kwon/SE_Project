@@ -85,7 +85,7 @@ const SearchResultTable=({ props,projectId }) =>{
             </td>
             <td>{item.fixer}</td>
             <td>{item.priority}</td>
-            <td>{item.date}</td>
+            <td>{item.date.slice(2, 16).replace('T', ' ')}</td>
 
           </tr>
         ))}

@@ -1,0 +1,9 @@
+.page-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Full viewport height */
+    padding-top: 60px; /* Space for the logout button */
+    box-sizing: border-box;
+  }

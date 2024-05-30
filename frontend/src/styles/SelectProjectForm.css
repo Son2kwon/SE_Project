@@ -1,0 +1,64 @@
+body, html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh; /* Full viewport height */
+  padding-top: 60px; /* Space for the logout button */
+  box-sizing: border-box;
+}
+
+.logout-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 6px 12px;
+  background-color: #6c757d; /* Gray background color */
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px; /* Smaller font size */
+  cursor: pointer;
+  z-index: 1000; /* Ensure it's above other content */
+}
+
+.logout-button:hover {
+  background-color: #5a6268; /* Slightly darker gray for hover state */
+}
+
+.project-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* Center content vertically */
+  flex: 1; /* Allow the project container to grow and take up available space */
+}
+
+.project-button {
+  width: 300px;
+  padding: 10px;
+  margin: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.project-button:hover {
+  background-color: #0056b3;
+}
+
+.no-projects {
+  font-size: 18px;
+  color: #888;
+  margin-top: 20px;
+}

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import URLs from '../utils/urls';
 import axios from 'axios';
+import '../styles/CreateIssueForm.css'
 
 const CreateIssue = () => {
   const [title, setTitle] = useState('');
@@ -46,31 +47,34 @@ const CreateIssue = () => {
 
   return (
       <div>
-        <button onClick={() => setShowIssueCreate(true)}>Create Issue</button>
+        <button className="button" onClick={() => setShowIssueCreate(true)}>Create Issue</button>
         {showIssueCreate?
-        <form onSubmit={handleSubmit}>
+        <form className="form" onSubmit={handleSubmit}>
         <div>
-            <label htmlFor="title">Title</label>
+          <label className="label" htmlFor="title">Title</label>
             <input
-            id="title"
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
+              className="input"
+              id="title"
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
             />
         </div>
         <div>
-            <label htmlFor="description">Description</label>
+          <label className="label" htmlFor="description">Description</label>
             <textarea
-            id="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
+              className="textarea"
+              id="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              required
             ></textarea>
         </div>
         <div>
-            <label htmlFor="priority">Priority</label>
+            <label className="label" htmlFor="priority">Priority</label>
             <select
+              className="select"
               id="priority"
               value={priority}
               onChange={(e) => setPriority(e.target.value)}
@@ -82,7 +86,7 @@ const CreateIssue = () => {
             ))}
             </select>
         </div>
-        <button type="submit">이슈 생성</button>
+        <button className="submit-button" type="submit">이슈 생성</button>
         </form>
         :null}
       </div>
