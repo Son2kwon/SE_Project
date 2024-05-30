@@ -1,0 +1,68 @@
+/* CreateIssueForm.css */
+
+/* Button Styles */
+.button {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-bottom: 5px;
+  }
+  
+  /* Form Styles */
+  .form {
+    margin-top: 10px;
+  }
+  
+  /* Label Styles */
+  .label {
+    display: block;
+    margin-bottom: 8px;
+  }
+  
+  /* Input Styles */
+  .input {
+    width: 400px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+  
+  /* Textarea Styles */
+  .textarea {
+    width: 400px;
+    height: 70px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    font-family: inherit;
+    margin-bottom: 12px;
+  }
+  
+  /* Select Styles */
+  .select {
+    width: 200px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+  
+  /* Submit Button Styles */
+  .submit-button {
+    padding: 8px 16px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-bottom: 20px;
+  }

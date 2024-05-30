@@ -2,14 +2,15 @@ import React, { useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import URLs from '../utils/urls';
 import axios from 'axios';
-
+import '../styles/CreateIssueForm.css'
+import LogOut from '../login/LogOut';
 const CreateIssue = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [tag,setTag] = useState('');
   //초기값 LOW
   const [priority, setPriority] = useState('LOW');
   const [showIssueCreate, setShowIssueCreate] = useState();
-  const {projectId} = useParams()
   const priorities = [
     { value: 'LOW', label: 'Low' },
     { value: 'MEDIUM', label: 'Medium' },
@@ -27,6 +28,7 @@ const CreateIssue = () => {
         title: title,
         issueDescription: description,
         priority: priority,
+        tag: tag?tag:''
       }, 
       {
         headers: {
@@ -39,38 +41,54 @@ const CreateIssue = () => {
       setTitle('')
       setDescription('')
       setPriority('LOW')
+      setTag('');
+      window.location.reload();
     } catch (error) {
       console.error('There was an error creating the issue!', error);
     }
   };
-
+  let role = sessionStorage.getItem('role')
+  let email = sessionStorage.getItem('email')
+  const {projectId, projectName} = useParams();
   return (
-      <div>
-        <button onClick={() => setShowIssueCreate(true)}>Create Issue</button>
-        {showIssueCreate?
-        <form onSubmit={handleSubmit}>
+    <div>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
-            <label htmlFor="title">Title</label>
+          <strong>My ID:</strong> {email ? email : ""} <strong>역할:</strong> {role ? role : ""}<br/>
+          <strong>Project:</strong> {projectName}<br/>
+        </div>
+        <LogOut/>
+      </div>
+      <br/>
+      <div>
+        <button className="button" onClick={() => setShowIssueCreate(true)}>Create Issue</button>
+        {showIssueCreate?
+        <form className="form" onSubmit={handleSubmit}>
+        <div>
+          <label className="label" htmlFor="title">Title</label>
             <input
-            id="title"
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
+              className="input"
+              id="title"
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
             />
         </div>
         <div>
-            <label htmlFor="description">Description</label>
+          <label className="label" htmlFor="description">Description</label>
             <textarea
-            id="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
+              className="textarea"
+              id="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              required
             ></textarea>
         </div>
         <div>
-            <label htmlFor="priority">Priority</label>
+            <label className="label" htmlFor="priority">Priority</label>
             <select
+              className="select"
               id="priority"
               value={priority}
               onChange={(e) => setPriority(e.target.value)}
@@ -82,9 +100,22 @@ const CreateIssue = () => {
             ))}
             </select>
         </div>
-        <button type="submit">이슈 생성</button>
+        <div>
+        <label className="label" htmlFor="tag">Tag</label>
+          <input
+            style={{ width: '40px' }}
+            placeholder='#num'
+            className="input"
+            id="tag"
+            type="text"
+            value={tag}
+            onChange={(e) => setTag(e.target.value)}
+            />
+        </div>
+        <button className="submit-button" type="submit">이슈 생성</button>
         </form>
         :null}
+      </div>
       </div>
   );
 };
