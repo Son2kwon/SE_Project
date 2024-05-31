@@ -12,7 +12,6 @@ import swengineering.team7.issuemanagementsystem.DTO.IssueCountByTagDTO;
 import swengineering.team7.issuemanagementsystem.repository.IssueRepository;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,12 +36,11 @@ public class IssueAnalyticsServiceTest {
     //Mock Object를 이용하여 IssueCountByDate()가 올바르게 동작하는 지 확인
     @Test
     void testIssueCountsByDateWithMock() {
-
         //given
         // Mock Object 내용 (DB가 반환할걸로 예상되는 결과)
         List<Object[]> mockResult = Arrays.asList(
-                new Object[]{LocalDateTime.of(2024, 5, 25, 0, 0), 5L},
-                new Object[]{LocalDateTime.of(2024, 5, 26, 0, 0), 3L}
+                new Object[]{java.sql.Date.valueOf(LocalDate.of(2024, 5, 25)), 5L},
+                new Object[]{java.sql.Date.valueOf(LocalDate.of(2024, 5, 26)), 3L}
         );
 
         //Mock Object를 반환하는 타이밍 설정
