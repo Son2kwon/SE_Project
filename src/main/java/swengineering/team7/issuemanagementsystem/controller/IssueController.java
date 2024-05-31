@@ -156,6 +156,11 @@ public class IssueController {
     public ResponseEntity<List<IssueCountByTagDTO>> getIssueCountByTag(){
         return ResponseEntity.ok(issueAnalyticsService.getIssueCountsByTag());
     }
+    @GetMapping("/getIssueCountByPriority")
+    public ResponseEntity<List<Map<Priority,Long>>> getIssueCountByPriority(){
+        return ResponseEntity.ok(issueAnalyticsService.getIssueCountsByPriority());
+    }
+
     @GetMapping("/getRecommendDev")
     public ResponseEntity<List<String>> getRecommendUser(
             @RequestParam("projectID") String projectID,

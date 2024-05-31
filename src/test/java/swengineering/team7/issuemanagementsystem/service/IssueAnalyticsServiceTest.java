@@ -10,10 +10,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import swengineering.team7.issuemanagementsystem.DTO.IssueCountByDateDTO;
 import swengineering.team7.issuemanagementsystem.DTO.IssueCountByTagDTO;
 import swengineering.team7.issuemanagementsystem.repository.IssueRepository;
+import swengineering.team7.issuemanagementsystem.util.Priority;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -80,4 +82,27 @@ public class IssueAnalyticsServiceTest {
         assertEquals("feature", issueCountsByTag.get(1).getTag());
         assertEquals(7L, issueCountsByTag.get(1).getCount());
     }
+    @Test
+    void testIssueCountsByPriorityWithMock() {
+        //given
+        // Mock Object 내용 (DB가 반환할걸로 예상되는 결과)
+        List<Object[]> mockResult = Arrays.asList(
+                new Object[]{Priority.LOW, 10L},
+                new Object[]{Priority.HIGH, 7L}
+        );
+
+        //Mock Object를 반환하는 타이밍 설정
+        when(issueRepository.countIssuesByPriority()).thenReturn(mockResult);
+
+        //when (Test 대상 메소드 호출)
+        List<Map<Priority,Long>> issueCountsByPriority = issueAnalyticsService.getIssueCountsByPriority();
+
+        //then (결과 비교)
+        assertEquals(2, issueCountsByPriority.size());
+        assertEquals(Priority.LOW,issueCountsByPriority.get(0).keySet().iterator().next());
+        assertEquals(10L, issueCountsByPriority.get(0).get(Priority.LOW));
+        assertEquals(Priority.HIGH,issueCountsByPriority.get(1).keySet().iterator().next());
+        assertEquals(7L, issueCountsByPriority.get(1).get(Priority.HIGH));
+    }
+
 }

@@ -38,11 +38,12 @@ public class CommentController {
         this.commentService=commentService;
     }
 
-    @PostMapping("/create/{id}")
-    public String createComment(@PathVariable("id") Long id, Model model,
+    @PostMapping("/create/{issueId}")
+    public String createComment(@PathVariable("issueId") Long issueId, Model model,
                                 @RequestParam(value = "newComment") String newComment,
-                                @RequestParam("token") String token) {
-        List<IssueDTO> issues = issueService.findbyIssueID(id);
+                                @RequestParam("token") String token,
+                                @RequestParam("projectId")Long projectId) {
+        List<IssueDTO> issues = issueService.findbyIssueID(issueId);
         IssueDTO issue = issues.get(0);
         JwtCertificate jwtCertificate = new JwtCertificate();
         String writer = jwtCertificate.extractId(token);
@@ -50,10 +51,18 @@ public class CommentController {
 
 
         CommentDTO commentDTO = commentService.createCommentDTO(null, newComment, writer, LocalDateTime.now(), issue.getId(), user);
+        if(!newComment.equals(""))
+            commentService.addComment(commentDTO, issue);
 
-        commentService.addComment(commentDTO, issue);
-
-        return String.format("redirect:/issue/detail/%d?token=%s", id,token);
+        return String.format("redirect:/issue/detail/%d/%d?token=%s", projectId,issueId,token);
+    }
+    @PostMapping("/delete/{commentID}")
+    public String deleteComment(@PathVariable("commentID")Long commentID,
+                                @RequestParam("projectId")Long projectId,
+                                @RequestParam("issueID")Long issueID,
+                                @RequestParam("token")String token){
+        commentService.deleteComment(commentService.getComment(commentID));
+        return String.format("redirect:/issue/detail/%d/%d?token=%s", projectId,issueID,token);
     }
 
     @GetMapping("/edit/{commentID}")
@@ -67,11 +76,12 @@ public class CommentController {
     public String SaveEditedComment( @PathVariable("commentID") Long commentID,
                                      @RequestParam("issueID") Long issueID,
                                      @RequestParam("commentContent") String newContent,
-                                     @RequestParam("token") String token) {
+                                     @RequestParam("token") String token,
+                                     @RequestParam("projectId")Long projectId) {
 
         CommentDTO commentDTO = commentService.getComment(commentID);
         commentService.modifyComment(commentDTO, newContent, LocalDateTime.now());
 
-        return String.format("redirect:/issue/detail/%d?token=%s",issueID,token);
+        return String.format("redirect:/issue/detail/%d/%d?token=%s",projectId,issueID,token);
     }
 }

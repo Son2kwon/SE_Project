@@ -40,6 +40,12 @@ public class UserService {
        User user = userRepository.findById(userInformationDTO.getId()).orElse(null);
        return user.getRole()!=null&&user.getRole().equals("admin");
     }
+    //계정 삭제
+    public void deleteUserById(String userId){
+       if(userRepository.existsById(userId)) {
+           userRepository.deleteById(userId);
+       }
+    }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // 사용자 계정 정보 수정

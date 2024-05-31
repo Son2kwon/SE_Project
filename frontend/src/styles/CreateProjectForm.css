@@ -1,0 +1,41 @@
+.project-form {
+    width: 400px; /* 박스의 너비를 설정합니다. */
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center; /* 내부 요소를 가운데로 정렬합니다. */
+    margin: 0 auto; /* 가운데 정렬을 위해 좌우 여백을 자동으로 설정합니다. */
+  }
+  
+  .project-form form {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 내부 요소를 세로로 가운데 정렬합니다. */
+  }
+
+  .project-form label {
+    margin-bottom: 5px;
+  }
+
+  .project-form input[type="text"],
+  .project-form button {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .title{
+    text-align: center;
+    width:250px
+  }
+  .project-form button {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: white;
+    background-color: #007BFF;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .project-form button:hover {
+    background-color: #0056b3;
+  }

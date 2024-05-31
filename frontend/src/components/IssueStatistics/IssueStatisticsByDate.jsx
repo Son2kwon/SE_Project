@@ -44,8 +44,8 @@ const IssueStatisticsByDate = ({}) => {
           label: 'Count',
           data: counts,
           fill: false,
-          backgroundColor: 'rgba(75, 192, 192, 0.6)',
-          borderColor: 'rgba(75, 192, 192, 1)',
+          backgroundColor: 'rgba(220, 235, 55, 0.6)',
+          borderColor: 'rgba(220, 235, 55, 1)',
         },
       ],
     };
@@ -84,7 +84,9 @@ const IssueStatisticsByDate = ({}) => {
           <option value="month">Monthly</option>
         </select>
       </div>
-      <Line data={chartData} />
+      <div class="chart-container">
+        <Line data={chartData} />
+      </div>
     </div>
   );
 };

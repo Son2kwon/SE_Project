@@ -37,6 +37,23 @@ public class UserController {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body("{\"message\": \"User created successfully\"}");
     }
+    @PostMapping("/deleteAccount")
+    public ResponseEntity<String> deleteAccount(@RequestBody  Map<String,Object> requestBody){
+        String token = (String) requestBody.get("token");
+        String userId = (String) requestBody.get("userId");
+        JwtCertificate jwtCertificate = new JwtCertificate();
+        UserInformationDTO userInformationDTO = new UserInformationDTO();
+        userInformationDTO.setId(jwtCertificate.extractId(token));
+
+        if(userService.isAdmin(userInformationDTO)){
+            userService.deleteUserById(userId);
+            return ResponseEntity.ok("Delete Complete");
+        }
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Deletion failed due to server error.");
+
+    }
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody UserInformationDTO userInformationDTO) {
