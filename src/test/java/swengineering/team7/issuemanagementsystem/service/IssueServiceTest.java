@@ -9,11 +9,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import swengineering.team7.issuemanagementsystem.DTO.IssueDTO;
 import swengineering.team7.issuemanagementsystem.DTO.ProjectDTO;
+import swengineering.team7.issuemanagementsystem.DTO.UserInformationDTO;
 import swengineering.team7.issuemanagementsystem.entity.*;
 import swengineering.team7.issuemanagementsystem.repository.IssueRepository;
+import swengineering.team7.issuemanagementsystem.repository.ProjectAssignmentRepository;
 import swengineering.team7.issuemanagementsystem.repository.ProjectRepository;
 import swengineering.team7.issuemanagementsystem.repository.UserRepository;
 import swengineering.team7.issuemanagementsystem.util.Priority;
+import swengineering.team7.issuemanagementsystem.util.Role;
 import swengineering.team7.issuemanagementsystem.util.State;
 
 import java.time.LocalDateTime;
@@ -33,6 +36,12 @@ public class IssueServiceTest {
 
     @Mock
     private ProjectRepository projectRepository;
+
+    @Mock
+    private ProjectAssignmentRepository projectAssignmentRepository;
+
+    @Mock
+    private ProjectAssignmentService projectAssignmentService;
 
     @InjectMocks
     private IssueService issueService;
@@ -95,23 +104,24 @@ public class IssueServiceTest {
 
     @Test
     void testRecommendAssignee() {
-        Dev dev1 = new Dev();
-        dev1.setUsername("dev1");
+        User dev1 = new User();
+        List<String> dev_id = Arrays.asList("dev1","dev2","dev3","dev4");
+        dev1.setId("dev1");
 
-        Dev dev2 = new Dev();
-        dev2.setUsername("dev2");
+        User dev2 = new User();
+        dev2.setId("dev2");
         dev2.getIssueResolve().put("tag1",1);
         dev2.getIssueResolve().put("tag2",1);
         dev2.getIssueResolve().put("tag3",1);
 
-        Dev dev3 = new Dev();
-        dev3.setUsername("dev3");
+        User dev3 = new User();
+        dev3.setId("dev3");
         dev3.getIssueResolve().put("tag1",2);
         dev3.getIssueResolve().put("tag2",2);
         dev3.getIssueResolve().put("tag3",2);
 
-        Dev dev4 = new Dev();
-        dev4.setUsername("dev4");
+        User dev4 = new User();
+        dev4.setId("dev4");
         dev4.getIssueResolve().put("tag1",3);
         dev4.getIssueResolve().put("tag2",3);
         dev4.getIssueResolve().put("tag3",3);
@@ -135,8 +145,20 @@ public class IssueServiceTest {
         project.addAssignedUser(dev4);
 
         when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
-        //List<User> users = issueService.recommendAssignee(projectDTO,"#tag1#tag2#tag3");
-        //assertTrue(ans.equals(users));
+        when(userRepository.findById("dev1")).thenReturn(Optional.of(dev1));
+        when(userRepository.findById("dev2")).thenReturn(Optional.of(dev2));
+        when(userRepository.findById("dev3")).thenReturn(Optional.of(dev3));
+        when(userRepository.findById("dev4")).thenReturn(Optional.of(dev4));
+        when(projectAssignmentService.getDevIdByProjectId(1L)).thenReturn(dev_id);
+        List<UserInformationDTO> users = issueService.recommendAssignee(projectDTO.getId(),"#tag1#tag2#tag3");
+       // for(int i=0;i<3;i++){
+          //  assertEquals(ans.get(i).getId(),users.get(i).getId());
+       // }
+
+        for(int i=0;i<users.size();i++)
+        {
+            System.out.println(users.get(i).getId());
+        }
     }
 
     @Test
@@ -162,5 +184,24 @@ public class IssueServiceTest {
 
         assertFalse(ans.isEmpty());
         assertEquals(ans.get(0).getId(),nowdto.getId());
+    }
+
+    @Test
+    void setAssignees(){
+        User u1 = new User();
+        u1.setId("u1");
+
+        User u2 = new User();
+        u1.setId("u2");
+
+        List<String> ids = Arrays.asList("u1","u2");
+
+        Issue issue = new Issue();
+        issue.setId(1L);
+
+        when(issueRepository.findById(1L)).thenReturn(Optional.of(issue));
+        when(userRepository.findById("u1")).thenReturn(Optional.of(u1));
+        when(userRepository.findById("u2")).thenReturn(Optional.of(u2));
+        assertTrue(issueService.setAssignees(1L,ids));
     }
 }
