@@ -9,6 +9,8 @@ const SearchResultTable=({ props,projectId }) =>{
   const [assignees, setAssignees] = useState([]);
   const [assigneeList, setAssigneeList] = useState([]);
   const [assignedAssigneeList,setAssignedAssigneeList] = useState([]);
+  const [items,setItems] = useState([]);
+  const [tagToAssigneesMap, setTagToAssigneesMap] = useState([]);
   useEffect(() => {
     // 서버로부터 assignee 값을 받아옴
     axios({
@@ -18,34 +20,52 @@ const SearchResultTable=({ props,projectId }) =>{
     })
       .then(response => {
         setAssigneeList(response.data);
-        console.log(assigneeList);
-        console.log(role);
       })
       .catch(error => {
         console.error('Error fetching assignees:', error);
       });
   }, []);
 
-  const fetchRecommendDev=async(tag)=>{
-    // 서버로부터 추천 dev를 받아오고 띄워줌
-    axios({
-      url: URLs.GetRecommendDev,
-      method: 'get',
-      params: {token: sessionStorage.getItem('token'), projectID:projectId, tag:tag}
-    })
-      .then(response => {
-        setAssigneeList(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching assignees:', error);
-      });
+  const mapRecommendedAssignees = async (props) => {
+    const tags = [...new Set(props.map(item => item.tag))];
+    setTagToAssigneesMap(await fetchRecommendedAssigneesForTags(tags));
   };
-  
-  const handleClick=()=>{
-    const windowHeight = window.innerHeight;
 
-    //window.open(url, '_blank', `width=600,height=${windowHeight},top=${windowHeight - 100}`);
-  };
+  async function fetchRecommendedAssigneesForTags(tags) {
+    const tagToAssigneesMap = {};
+  
+    await Promise.all(tags.map(async (tag) => {
+      const recommendedAssignees = await fetchRecommendedAssignee(tag);
+      tagToAssigneesMap[tag] = recommendedAssignees;
+    }));
+  
+    return tagToAssigneesMap;
+  }
+
+  async function fetchRecommendedAssignee(tag) {
+    if (!tag) {
+      return [];
+    }
+    try {
+      const response = await axios.get(URLs.GetRecommendDev, {
+        params: { tag:tag, projectID:projectId }
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error(`Failed to fetch recommended assignees for tag: ${tag}`);
+    }
+  }
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        await mapRecommendedAssignees(props);
+      } catch (error) {
+        console.error('Failed to fetch recommended assignees', error);
+      }
+    }
+    fetchData();
+  }, [props]);
 
   const handleChangeAssignee = (selectedOptions, issueId) => {
     const selectedAssignees = selectedOptions.map(option => option.value);
@@ -72,6 +92,7 @@ const SearchResultTable=({ props,projectId }) =>{
     });
     window.location.reload();
   };
+  console.log(tagToAssigneesMap)
   return (
     <div>
     <table className="table">
@@ -92,17 +113,19 @@ const SearchResultTable=({ props,projectId }) =>{
           <tr key={index}>
             <td><a href={`http://localhost:8080/issue/detail/${projectId}/${item.id}?token=${sessionStorage.getItem('token')}`} target="_blank" rel="noopener noreferrer">
             {item.title}</a></td>
-            <td onClick={role=='PL'&&item.status=='NEW' ? ()=>handleClick() : null}>{item.tag}</td>
+            <td>{item.tag}</td>
             <td>{item.status}</td>
             <td>{item.reporter}</td>
             <td>
               {item.status === 'NEW' && (role === 'PL' || role ==='admin') ? 
               <Select 
                 onChange={event=>handleChangeAssignee(event,item.id)}
-                options={assigneeList.map((assignee, index) => ({
-                value: assignee,
-                label: assignee
-                }))}
+                options={
+                 assigneeList.map(assignee => ({
+                  value: assignee,
+                  label: `${assignee} ${(tagToAssigneesMap[item.tag] || []).includes(assignee) ? "(추천)" : ""}`
+                }))
+                }
                 isMulti
               />
               : item.assignees
