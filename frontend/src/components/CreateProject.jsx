@@ -1,6 +1,7 @@
 //Project field - id,name,startDate,dueDate,set<user>
 //id: 유저 input vs 시스템에서 1씩 증가
 //user: PL 1명, Dev/Tester N명
+import "../styles/CreateProjectForm.css"
 import { useState, useEffect } from "react"
 import { useNavigate } from 'react-router-dom';
 import DatePicker from "react-datepicker";
@@ -8,7 +9,9 @@ import 'react-datepicker/dist/react-datepicker.css';
 import URLs from '../utils/urls';
 import axios from 'axios'
 import Select from 'react-select';
+import styled from "styled-components";
 
+const StyledSelect = styled(Select)`width:200px`
 
 const hasEmptyValues = (list)=>{
   return list.some(item=>item==='')
@@ -137,45 +140,46 @@ const CreateProject=()=>{
   };
 
   return(
-  <div>프로젝트 생성
-    <form onSubmit={handleCreateProject}>
-      이름 <input type="text" onChange={(e)=>setName(e.target.value)}/>
-      <br/>시작일 <DatePicker dateFormat='yyyy년 MM월 dd일' selected={startDate} onChange={date=>setStartDate(date)}/>
-      <br/>마감일 <DatePicker dateFormat='yyyy년 MM월 dd일' selected={endDate} onChange={date=>setEndDate(date)}/>
-      <div>
-        <label>PL:</label>
-        <Select
-          name="pl"
-          options={filterOptions(userList, selectedTesters.concat(selectedDevs), selectedPL)}
-          value={selectedPL}
-          onChange={(selectedOption) => handleSelectChange(selectedOption, "pl")}
-        />
-      </div>
-      <div>
-        <div>
-          <label>Tester:</label>
-          <Select
-            isMulti
-            name="testers"
-            options={filterOptions(userList, [], selectedDevs, selectedPL)}
-            value={selectedTesters}
-            onChange={(selectedOption) => handleSelectChange(selectedOption, "testers")}
+    <div className="project-form">
+      <h2>프로젝트 생성</h2>
+      <form onSubmit={handleCreateProject}>
+        <label>이름</label> <input class="title" type="text" onChange={(e)=>setName(e.target.value)}/>
+        <br/>시작일 <DatePicker class="date" dateFormat='yyyy년 MM월 dd일' selected={startDate} onChange={date=>setStartDate(date)}/>
+        <br/>마감일 <DatePicker class="date" dateFormat='yyyy년 MM월 dd일' selected={endDate} onChange={date=>setEndDate(date)}/>
+        <br/>
+        <div><label>PL</label>
+          <StyledSelect
+            name="pl"
+            options={filterOptions(userList, selectedTesters.concat(selectedDevs), selectedPL)}
+            value={selectedPL}
+            onChange={(selectedOption) => handleSelectChange(selectedOption, "pl")}
           />
         </div>
         <div>
-          <label>Dev:</label>
-          <Select
-            isMulti
-            name="devs"
-            options={filterOptions(userList, selectedTesters, [], selectedPL)}
-            value={selectedDevs}
-            onChange={(selectedOption) => handleSelectChange(selectedOption, "devs")}
-          />
+          <div>
+            <label>Tester</label>
+            <StyledSelect
+              isMulti
+              name="testers"
+              options={filterOptions(userList, [], selectedDevs, selectedPL)}
+              value={selectedTesters}
+              onChange={(selectedOption) => handleSelectChange(selectedOption, "testers")}
+            />
+          </div>
+          <div>
+            <label>Dev</label>
+            <StyledSelect
+              isMulti
+              name="devs"
+              options={filterOptions(userList, selectedTesters, [], selectedPL)}
+              value={selectedDevs}
+              onChange={(selectedOption) => handleSelectChange(selectedOption, "devs")}
+            />
+          </div>
         </div>
-      </div>
-      <br/> <button type="submit">생성</button>
-    </form>
-  </div>);
+        <br/><button type="submit">프로젝트 생성</button>
+      </form>
+    </div>);
     
 }
 export default CreateProject

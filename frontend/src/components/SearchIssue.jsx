@@ -1,3 +1,4 @@
+import "../styles/SearchIssueForm.css"
 import React, { useState,useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Select from 'react-select';
@@ -17,6 +18,8 @@ const Search = () => {
   const [selectedOption, setSelectedOption] = useState([]);
   const [nextSelectedOption, setNextSelectedOption] = useState({});
   const [nextDropdownOptions, setNextDropdownOptions] = useState([]);
+  const [showSearchOptions, setShowSearchOptions] = useState(false);
+
   let role = sessionStorage.getItem('role')
   let email = sessionStorage.getItem('email')
   if(role==='admin') role='PL'
@@ -28,7 +31,6 @@ const Search = () => {
       { value: 'FIXED', label: 'Fixed' },
       { value: 'RESOLVED', label: 'Resolved' },
       { value: 'CLOSED', label: 'Closed' },
-      { value: 'REOPENED', label: 'Reopened' },
       ],
       personField: [
         { value: 'assignee', label: "Assignee" },
@@ -85,10 +87,12 @@ const Search = () => {
       let url,searchParam
       switch (selectedOption.value){
         case 'issueStatus':
+          if(!nextSelectedOption.value) alert("이슈 상태를 선택하세요!");
           url = URLs.SEARCH + "/byIssueStatus"
           searchParam = {status: nextSelectedOption.value}
           break;
         case 'personField':
+          if(!nextSelectedOption || !nextSelectedOption.value || !searchTerm) alert("검색어를 입력하세요!");
           url = URLs.SEARCH + "/byPerson"
           searchParam = {
             role: nextSelectedOption.value,
@@ -112,50 +116,55 @@ const Search = () => {
       })
       
     }catch(error){
-      fetchFirstData()
       console.log(error);
     }
-    setPlaceholder('검색 조건 선택')
-    setNextDropdownOptions(null);
-    setNextSelectedOption(null);
     setSelectedOption(null);
-    setSearchTerm(null);
+    setNextSelectedOption(null);
+    setNextDropdownOptions(null);
   }
 
   return (
-    <div>  
-      <div>
-        <StyledSelect
-          placeholder={placeholder}
-          onChange={(selected)=>handleDropdownChange(selected)}
-          options={[
-            { value: 'issueStatus', label: '이슈 상태' },
-            { value: 'personField', label: '사람으로 검색' },
-            { value: 'priorityField', label: '우선순위' },
-            { value: 'all', label:  '전체 검색'}
-          ]}
-        />
-      </div>
-    {nextDropdownOptions && nextDropdownOptions.length > 0 && (
-      <div style={{ marginTop: '10px' }}>
-        <StyledSelect
-          placeholder="선택"
-          options={nextDropdownOptions}
-          onChange={(selected)=>{setNextSelectedOption(selected)}}
-        />
-        {selectedOption.value === 'personField' && (
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={handleTermChange}
-            placeholder="id"
-            style={{ marginTop: '10px' }}
+    <div>
+      <button className="button" onClick={() => setShowSearchOptions(!showSearchOptions)}>검색하기</button>
+      {showSearchOptions && (
+        <div>
+          <StyledSelect
+            className="search-select"
+            placeholder={placeholder}
+            onChange={(selected)=>handleDropdownChange(selected)}
+            options={[
+              { value: 'issueStatus', label: '이슈 상태' },
+              { value: 'personField', label: '사람으로 검색' },
+              { value: 'priorityField', label: '우선순위' },
+              { value: 'all', label:  '전체 검색'}
+            ]}
           />
+        
+      {nextDropdownOptions && nextDropdownOptions.length > 0 && (
+        <div style={{ marginTop: '10px' }}>
+          <StyledSelect
+            className="search-select"
+            placeholder="선택"
+            options={nextDropdownOptions}
+            onChange={(selected)=>{setNextSelectedOption(selected)}}
+          />
+          {selectedOption && selectedOption.value === 'personField' && (
+            <input
+              className="search-input"
+              type="text"
+              value={searchTerm}
+              onChange={handleTermChange}
+              placeholder="id"
+              style={{ marginTop: '10px' }}
+              required
+            />
+          )}
+        </div>
         )}
-      </div>
-      )}
-      <button onClick={handleSearch} style={{ marginTop: '10px' }}>검색</button>
-      {searchData && searchData.length > 0 && <SearchResultTable props={searchData} projectId={projectId} />}
+        <button className="search-button" onClick={handleSearch} style={{ marginTop: '10px' }}>검색</button>
+        {searchData && searchData.length > 0 && <SearchResultTable props={searchData} projectId={projectId} />}
+        {(!searchData || searchData.length==0) && <div>검색 결과가 없습니다</div>}
+        </div>)}
     </div>
   );
 };
