@@ -4,15 +4,21 @@ import Select from 'react-select';
 import URLs from '../utils/urls';
 import SearchResultTable from './SearchResultTable';
 import axios from 'axios';
+import LogOut from '../login/LogOut';
+import styled from 'styled-components';
+
+const StyledSelect = styled(Select)`width:200px`
 
 const Search = () => {
-  const {projectId} = useParams()
+  const {projectId, projectName} = useParams();
+  const [placeholder, setPlaceholder] = useState('검색 조건 선택');
   const [searchTerm, setSearchTerm] = useState('');
   const [searchData, setSearchData] = useState([]);
-  const [selectedOption, setSelectedOption] = useState({});
+  const [selectedOption, setSelectedOption] = useState([]);
   const [nextSelectedOption, setNextSelectedOption] = useState({});
   const [nextDropdownOptions, setNextDropdownOptions] = useState([]);
   let role = sessionStorage.getItem('role')
+  let email = sessionStorage.getItem('email')
   if(role==='admin') role='PL'
 
   const optionsByRole={
@@ -36,17 +42,17 @@ const Search = () => {
         { value: 'CRITICAL', label: "Critical" },
       ]
   }
+  const fetchFirstData=async()=>{
+    await axios.get(URLs.SEARCH+'/all',{
+      params:{projectId:projectId,token:sessionStorage.getItem('token'),role:role}
+    })
+    .then(response=>{
+      setSearchData(response.data)
+    }).catch(error=>{console.log(error)})
+
+  }
+
   useEffect(()=>{
-    const fetchFirstData=async()=>{
-      if(role==='PL'){
-        await axios.get(URLs.SEARCH+'/all',{
-          params:{projectId:projectId,token:sessionStorage.getItem('token'),role:role}
-        })
-        .then(response=>{
-          setSearchData(response.data)
-        }).catch(error=>{console.log(error)})
-      }
-    }
     fetchFirstData();
   },[])
 
@@ -63,7 +69,7 @@ const Search = () => {
           setNextDropdownOptions(optionsByRole.priorityField);
           break;
         default:
-          setNextDropdownOptions([]);
+          break;
       }
     }
   }, [selectedOption]);
@@ -95,6 +101,9 @@ const Search = () => {
           url = URLs.SEARCH + "/byPriority"
           searchParam = {priority: nextSelectedOption.value}
           break;
+        case 'all':
+          url = URLs.SEARCH + "/all"
+          break;
       }
       await axios.get(url,{
         params:{...searchParam,projectId:projectId,token:sessionStorage.getItem('token')}
@@ -102,29 +111,36 @@ const Search = () => {
       .then(response=>{
         setSearchData(response.data)
       })
+      
     }catch(error){
-      alert('검색어를 선택하세요!')
+      fetchFirstData()
+      console.log(error);
     }
+    setPlaceholder('검색 조건 선택')
+    setNextDropdownOptions(null);
+    setNextSelectedOption(null);
+    setSelectedOption(null);
+    setSearchTerm(null);
 }
+  
 
   return (
-    <div>
-      Project {projectId}<br/>
-      { (
-        <Select
-          placeholder="검색 조건 선택"
-          value={selectedOption}
-          onChange={handleDropdownChange}
+    <div>  
+      <div>
+        <StyledSelect
+          placeholder={placeholder}
+          onChange={(selected)=>handleDropdownChange(selected)}
           options={[
             { value: 'issueStatus', label: '이슈 상태' },
             { value: 'personField', label: '사람으로 검색' },
-            { value: 'priorityField', label: '우선순위' }
+            { value: 'priorityField', label: '우선순위' },
+            { value: 'all', label:  '전체 검색'}
           ]}
         />
-      )}
-      {nextDropdownOptions.length > 0 && (
+      </div>
+    {nextDropdownOptions && nextDropdownOptions.length > 0 && (
       <div style={{ marginTop: '10px' }}>
-        <Select
+        <StyledSelect
           placeholder="선택"
           options={nextDropdownOptions}
           onChange={(selected)=>{setNextSelectedOption(selected)}}

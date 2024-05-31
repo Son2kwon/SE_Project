@@ -6,6 +6,7 @@ import swengineering.team7.issuemanagementsystem.DTO.ProjectAssignedUserDTO;
 import swengineering.team7.issuemanagementsystem.DTO.ProjectAssignmentDTO;
 import swengineering.team7.issuemanagementsystem.DTO.ProjectDTO;
 import swengineering.team7.issuemanagementsystem.DTO.UserInformationDTO;
+import swengineering.team7.issuemanagementsystem.entity.Project;
 import swengineering.team7.issuemanagementsystem.entity.ProjectAssignment;
 import swengineering.team7.issuemanagementsystem.entity.User;
 import swengineering.team7.issuemanagementsystem.repository.ProjectAssignmentRepository;
@@ -31,7 +32,12 @@ public class ProjectAssignmentService {
         }
         return result;
     }
-    public List<String> getDevIdByProjectId(Long id){
+    public Role getRoleByProjectIdAndUserId(Long projectID, String userID){
+        ProjectAssignment pa = projectAssignmentRepository.findByProjectIdAndUserId(projectID,userID).get(0);
+        return pa.getRole();
+    }
+
+    public List<String> getDevIdByProjectId(Long id) {
         List<ProjectAssignment> projectAssignments = projectAssignmentRepository.findByProjectIdAndRole(id, Role.DEV);
         List<String> result = new ArrayList<>();
         for (ProjectAssignment assignment : projectAssignments) {

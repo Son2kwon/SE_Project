@@ -23,7 +23,28 @@ const SearchResultTable=({ props,projectId }) =>{
         console.error('Error fetching assignees:', error);
       });
   }, []);
+
+  const fetchRecommendDev=async(tag)=>{
+    // 서버로부터 추천 dev를 받아오고 띄워줌
+    axios({
+      url: URLs.GetRecommendDev,
+      method: 'get',
+      params: {token: sessionStorage.getItem('token'), projectID:projectId, tag:tag}
+    })
+      .then(response => {
+        setAssigneeList(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching assignees:', error);
+      });
+  };
   
+  const handleClick=()=>{
+    const windowHeight = window.innerHeight;
+
+    //window.open(url, '_blank', `width=600,height=${windowHeight},top=${windowHeight - 100}`);
+  };
+
   const handleChangeAssignee = (selectedOptions, issueId) => {
     const selectedAssignees = selectedOptions.map(option => option.value);
     const newAssignments = selectedAssignees.map(assignee => ({ issueId, assignee }));
@@ -55,6 +76,7 @@ const SearchResultTable=({ props,projectId }) =>{
       <thead>
         <tr>
           <th>Title</th>
+          <th>Tag</th>
           <th>Status</th>
           <th>Reporter</th>
           <th>Assignee</th>
@@ -66,8 +88,9 @@ const SearchResultTable=({ props,projectId }) =>{
       <tbody>
         {props.map((item, index) => (
           <tr key={index}>
-            <td><a href={`http://localhost:8080/issue/detail/${item.id}?token=${sessionStorage.getItem('token')}`} target="_blank" rel="noopener noreferrer">
+            <td><a href={`http://localhost:8080/issue/detail/${projectId}/${item.id}?token=${sessionStorage.getItem('token')}`} target="_blank" rel="noopener noreferrer">
             {item.title}</a></td>
+            <td onClick={role=='PL'&&item.status=='NEW' ? ()=>handleClick() : null}>{item.tag}</td>
             <td>{item.status}</td>
             <td>{item.reporter}</td>
             <td>
@@ -85,7 +108,7 @@ const SearchResultTable=({ props,projectId }) =>{
             </td>
             <td>{item.fixer}</td>
             <td>{item.priority}</td>
-            <td>{item.date}</td>
+            <td>{item.date.slice(2, 16).replace('T', ' ')}</td>
 
           </tr>
         ))}

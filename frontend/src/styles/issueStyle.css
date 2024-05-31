@@ -1,0 +1,8 @@
+.search-container {
+    margin-bottom: 20px; /* Add margin between the Search and CreateIssue components */
+  }
+  
+  .create-issue-container {
+    border-top: 1px solid #ccc; /* Add a border between the Search and CreateIssue components */
+    padding-top: 20px; /* Add padding above the CreateIssue component */
+  }

@@ -13,4 +13,5 @@ public interface ProjectAssignmentRepository extends JpaRepository<ProjectAssign
     // Add custom query methods if needed
     List<ProjectAssignment> findByIdUserId(String userId);
     List<ProjectAssignment> findByProjectIdAndRole(Long projectId, Role role);
+    List<ProjectAssignment> findByProjectIdAndUserId(Long projectId, String userId);
 }
