@@ -49,13 +49,11 @@ const Search = () => {
     .then(response=>{
       setSearchData(response.data)
     }).catch(error=>{console.log(error)})
-
   }
-
   useEffect(()=>{
     fetchFirstData();
   },[])
-
+  
   useEffect(() => {
     if (selectedOption && selectedOption.value !== '') {
       switch (selectedOption.value) {
@@ -82,7 +80,7 @@ const Search = () => {
   };
   
   const handleSearch = async(event) => {
-    event.preventDefault();
+    //event.preventDefault();
     try{
       let url,searchParam
       switch (selectedOption.value){
@@ -101,6 +99,7 @@ const Search = () => {
           url = URLs.SEARCH + "/byPriority"
           searchParam = {priority: nextSelectedOption.value}
           break;
+        default:
         case 'all':
           url = URLs.SEARCH + "/all"
           break;
@@ -121,8 +120,7 @@ const Search = () => {
     setNextSelectedOption(null);
     setSelectedOption(null);
     setSearchTerm(null);
-}
-  
+  }
 
   return (
     <div>  
