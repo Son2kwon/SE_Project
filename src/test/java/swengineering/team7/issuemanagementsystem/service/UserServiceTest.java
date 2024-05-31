@@ -13,10 +13,11 @@ import swengineering.team7.issuemanagementsystem.entity.User;
 import swengineering.team7.issuemanagementsystem.repository.UserRepository;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -68,5 +69,39 @@ public class UserServiceTest {
         {
             assertEquals(ans.get(i).getId(), get.get(i).getId());
         }
+    }
+
+    @Test
+    void testLogin(){
+        UserInformationDTO test_1 = new UserInformationDTO();
+        test_1.setId("test1");
+        test_1.setPassword("password1");
+
+        User t1 = new User();
+        t1.setId("test1");
+        t1.setPassword("password1");
+
+        when(userRepository.findById("test1")).thenReturn(Optional.of(t1));
+
+        assertTrue(userService.login(test_1));
+    }
+
+    @Test
+    void testSearchName(){
+        User u1 = new User();
+        u1.setUsername("targetAAABBBCCC");
+
+        User u2 = new User();
+        u2.setUsername("targetDDDEEEGGG");
+
+        List<User> ans = Arrays.asList(u1,u2);
+
+        when(userRepository.findByUsernameContainingOrderByUsernameAsc("target")).thenReturn(ans);
+        List<UserInformationDTO> tmp = userService.searchByUsername("target");
+        assertEquals(2,ans.size());
+        for(int i=0;i<2;i++){
+            assertEquals(ans.get(i).getUsername(),tmp.get(i).getName());
+        }
+
     }
 }
