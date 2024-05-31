@@ -6,22 +6,22 @@
 </head>
 
 <body>
-<form th:action="@{|/comment/edit/complete/${swengineering.team7.issuemanagementsystem.entity.Issue.id}/${swengineering.team7.issuemanagementsystem.entity.Comment.id}|}" method="post">
+<form th:action="@{|/comment/edit/complete/${comment.id}|}" method="post">
 
     <div>
-        <p><span th:text="${swengineering.team7.issuemanagementsystem.entity.Comment.writer}" /></p>
+        <p><span th:text="${comment.writer}" /></p>
     </div>
     <div>
         <div>
             <label for="newContent">newContent:</label>
-            <textarea id="newContent" name="newContent" rows="4" cols="50" th:text="${swengineering.team7.issuemanagementsystem.entity.Comment.getContent()}"></textarea>
+            <textarea id="newContent" name="newContent" rows="4" cols="50" th:text="${comment.body}"></textarea>
         </div>
     </div>
     <div>
         <input type = "submit" value="Save Edited Comment">
     </div>
     <div>
-        <p><span th:text="${swengineering.team7.issuemanagementsystem.entity.Comment.date}" /></p>
+        <p><span th:text="${comment.date}" /></p>
     </div>
 
     <div>

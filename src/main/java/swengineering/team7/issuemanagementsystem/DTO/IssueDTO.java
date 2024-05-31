@@ -26,7 +26,7 @@ public class IssueDTO {
     private String fixerName;
     private Set<String> assignees;
 
-    private Set<CommentDTO> comments;
+    private List<CommentDTO> comments;
 
 
     public IssueDTO() {
@@ -49,9 +49,9 @@ public class IssueDTO {
                 issue.getReporter().getId(),issue.getReporter().getUsername(),issue.getTag(),
                 "", "",
                 issue.getAssignedUsers().stream()
-                    .map(User::getId)
-                    .collect(Collectors.toSet())
-                );
+                      .map(User::getId)
+                      .collect(Collectors.toSet())
+                 );
     }
 
     public IssueDTO(Long id, Long projectID, String title, LocalDateTime date, State state, String issueDescription, Priority priority, String ReporterID, String Reportername,
@@ -170,6 +170,6 @@ public class IssueDTO {
     public void setAssignees(Set<String> assignees){this.assignees=assignees;}
     public Set<String> getAssignees(){return this.assignees;}
 
-    public Set<CommentDTO> getComments(){return this.comments;}
-    public void setComments(Set<CommentDTO> comments){this.comments=comments;}
+    public List<CommentDTO> getComments(){return this.comments;}
+    public void setComments(List<CommentDTO> comments){this.comments=comments;}
 }

@@ -2,6 +2,7 @@ package swengineering.team7.issuemanagementsystem.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 
 @Entity
@@ -33,6 +34,20 @@ public class Comment {
         comment.setUser(user);
         return comment;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Comment comment = (Comment) o;
+        return Objects.equals(id, comment.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
 
     //Getter & Setter
 

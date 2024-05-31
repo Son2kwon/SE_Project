@@ -14,10 +14,7 @@ import swengineering.team7.issuemanagementsystem.repository.ProjectRepository;
 import swengineering.team7.issuemanagementsystem.repository.UserRepository;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class CommentService {
@@ -90,30 +87,25 @@ public class CommentService {
         return false;
     }
 
-    public CommentDTO getComment(Long IssueID, Long CommentID) {
-        Optional<Issue> issue = issueRepository.findById(IssueID);
+    public CommentDTO getComment(Long CommentID) {
         Optional<Comment> comment = commentRepository.findById(CommentID);
-        // 두 ID로 찾은 Issue와 Comment가 존재하고, Issue에 해당 Comment가 있는경우
-        // CommentDTO 생성해서 반환
-        if(issue.isPresent()&&comment.isPresent()){
-            if(issue.get().getComments().contains(comment.get())){
-                return CommentDTO.makeDTOfrom(comment.get());
-            }
-        }
-        return null;
+        return comment.map(CommentDTO::makeDTOfrom).orElse(null);
     }
-    public Set<CommentDTO> getAllCommentsByIssueID(Long IssueID){
+    public List<CommentDTO> getAllCommentsByIssueID(Long IssueID){
         Optional<Issue> issue = issueRepository.findById(IssueID);
-        Set<CommentDTO> result = new HashSet<>();
+        List<CommentDTO> result = new ArrayList<>();
         if(issue.isPresent()) {
-            List<Comment> comments = commentRepository.findByIssue(issue);
+            List<Comment> comments = commentRepository.findByIssueOrderByDateAsc(issue);
             for(Comment comment: comments){
                 result.add(CommentDTO.makeDTOfrom(comment));
             }
         }
         return result;
     }
-
+    public List<CommentDTO> sortCommentsByDate(List<CommentDTO> comments) {
+        Collections.sort(comments, (c1, c2) -> c1.getDate().compareTo(c2.getDate()));
+        return comments;
+    }
     public CommentDTO createCommentDTO(Long id,String body,String writer,LocalDateTime date,Long issueID,User user) {
         Issue issue = issueRepository.findById(issueID).orElse(null);
         return new CommentDTO(id,body,writer,date,issue,user);

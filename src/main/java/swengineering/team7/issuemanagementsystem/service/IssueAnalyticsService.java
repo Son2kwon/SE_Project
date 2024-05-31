@@ -28,7 +28,8 @@ public class IssueAnalyticsService {
         List<IssueCountByDateDTO> issueCountsByDate = new ArrayList<>();
 
         for (Object[] result : results) {
-            LocalDate date = ((LocalDateTime) result[0]).toLocalDate();
+            java.sql.Date sqlDate = (java.sql.Date) result[0];
+            LocalDate date = sqlDate.toLocalDate();
             Long count = (Long) result[1];
             issueCountsByDate.add(new IssueCountByDateDTO(date, count));
         }

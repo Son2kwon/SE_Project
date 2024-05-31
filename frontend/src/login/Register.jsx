@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import URLs from '../utils/urls'
+import '../styles/SignupForm.css'
 
 const Signup = () => {
   const [email, setEmail] = useState("");
@@ -61,9 +62,8 @@ const Signup = () => {
   return (
     <div className="signup-container">
       <form className="signup-form" onSubmit={handleSignup}>
-        <h1>On&Off</h1>
-
-        <label htmlFor="email">이메일</label>
+        <h1>회원가입</h1>
+        <label htmlFor="email">아이디</label>
         <input
           type="email"
           id="email"

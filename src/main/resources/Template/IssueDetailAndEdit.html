@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Issue details</title>
+</head>
+<body>
+<form th:action="@{|/issue/edit/complete/${projectId}/${issue.id}|}" method="post">
+  <input type="hidden" id="token" name="token" th:value="${token}" />
+  <div>
+    <span id="currentState" th:text="${issue.state}" style="display: none;"></span>
+    State:
+    <select id="selectState" name="selectState">
+      <option th:if="${state eq 'NEW'}" value="NEW" selected>New</option>
+      <option th:if="${state eq 'ASSIGNED'}" value="ASSIGNED" selected>Assigned</option>
+      <option th:if="${state eq 'FIXED'}" value="FIXED" selected>Fixed</option>
+      <option th:if="${state eq 'RESOLVED'}" value="RESOLVED" selected>Resolved</option>
+      <option th:if="${state eq 'CLOSED'}" value="CLOSED" selected>Closed</option>
+
+      <option th:if="${role eq 'TESTER' and state eq 'FIXED'}" value="RESOLVED">Resolved</option>
+      <option th:if="${role eq 'PL' and state eq 'RESOLVED'}" value="CLOSED">Closed</option>
+      <option th:if="${role eq 'DEV' and state eq 'ASSIGNED'}" value="FIXED">Fixed</option>
+    </select>
+    <input type="hidden" id="role" th:value="${role}" />
+  </div>
+<div>
+  <p>Title: <span th:text="${issue.title}" /></p>
+</div>
+<div>
+  <p>Date: <span th:text="${issue.date}" /></p>
+</div>
+<div>
+  <p>Reporter: <span th:text="${issue.ReporterID}" /></p>
+</div>
+<div>
+  <style>
+    /* 부모 요소인 label의 스타일링 */
+    label {
+      display: block; /* 블록 요소로 설정하여 줄 바꿈되도록 함 */
+      margin-bottom: 5px; /* 아래 여백 추가 */
+    }
+    /* CSS 스타일링 */
+    #newDescription {
+      width: 70%;
+      padding: 10px;
+      box-sizing: border-box;
+      border: 2px solid #ccc;
+      border-radius: 4px;
+      resize: vertical; /* 사용자가 수직으로만 조정할 수 있도록 함 */
+    }
+  </style>
+    <label for="newDescription">Issue Description </label>
+    <textarea id="newDescription" name="newDescription" rows="4" cols="50" th:text="${issue.getIssueDescription()}"></textarea>
+</div>
+<div>
+  <input type = "submit" value="Edit Issue">
+</div>
+</form>
+
+<style>
+  /* 스타일링 */
+  .comment-container {
+    width: 70%;
+    margin-bottom: 20px;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+  }
+
+  .comment-header {
+    margin-bottom: 5px;
+  }
+
+  .comment-textarea {
+    width: 100%;
+    padding: 5px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+  }
+
+  .comment-buttons {
+    margin-top: 10px;
+  }
+</style>
+
+<input type="hidden" id="userID" name="userID" th:value="${userID}" />
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    // userID 값을 가져옵니다.
+    const userID = document.getElementById('userID').value;
+
+    // 댓글 컨테이너 요소를 모두 가져옵니다.
+    const commentContainers = document.querySelectorAll('.comment-container');
+
+    // 각 댓글 컨테이너를 반복하여 작성자와 현재 사용자의 ID를 비교하고 해당 버튼을 조작합니다.
+    commentContainers.forEach(container => {
+      const commentWriterIDElement = container.querySelector('.writer-id');
+      // 댓글 작성자의 ID를 가져옵니다.
+      if (commentWriterIDElement) {
+        const commentWriterID = commentWriterIDElement.value;
+        // Ensure commentWriterID is not null before comparison
+        if (commentWriterID !== null && commentWriterID !== userID) {
+          const editButton = container.querySelector('.edit-button');
+          const deleteButton = container.querySelector('.delete-button');
+          editButton.style.display = 'none';
+          deleteButton.style.display = 'none';
+        }
+      }
+    });
+  });
+</script>
+
+<div>
+  <h3>Comments:</h3>
+  <hr />
+  <div th:each="comment : ${issue.comments}" class="comment-container">
+    <div class="comment-header">
+      <input type="hidden" class="writer-id" th:value="${comment.writer}" />
+      Writer: <span th:text="${comment.writer}" />
+      <span style="font-size: small; color: #999999;" th:text="${#temporals.format(comment.date, 'yyyy-MM-dd HH:mm')}" />
+    </div>
+    <div>
+      <label for="commentContent">Content:</label>
+      <form th:action="@{|/comment/edit/complete/${comment.id}|}" method="post" style="display: inline;">
+        <input type="hidden" name="token" th:value="${token}" />
+        <input type="hidden" name="issueID" th:value="${issue.id}" />
+        <textarea id="commentContent" name="commentContent" rows="3" cols="30" th:text="${comment.body}" class="comment-textarea"></textarea>
+        <input type="submit" class="edit-button" value="Edit">
+      </form>
+
+      <form th:action="@{|/comment/delete/${comment.id}|}" method="post" style="display: inline; margin-left: 10px;">
+        <input type="hidden" name="token" th:value="${token}" />
+        <input type="hidden" name="issueID" th:value="${issue.id}" />
+        <input type="submit" class="delete-button" value="Delete">
+      </form>
+    </div>
+  </div>
+</div>
+
+<hr />
+
+<div>
+  <form th:action="@{|/comment/create/${issue.id}|}" method="post">
+    <div class="comment-container">
+      <input type="hidden" name="token" th:value="${token}" />
+      <div class="comment-header">
+        <label for="newComment">New Comment:</label>
+      </div>
+      <textarea id="newComment" name="newComment" rows="4" class="comment-textarea"></textarea>
+      <div class="comment-buttons">
+        <input type="submit" value="Add Comment">
+      </div>
+    </div>
+  </form>
+</div>
+</body>
+</html>

@@ -45,7 +45,7 @@ public class UserController {
             JwtCertificate jwtCertificate = new JwtCertificate();
             String token = jwtCertificate.generateToken(userInformationDTO.getId());
             responseJson.put("token", token);
-            //테스트용, 일단 admin 박아둠
+            responseJson.put("email", userInformationDTO.getId());
             if(userService.isAdmin(userInformationDTO))
                 responseJson.put("role", "admin");
             return ResponseEntity.ok(responseJson.toString());

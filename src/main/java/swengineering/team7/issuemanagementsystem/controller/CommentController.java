@@ -56,23 +56,22 @@ public class CommentController {
         return String.format("redirect:/issue/detail/%d?token=%s", id,token);
     }
 
-    @ResponseBody
-    @PostMapping("/edit/{issueID}/{commentID}")
-    public String editComment(@PathVariable("issueID") Long issueID, @PathVariable("commentID") Long commentID, Model model) {
-        List<IssueDTO> issues = issueService.findbyIssueID(issueID);
-        IssueDTO issue = issues.get(0);
-
-        CommentDTO comment = commentService.getComment(issueID, commentID);
-        model.addAttribute("issue", issue);
+    @GetMapping("/edit/{commentID}")
+    public String editComment(@PathVariable("commentID") Long commentID, Model model) {
+        CommentDTO comment = commentService.getComment(commentID);
         model.addAttribute("comment", comment);
         return "EditComment";
     }
 
-    @PostMapping("/edit/complete/{issueID}/{commentID}")
-    public String SaveEditedComment(@PathVariable("issueID") Long issueID, @PathVariable("commentID") Long commentID, @RequestParam(value="newContent") String newContent) {
-        CommentDTO commentDTO = commentService.getComment(issueID, commentID);
+    @PostMapping("/edit/complete/{commentID}")
+    public String SaveEditedComment( @PathVariable("commentID") Long commentID,
+                                     @RequestParam("issueID") Long issueID,
+                                     @RequestParam("commentContent") String newContent,
+                                     @RequestParam("token") String token) {
+
+        CommentDTO commentDTO = commentService.getComment(commentID);
         commentService.modifyComment(commentDTO, newContent, LocalDateTime.now());
 
-        return String.format("redirect:/issue/detail/%d", issueID);
+        return String.format("redirect:/issue/detail/%d?token=%s",issueID,token);
     }
 }

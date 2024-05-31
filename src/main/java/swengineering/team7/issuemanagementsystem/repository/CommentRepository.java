@@ -7,9 +7,8 @@ import swengineering.team7.issuemanagementsystem.entity.Issue;
 
 import java.util.List;
 import java.util.Optional;
-
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-    List<Comment> findByIssue(Optional<Issue> issue);
+    List<Comment> findByIssueOrderByDateAsc(Optional<Issue> issue);
     // 기본 CRUD 제공
 }

@@ -66,8 +66,6 @@ public class ProjectService {
     }
 
     public boolean assignUserToProject(Long projectId, String userId, Role role) {
-    //        Project project = projectRepository.findById(projectId).orElseThrow(() -> new RuntimeException("Project not found"));
-    //        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
 
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException("Project not found"));

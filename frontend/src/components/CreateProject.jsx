@@ -7,6 +7,8 @@ import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
 import URLs from '../utils/urls';
 import axios from 'axios'
+import Select from 'react-select';
+
 
 const hasEmptyValues = (list)=>{
   return list.some(item=>item==='')
@@ -16,27 +18,28 @@ const CreateProject=()=>{
   const [name,setName] = useState('');
   const [startDate,setStartDate] = useState(new Date());
   const [endDate,setEndDate] = useState(new Date());
+  const [userList,setUserList] = useState([])
+  const [selectedTesters, setSelectedTesters] = useState([]);
+  const [selectedDevs, setSelectedDevs] = useState([]);
+  const [selectedPL, setSelectedPL] = useState(null);
 
   const navigate = useNavigate();
 
   const checkAllInputFilled=()=>
     name !== "" &&
-    selectedDropdowns.pl !== "" &&
-    !hasEmptyValues(selectedDropdowns.testers) &&
-    !hasEmptyValues(selectedDropdowns.devs) 
+    selectedPL != null &&
+    !hasEmptyValues(selectedTesters) &&
+    !hasEmptyValues(selectedDevs) 
   
   const handleCreateProject=async(e)=>{
     e.preventDefault();
-
     if(!checkAllInputFilled()){
       alert("빈칸을 모두 채워주세요!")
-      return;
     }
-
-    const selectedDropdownsCopy = {
-      pl: selectedDropdowns.pl,
-      tester: [...selectedDropdowns.testers],
-      dev: [...selectedDropdowns.devs]
+    const relatedUser = {
+      pl: selectedPL ? selectedPL.value : '', // pl은 단순 문자열
+      tester: selectedTesters.map(tester => tester.value),
+      dev: selectedDevs.map(dev => dev.value),
     };
     
     try {
@@ -47,7 +50,7 @@ const CreateProject=()=>{
           name: name,
           startDate: startDate,
           dueDate: endDate,
-          relatedUser: selectedDropdownsCopy
+          relatedUser: relatedUser
         },
         {
           headers: {
@@ -64,71 +67,73 @@ const CreateProject=()=>{
     }
   };
 
-  const [userList,setUserList] = useState([])
-
   const fetchData = async() => {
-    await axios({
+    try{
+    const response = await axios({
       url: URLs.GetAllUser,
       method: 'get',
       params: {token: sessionStorage.getItem('token')}
-    }).then(response=>{
-        setUserList(response.data.map(item => `${item.id}`))
-        }
-      )
-      .catch(error => {
-        console.error('Error fetching assignees:', error);
-      });
+    })
+    const idList = response.data.map(item => item.id);
+    const uniqueIdList = [...new Set(idList)];
+    return uniqueIdList;
+  }catch(error){
+    console.error('Error fetching assignees:', error);
+    return [];
+    }
   }
-  useEffect(()=>{fetchData()},[])
 
+  useEffect(() => {
+    const getUsers = async () => {
+      const users = await fetchData();
+      setUserList(users.map(user => ({ value: user, label: user })));
+    };
+    getUsers();
+  }, []);
+  
   const [selectedDropdowns, setSelectedDropdowns] = useState({
     pl:'',
     testers: [''],
     devs: [''],
   })
-  const handleAddTesterDropdown = () => {
-    setSelectedDropdowns(prevState => ({
-      ...prevState,
-      testers: [...prevState.testers, '']
-    }));
+
+  const handleSelectChange = (selectedOption, name) => {
+    switch (name) {
+      case "pl":
+        // PL을 선택한 경우 다른 선택된 값을 초기화합니다.
+        setSelectedTesters([]);
+        setSelectedDevs([]);
+        setSelectedPL(selectedOption);
+        break;
+      case "testers":
+        setSelectedTesters(selectedOption);
+        break;
+      case "devs":
+        setSelectedDevs(selectedOption);
+        break;
+      default:
+        break;
+    }
+  
+    // 선택된 값들을 합쳐서 다시 옵션을 필터링합니다.
+    const selectedValues = [...selectedTesters.map(option => option.value), ...selectedDevs.map(option => option.value)];
+    setUserList(prevList => filterOptions(prevList, selectedValues, selectedPL));
   };
 
-  const handleAddDevDropdown = () => {
-    setSelectedDropdowns(prevState => ({
-      ...prevState,
-      devs: [...prevState.devs, '']
-    }));
-  };
-  const handleRemoveTesterDropdown = (index) => {
-    setSelectedDropdowns(prevState => {
-      const updatedTesters = [...prevState.testers];
-      updatedTesters.splice(index, 1);
-      return { ...prevState, testers: updatedTesters };
-    });
-  };
-
-  const handleRemoveDevDropdown = (index) => {
-    setSelectedDropdowns(prevState => {
-      const updatedDevs = [...prevState.devs];
-      updatedDevs.splice(index, 1);
-      return { ...prevState, devs: updatedDevs };
-    });
-  };
-
-  const handleSelectDropdown = (value, type, index) => {
-    setSelectedDropdowns(prevState => {
-      if (type === 'pl') {
-        return { ...prevState, pl: value };
-      } else if (type === 'tester') {
-        const updatedTesters = [...prevState.testers];
-        updatedTesters[index] = value;
-        return { ...prevState, testers: updatedTesters };
-      } else if (type === 'dev') {
-        const updatedDevs = [...prevState.devs];
-        updatedDevs[index] = value;
-        return { ...prevState, devs: updatedDevs };
-      }
-    });
+  const filterOptions = (options, selectedTesters, selectedDevs, selectedPL) => {
+    const selectedValues = [];
+    if (selectedPL && selectedPL.value) {
+      selectedValues.push(selectedPL.value);
+    }
+    if (selectedTesters && Array.isArray(selectedTesters)) {
+      selectedValues.push(...selectedTesters.map(option => option.value));
+    }
+    if (selectedDevs && Array.isArray(selectedDevs)) {
+      selectedValues.push(...selectedDevs.map(option => option.value));
+    }
+    // 선택된 PL 값이 있다면 해당 값을 제외한 옵션 반환
+    return options.filter(option => !(selectedPL && selectedPL.value && option.value === selectedPL.value) && 
+                                      !selectedValues.includes(option.value));
   };
 
   return(
@@ -137,65 +142,37 @@ const CreateProject=()=>{
       이름 <input type="text" onChange={(e)=>setName(e.target.value)}/>
       <br/>시작일 <DatePicker dateFormat='yyyy년 MM월 dd일' selected={startDate} onChange={date=>setStartDate(date)}/>
       <br/>마감일 <DatePicker dateFormat='yyyy년 MM월 dd일' selected={endDate} onChange={date=>setEndDate(date)}/>
-      
-      <div>
       <div>
         <label>PL:</label>
-        <select
-          onChange={(e) => handleSelectDropdown(e.target.value, 'pl')}
-          value={selectedDropdowns.pl}
-        >
-          <option value="">선택하세요</option>
-          {userList.map((pl, index) => (
-            <option key={index} value={pl}>{pl}</option>
-          ))}
-        </select>
+        <Select
+          name="pl"
+          options={filterOptions(userList, selectedTesters.concat(selectedDevs), selectedPL)}
+          value={selectedPL}
+          onChange={(selectedOption) => handleSelectChange(selectedOption, "pl")}
+        />
       </div>
       <div>
-        <label>Tester:</label>
-        {selectedDropdowns.testers.map((tester, index) => (
-          <div key={index}>
-            <select
-              onChange={(e) => handleSelectDropdown(e.target.value, 'tester', index)}
-              value={tester}
-            >
-              <option value="">선택하세요</option>
-              {userList.map((testerOption, optionIndex) => (
-                <option key={optionIndex} value={testerOption}>{testerOption}</option>
-              ))}
-            </select>
-            {index === selectedDropdowns.testers.length - 1 && (
-              <button onClick={handleAddTesterDropdown}>추가</button>
-            )}
-            {index > 0 && (
-              <button type="button" onClick={() => handleRemoveTesterDropdown(index)}>삭제</button>
-            )}
-          </div>
-        ))}
+        <div>
+          <label>Tester:</label>
+          <Select
+            isMulti
+            name="testers"
+            options={filterOptions(userList, [], selectedDevs, selectedPL)}
+            value={selectedTesters}
+            onChange={(selectedOption) => handleSelectChange(selectedOption, "testers")}
+          />
+        </div>
+        <div>
+          <label>Dev:</label>
+          <Select
+            isMulti
+            name="devs"
+            options={filterOptions(userList, selectedTesters, [], selectedPL)}
+            value={selectedDevs}
+            onChange={(selectedOption) => handleSelectChange(selectedOption, "devs")}
+          />
+        </div>
       </div>
-      <div>
-        <label>Dev:</label>
-        {selectedDropdowns.devs.map((dev, index) => (
-          <div key={index}>
-            <select
-              onChange={(e) => handleSelectDropdown(e.target.value, 'dev', index)}
-              value={dev}
-            >
-              <option value="">선택하세요</option>
-              {userList.map((devOption, optionIndex) => (
-                <option key={optionIndex} value={devOption}>{devOption}</option>
-              ))}
-            </select>
-            {index === selectedDropdowns.devs.length - 1 && (
-              <button onClick={handleAddDevDropdown}>추가</button>
-            )}
-            {index > 0 && (
-              <button type="button" onClick={() => handleRemoveDevDropdown(index)}>삭제</button>
-            )}
-          </div>
-        ))}
-      </div>
-  </div>
       <br/> <button type="submit">생성</button>
     </form>
   </div>);
