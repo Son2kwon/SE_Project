@@ -8,13 +8,15 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 import swengineering.team7.issuemanagementsystem.entity.User;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, String>, JpaSpecificationExecutor<User> {
     //사용자 검색
     Page<User> findAll(Specification<User> spec, Pageable pageable);
+    List<User> findByUsernameContainingOrderByUsernameAsc(String username);
+    List<User> findByRoleOrderByUsernameAsc(String role);
     // 기본 CRUD 제공
-
     Optional<User> findByUsername(String name);
 }
