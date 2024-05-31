@@ -50,9 +50,8 @@ const Signup = () => {
       if (response.status === 201) {
         // Redirect to login.html
         navigate("/login"); // 로그인 성공시 홈으로 이동합니다.
-      } else if (response.status === 400) {
-        // Handle error
-        alert(`회원가입 실패: ${data.email}`);
+      } else{
+        alert(`회원가입 실패, 다른 아이디로 시도해보세요`);
       }
     } catch (error) {
       console.error("오류 발생:", error);

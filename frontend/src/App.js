@@ -37,21 +37,28 @@ function App() {
           <Route path="/admin" element={
             <FallbackRoute
               component = {Admin}
-              fallback = {Login}
+              fallback = {<Login/>}
               isAllow={token&&role==='admin'}
             />}
           />
           <Route path="/admin/create-project" element={
             <FallbackRoute
               component = {CreateProject}
-              fallback = {Login}
+              fallback = {<Login/>}
               isAllow={token&&role==='admin'}
             />}
           />
           <Route path="/admin/manage-account" element={
             <FallbackRoute
               component = {ManageAccount}
-              fallback = {Login}
+              fallback = {<Login/>}
+              isAllow={token&&role==='admin'}
+            />}
+          />
+          <Route path="/admin/issue-analysis" element={
+            <FallbackRoute
+              component = {IssueStatistics}
+              fallback = {<Login/>}
               isAllow={token&&role==='admin'}
             />}
           />
@@ -67,11 +74,7 @@ function App() {
               </div>
             </>
           }/>
-          <Route path="/issue-analysis" element={
-          <IssueStatistics/>
-        }/>
-        </Route>
-        
+          </Route>
       </Routes>
     </div>
   );

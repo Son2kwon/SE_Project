@@ -127,6 +127,7 @@
       <form th:action="@{|/comment/edit/complete/${comment.id}|}" method="post" style="display: inline;">
         <input type="hidden" name="token" th:value="${token}" />
         <input type="hidden" name="issueID" th:value="${issue.id}" />
+        <input type="hidden" name="projectID" th:value="${projectId}" />
         <textarea id="commentContent" name="commentContent" rows="3" cols="30" th:text="${comment.body}" class="comment-textarea"></textarea>
         <input type="submit" class="edit-button" value="Edit">
       </form>
@@ -134,6 +135,7 @@
       <form th:action="@{|/comment/delete/${comment.id}|}" method="post" style="display: inline; margin-left: 10px;">
         <input type="hidden" name="token" th:value="${token}" />
         <input type="hidden" name="issueID" th:value="${issue.id}" />
+        <input type="hidden" name="projectId" th:value="${projectId}" />
         <input type="submit" class="delete-button" value="Delete">
       </form>
     </div>
@@ -146,6 +148,7 @@
   <form th:action="@{|/comment/create/${issue.id}|}" method="post">
     <div class="comment-container">
       <input type="hidden" name="token" th:value="${token}" />
+      <input type="hidden" name="projectId" th:value="${projectId}" />
       <div class="comment-header">
         <label for="newComment">New Comment:</label>
       </div>

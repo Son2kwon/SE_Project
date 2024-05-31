@@ -65,7 +65,7 @@ const SearchResultTable=({ props,projectId }) =>{
       }
     }
     fetchData();
-  }, [props]);
+  }, []);
 
   const handleChangeAssignee = (selectedOptions, issueId) => {
     const selectedAssignees = selectedOptions.map(option => option.value);
@@ -92,7 +92,7 @@ const SearchResultTable=({ props,projectId }) =>{
     });
     window.location.reload();
   };
-  console.log(tagToAssigneesMap)
+
   return (
     <div>
     <table className="table">
@@ -139,7 +139,7 @@ const SearchResultTable=({ props,projectId }) =>{
         ))}
       </tbody>
     </table>
-    <button onClick={handleSaveAssignee}>저장</button>
+    <button className="result-button" onClick={handleSaveAssignee}>저장</button>
     </div>
   );
 };

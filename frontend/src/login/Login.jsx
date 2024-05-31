@@ -32,7 +32,7 @@ const Login = () => {
       // Store token in local storage
       await Promise.all([
         sessionStorage.setItem("token", result.token),
-        sessionStorage.setItem("email", result.email), // Save userId here
+        sessionStorage.setItem("email", result.email),
         sessionStorage.setItem("role",result.role),
       ])
 
