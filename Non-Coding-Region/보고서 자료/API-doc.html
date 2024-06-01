@@ -1,0 +1,2044 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>이슈 관리 프로그램</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/monokai-sublime.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>
+        hljs.configure({
+            tabReplace: '    ',
+        });
+        hljs.initHighlightingOnLoad();
+    </script>
+    <style>body {
+    position: relative;
+}
+
+h1 {
+    margin-top: 5px;
+}
+
+h1, h2, h3, h4 {
+    color: #2b2b2b;
+}
+
+h2:after {
+    content: ' ';
+}
+
+h5 {
+    font-weight: bold;
+}
+
+h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
+    display: none;
+    position: absolute;
+    margin-left: 8px;
+}
+
+h1:hover a, h2:hover a, h3:hover a, h4:hover a, h5:hover a, h6:hover a {
+    color: #a5a5a5;
+    display: initial;
+}
+
+.nav.nav-tabs > li > a {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.tab-content {
+    padding-top: 8px;
+}
+
+.table {
+    margin-bottom: 8px;
+}
+
+pre {
+    border-radius: 0px;
+    border: none;
+}
+
+pre code {
+    margin: -9.5px;
+}
+
+.request {
+    margin-top: 12px;
+    margin-bottom: 24px;
+}
+
+.response-text-sample {
+    padding: 0px !important;
+}
+
+.response-text-sample pre {
+    margin-bottom: 0px;
+}
+
+
+#sidebar-wrapper {
+    z-index: 1000;
+    position: fixed;
+    left: 250px;
+    width: 250px;
+    height: 100%;
+    margin-left: -250px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: #2b2b2b;
+    padding-top: 20px;
+}
+
+#sidebar-wrapper ul {
+    width: 250px;
+}
+
+#sidebar-wrapper ul li {
+    margin-right: 10px;
+}
+
+#sidebar-wrapper ul li a:hover {
+    background: inherit;
+    text-decoration: none;
+}
+
+#sidebar-wrapper ul li a {
+    display: block;
+    color: #ECF0F1;
+    padding: 6px 15px;
+}
+
+#sidebar-wrapper ul li ul {
+    padding-left: 25px;
+}
+
+#sidebar-wrapper ul li ul li a {
+    padding: 1px 0px;
+}
+
+#sidebar-wrapper ul li a:hover,
+#sidebar-wrapper ul li a:focus {
+    color: #e0c46c;
+    border-right: solid 1px #e0c46c;
+}
+
+#sidebar-wrapper ul li.active > a {
+    color: #e0c46c;
+    border-right: solid 3px #e0c46c;
+}
+
+#sidebar-wrapper ul li:not(.active) ul {
+    display: none;
+}
+
+#page-content-wrapper {
+    width: 100%;
+    position: absolute;
+    padding: 15px 15px 15px 250px;
+}
+</style>
+</head>
+<body data-spy="scroll" data-target=".scrollspy">
+<div id="sidebar-wrapper">
+    <div class="scrollspy">
+    <ul id="main-menu" data-spy="affix" class="nav">
+        <li>
+            <a href="#doc-general-notes">General notes</a>
+        </li>
+        
+        <li>
+            <a href="#doc-api-detail">API detail</a>
+        </li>
+        
+        <li>
+            <a href="#request-createproject">CreateProject</a>
+        </li>
+        
+        <li>
+            <a href="#request-create-issue">Create Issue</a>
+        </li>
+        
+        <li>
+            <a href="#request-assign-devs">Assign Devs</a>
+        </li>
+        
+        <li>
+            <a href="#request-getprojectlist">GetProjectList</a>
+        </li>
+        
+        <li>
+            <a href="#request-getrole">GetRole</a>
+        </li>
+        
+        <li>
+            <a href="#request-getalluser">GetAllUser</a>
+        </li>
+        
+        <li>
+            <a href="#request-get-devs">Get Devs</a>
+        </li>
+        
+        <li>
+            <a href="#request-get-recommended-dev">Get Recommended Dev</a>
+        </li>
+        
+        
+        
+        <li>
+            <a href="#folder-issue-statistics">Issue Statistics</a>
+            <ul>
+                
+                <li>
+                    <a href="#request-issue-statistics-bydate">byDate</a>
+                </li>
+                
+                <li>
+                    <a href="#request-issue-statistics-bytag">byTag</a>
+                </li>
+                
+                <li>
+                    <a href="#request-issue-statistics-bypriority">byPriority</a>
+                </li>
+                
+            </ul>
+        </li>
+        
+        
+        <li>
+            <a href="#folder-account">Account</a>
+            <ul>
+                
+                <li>
+                    <a href="#request-account-register">Register</a>
+                </li>
+                
+                <li>
+                    <a href="#request-account-login">Login</a>
+                </li>
+                
+                <li>
+                    <a href="#request-account-delete-account">Delete Account</a>
+                </li>
+                
+            </ul>
+        </li>
+        
+        
+        <li>
+            <a href="#folder-search-issue">Search Issue</a>
+            <ul>
+                
+                <li>
+                    <a href="#request-search-issue-search-issues-all">Search Issues /all</a>
+                </li>
+                
+                <li>
+                    <a href="#request-search-issue-search-issues-byissuestatus">Search Issues /byIssueStatus</a>
+                </li>
+                
+                <li>
+                    <a href="#request-search-issue-search-issues-byperson">Search Issues /byPerson</a>
+                </li>
+                
+                <li>
+                    <a href="#request-search-issue-search-issues-bypriority">Search Issues /byPriority</a>
+                </li>
+                
+            </ul>
+        </li>
+        
+    </ul>
+</div>
+
+</div>
+<div id="page-content-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1>이슈 관리 프로그램</h1>
+
+                <h2 id="doc-general-notes">
+                    General notes
+                    <a href="#doc-general-notes"><i class="glyphicon glyphicon-link"></i></a>
+                </h2>
+
+                
+
+                
+
+                <h2 id="doc-api-detail">
+                    API detail
+                    <a href="#doc-api-detail"><i class="glyphicon glyphicon-link"></i></a>
+                </h2>
+
+                
+                
+                <div class="request">
+
+                    <h3 id="request-createproject">
+                        CreateProject
+                        <a href="#request-createproject"><i class="glyphicon glyphicon-link"></i></a>
+                    </h3>
+
+                    <div></div>
+
+                    <div>
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#request-createproject-example-curl" data-toggle="tab">Curl</a></li>
+                            <li role="presentation"><a href="#request-createproject-example-http" data-toggle="tab">HTTP</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="request-createproject-example-curl">
+                                <pre><code class="hljs curl">curl -X POST -d '{
+    "token":"token",
+    "name":"projectName",
+    "startDate":"startDate",
+    "dueDate":"dueDate",
+    "relatedUser":{
+        "pl":"userId1",
+        "tester":["userId2","userId3"],
+        "dev":["userId4","userId5"]
+    }
+}' "http://localhost:8080/createproject"</code></pre>
+                            </div>
+                            <div class="tab-pane" id="request-createproject-example-http">
+                                <pre><code class="hljs http">POST /createproject HTTP/1.1
+Host: localhost:8080
+
+{
+    "token":"token",
+    "name":"projectName",
+    "startDate":"startDate",
+    "dueDate":"dueDate",
+    "relatedUser":{
+        "pl":"userId1",
+        "tester":["userId2","userId3"],
+        "dev":["userId4","userId5"]
+    }
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+
+                    <hr>
+                </div>
+                
+                
+                <div class="request">
+
+                    <h3 id="request-create-issue">
+                        Create Issue
+                        <a href="#request-create-issue"><i class="glyphicon glyphicon-link"></i></a>
+                    </h3>
+
+                    <div></div>
+
+                    <div>
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#request-create-issue-example-curl" data-toggle="tab">Curl</a></li>
+                            <li role="presentation"><a href="#request-create-issue-example-http" data-toggle="tab">HTTP</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="request-create-issue-example-curl">
+                                <pre><code class="hljs curl">curl -X POST -d '{
+    "token":"token",
+    "projectId":"projectId",
+    "title":"title",
+    "issueDescription":"issueDescription",
+    "priority":"priority",
+    "tag":"tag"
+}' "http://localhost:8080/createIssue"</code></pre>
+                            </div>
+                            <div class="tab-pane" id="request-create-issue-example-http">
+                                <pre><code class="hljs http">POST /createIssue HTTP/1.1
+Host: localhost:8080
+
+{
+    "token":"token",
+    "projectId":"projectId",
+    "title":"title",
+    "issueDescription":"issueDescription",
+    "priority":"priority",
+    "tag":"tag"
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+
+                    <hr>
+                </div>
+                
+                
+                <div class="request">
+
+                    <h3 id="request-assign-devs">
+                        Assign Devs
+                        <a href="#request-assign-devs"><i class="glyphicon glyphicon-link"></i></a>
+                    </h3>
+
+                    <div></div>
+
+                    <div>
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#request-assign-devs-example-curl" data-toggle="tab">Curl</a></li>
+                            <li role="presentation"><a href="#request-assign-devs-example-http" data-toggle="tab">HTTP</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="request-assign-devs-example-curl">
+                                <pre><code class="hljs curl">curl -X POST -d '{
+    "token":"token",
+    "projectId":"projectId",
+    "assignees":["userId1","userId2"]
+}' "http://localhost:8080/assignDev"</code></pre>
+                            </div>
+                            <div class="tab-pane" id="request-assign-devs-example-http">
+                                <pre><code class="hljs http">POST /assignDev HTTP/1.1
+Host: localhost:8080
+
+{
+    "token":"token",
+    "projectId":"projectId",
+    "assignees":["userId1","userId2"]
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+
+                    <hr>
+                </div>
+                
+                
+                <div class="request">
+
+                    <h3 id="request-getprojectlist">
+                        GetProjectList
+                        <a href="#request-getprojectlist"><i class="glyphicon glyphicon-link"></i></a>
+                    </h3>
+
+                    <div></div>
+
+                    <div>
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#request-getprojectlist-example-curl" data-toggle="tab">Curl</a></li>
+                            <li role="presentation"><a href="#request-getprojectlist-example-http" data-toggle="tab">HTTP</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="request-getprojectlist-example-curl">
+                                <pre><code class="hljs curl">curl -X GET "http://localhost:8080/getProjectList?token=token"</code></pre>
+                            </div>
+                            <div class="tab-pane" id="request-getprojectlist-example-http">
+                                <pre><code class="hljs http">GET /getProjectList?token=token HTTP/1.1
+Host: localhost:8080</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <div>
+                        <ul class="nav nav-tabs" role="tablist">
+                            
+                            <li role="presentation" class="active">
+                                <a href="#request-getprojectlist-responses-f5d33970-ce11-4c32-bde5-30e43b2676cd" data-toggle="tab">
+                                    
+                                    Response
+                                    
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        <div class="tab-content">
+                            
+                            <div class="tab-pane active" id="request-getprojectlist-responses-f5d33970-ce11-4c32-bde5-30e43b2676cd">
+                                <table class="table table-bordered">
+                                    <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Vary</th><td>Access-Control-Request-Method</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Vary</th><td>Access-Control-Request-Headers</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Type</th><td>application/json</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Transfer-Encoding</th><td>chunked</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Date</th><td>Sat, 01 Jun 2024 06:49:21 GMT</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Keep-Alive</th><td>timeout=60</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Connection</th><td>keep-alive</td></tr>
+                                    
+                                    
+                                    
+                                    <tr><td class="response-text-sample" colspan="2">
+                                        <pre><code>[
+    {
+        "name": "p1",
+        "id": "1"
+    },
+    {
+        "name": "p2",
+        "id": "2"
+    },
+    {
+        "name": "P4",
+        "id": "4"
+    }
+]</code></pre>
+                                    </td></tr>
+                                    
+                                    
+                                </table>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+
+                    <hr>
+                </div>
+                
+                
+                <div class="request">
+
+                    <h3 id="request-getrole">
+                        GetRole
+                        <a href="#request-getrole"><i class="glyphicon glyphicon-link"></i></a>
+                    </h3>
+
+                    <div></div>
+
+                    <div>
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#request-getrole-example-curl" data-toggle="tab">Curl</a></li>
+                            <li role="presentation"><a href="#request-getrole-example-http" data-toggle="tab">HTTP</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="request-getrole-example-curl">
+                                <pre><code class="hljs curl">curl -X GET "http://localhost:8080/getRole?projectId&token"</code></pre>
+                            </div>
+                            <div class="tab-pane" id="request-getrole-example-http">
+                                <pre><code class="hljs http">GET /getRole?projectId&token HTTP/1.1
+Host: localhost:8080</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <div>
+                        <ul class="nav nav-tabs" role="tablist">
+                            
+                            <li role="presentation" class="active">
+                                <a href="#request-getrole-responses-17862d56-dc87-45dc-aeb7-2214bb9a397d" data-toggle="tab">
+                                    
+                                    Response
+                                    
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        <div class="tab-content">
+                            
+                            <div class="tab-pane active" id="request-getrole-responses-17862d56-dc87-45dc-aeb7-2214bb9a397d">
+                                <table class="table table-bordered">
+                                    <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Vary</th><td>Access-Control-Request-Method</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Vary</th><td>Access-Control-Request-Headers</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Type</th><td>application/json</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Transfer-Encoding</th><td>chunked</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Date</th><td>Sat, 01 Jun 2024 06:49:30 GMT</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Keep-Alive</th><td>timeout=60</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Connection</th><td>keep-alive</td></tr>
+                                    
+                                    
+                                    
+                                    <tr><td class="response-text-sample" colspan="2">
+                                        <pre><code>{
+    "role": "PL"
+}</code></pre>
+                                    </td></tr>
+                                    
+                                    
+                                </table>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+
+                    <hr>
+                </div>
+                
+                
+                <div class="request">
+
+                    <h3 id="request-getalluser">
+                        GetAllUser
+                        <a href="#request-getalluser"><i class="glyphicon glyphicon-link"></i></a>
+                    </h3>
+
+                    <div></div>
+
+                    <div>
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#request-getalluser-example-curl" data-toggle="tab">Curl</a></li>
+                            <li role="presentation"><a href="#request-getalluser-example-http" data-toggle="tab">HTTP</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="request-getalluser-example-curl">
+                                <pre><code class="hljs curl">curl -X GET "http://localhost:8080/getAllUser?token"</code></pre>
+                            </div>
+                            <div class="tab-pane" id="request-getalluser-example-http">
+                                <pre><code class="hljs http">GET /getAllUser?token HTTP/1.1
+Host: localhost:8080</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <div>
+                        <ul class="nav nav-tabs" role="tablist">
+                            
+                            <li role="presentation" class="active">
+                                <a href="#request-getalluser-responses-0b2f4759-f9eb-4928-ba1f-5e44f1dc9518" data-toggle="tab">
+                                    
+                                    Response
+                                    
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        <div class="tab-content">
+                            
+                            <div class="tab-pane active" id="request-getalluser-responses-0b2f4759-f9eb-4928-ba1f-5e44f1dc9518">
+                                <table class="table table-bordered">
+                                    <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Vary</th><td>Access-Control-Request-Method</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Vary</th><td>Access-Control-Request-Headers</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Type</th><td>application/json</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Transfer-Encoding</th><td>chunked</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Date</th><td>Sat, 01 Jun 2024 06:50:17 GMT</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Keep-Alive</th><td>timeout=60</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Connection</th><td>keep-alive</td></tr>
+                                    
+                                    
+                                    
+                                    <tr><td class="response-text-sample" colspan="2">
+                                        <pre><code>[
+    {
+        "charge": "",
+        "role": "admin",
+        "name": "1",
+        "id": "1"
+    },
+    {
+        "charge": "3",
+        "role": "PL",
+        "name": "1",
+        "id": "1"
+    },
+    {
+        "charge": "4",
+        "role": "DEV",
+        "name": "1",
+        "id": "1"
+    },
+    {
+        "charge": "1",
+        "role": "PL",
+        "name": "2",
+        "id": "2"
+    },
+    {
+        "charge": "2",
+        "role": "PL",
+        "name": "2",
+        "id": "2"
+    },
+    {
+        "charge": "4",
+        "role": "PL",
+        "name": "2",
+        "id": "2"
+    },
+    {
+        "charge": "1",
+        "role": "TESTER",
+        "name": "3",
+        "id": "3"
+    },
+    {
+        "charge": "2",
+        "role": "DEV",
+        "name": "3",
+        "id": "3"
+    },
+    {
+        "charge": "4",
+        "role": "TESTER",
+        "name": "3",
+        "id": "3"
+    },
+    {
+        "charge": "1",
+        "role": "DEV",
+        "name": "4",
+        "id": "4"
+    },
+    {
+        "charge": "2",
+        "role": "DEV",
+        "name": "4",
+        "id": "4"
+    },
+    {
+        "charge": "3",
+        "role": "DEV",
+        "name": "4",
+        "id": "4"
+    },
+    {
+        "charge": "4",
+        "role": "DEV",
+        "name": "4",
+        "id": "4"
+    },
+    {
+        "charge": "1",
+        "role": "DEV",
+        "name": "5",
+        "id": "5"
+    },
+    {
+        "charge": "4",
+        "role": "DEV",
+        "name": "5",
+        "id": "5"
+    },
+    {
+        "charge": "2",
+        "role": "TESTER",
+        "name": "6",
+        "id": "6"
+    },
+    {
+        "charge": "3",
+        "role": "TESTER",
+        "name": "6",
+        "id": "6"
+    },
+    {
+        "charge": "4",
+        "role": "DEV",
+        "name": "6",
+        "id": "6"
+    },
+    {
+        "charge": "4",
+        "role": "DEV",
+        "name": "7",
+        "id": "7"
+    },
+    {
+        "charge": "4",
+        "role": "DEV",
+        "name": "8",
+        "id": "8"
+    },
+    {
+        "charge": "",
+        "role": "",
+        "name": "a",
+        "id": "a"
+    },
+    {
+        "charge": "",
+        "role": "",
+        "name": "b",
+        "id": "b"
+    }
+]</code></pre>
+                                    </td></tr>
+                                    
+                                    
+                                </table>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+
+                    <hr>
+                </div>
+                
+                
+                <div class="request">
+
+                    <h3 id="request-get-devs">
+                        Get Devs
+                        <a href="#request-get-devs"><i class="glyphicon glyphicon-link"></i></a>
+                    </h3>
+
+                    <div></div>
+
+                    <div>
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#request-get-devs-example-curl" data-toggle="tab">Curl</a></li>
+                            <li role="presentation"><a href="#request-get-devs-example-http" data-toggle="tab">HTTP</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="request-get-devs-example-curl">
+                                <pre><code class="hljs curl">curl -X GET "http://localhost:8080/getDev?token"</code></pre>
+                            </div>
+                            <div class="tab-pane" id="request-get-devs-example-http">
+                                <pre><code class="hljs http">GET /getDev?token HTTP/1.1
+Host: localhost:8080</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <div>
+                        <ul class="nav nav-tabs" role="tablist">
+                            
+                            <li role="presentation" class="active">
+                                <a href="#request-get-devs-responses-bb35f53f-7ebd-4ce1-b0fa-1ea50765d8ad" data-toggle="tab">
+                                    
+                                    Response
+                                    
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        <div class="tab-content">
+                            
+                            <div class="tab-pane active" id="request-get-devs-responses-bb35f53f-7ebd-4ce1-b0fa-1ea50765d8ad">
+                                <table class="table table-bordered">
+                                    <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Vary</th><td>Access-Control-Request-Method</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Vary</th><td>Access-Control-Request-Headers</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Type</th><td>application/json</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Transfer-Encoding</th><td>chunked</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Date</th><td>Sat, 01 Jun 2024 06:51:25 GMT</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Keep-Alive</th><td>timeout=60</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Connection</th><td>keep-alive</td></tr>
+                                    
+                                    
+                                    
+                                    <tr><td class="response-text-sample" colspan="2">
+                                        <pre><code>[
+    "3",
+    "4"
+]</code></pre>
+                                    </td></tr>
+                                    
+                                    
+                                </table>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+
+                    <hr>
+                </div>
+                
+                
+                <div class="request">
+
+                    <h3 id="request-get-recommended-dev">
+                        Get Recommended Dev
+                        <a href="#request-get-recommended-dev"><i class="glyphicon glyphicon-link"></i></a>
+                    </h3>
+
+                    <div></div>
+
+                    <div>
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#request-get-recommended-dev-example-curl" data-toggle="tab">Curl</a></li>
+                            <li role="presentation"><a href="#request-get-recommended-dev-example-http" data-toggle="tab">HTTP</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="request-get-recommended-dev-example-curl">
+                                <pre><code class="hljs curl">curl -X GET "http://localhost:8080/getRecommendDev?tag=%231&projectID=1"</code></pre>
+                            </div>
+                            <div class="tab-pane" id="request-get-recommended-dev-example-http">
+                                <pre><code class="hljs http">GET /getRecommendDev?tag=%231&projectID=1 HTTP/1.1
+Host: localhost:8080</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <div>
+                        <ul class="nav nav-tabs" role="tablist">
+                            
+                            <li role="presentation" class="active">
+                                <a href="#request-get-recommended-dev-responses-5b282da0-c06b-4088-bd1d-15d50022a128" data-toggle="tab">
+                                    
+                                    Response
+                                    
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        <div class="tab-content">
+                            
+                            <div class="tab-pane active" id="request-get-recommended-dev-responses-5b282da0-c06b-4088-bd1d-15d50022a128">
+                                <table class="table table-bordered">
+                                    <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Vary</th><td>Access-Control-Request-Method</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Vary</th><td>Access-Control-Request-Headers</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Content-Type</th><td>application/json</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Transfer-Encoding</th><td>chunked</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Date</th><td>Sat, 01 Jun 2024 06:44:55 GMT</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Keep-Alive</th><td>timeout=60</td></tr>
+                                    
+                                    <tr><th style="width: 20%;">Connection</th><td>keep-alive</td></tr>
+                                    
+                                    
+                                    
+                                    <tr><td class="response-text-sample" colspan="2">
+                                        <pre><code>[
+    "4",
+    "5"
+]</code></pre>
+                                    </td></tr>
+                                    
+                                    
+                                </table>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+
+                    <hr>
+                </div>
+                
+
+
+                
+                
+                <div class="endpoints-group">
+                    <h3 id="folder-issue-statistics">
+                        Issue Statistics
+                        <a href="#folder-issue-statistics"><i class="glyphicon glyphicon-link"></i></a>
+                    </h3>
+
+                    <div><p>통계 정보를 받아오는 API</p>
+</div>
+
+                    
+                    
+                    <div class="request">
+
+                        <h4 id="request-issue-statistics-bydate">
+                            byDate
+                            <a href="#request-issue-statistics-bydate"><i class="glyphicon glyphicon-link"></i></a>
+                        </h4>
+
+                        <div></div>
+
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active"><a href="#request-issue-statistics-bydate-example-curl" data-toggle="tab">Curl</a></li>
+                                <li role="presentation"><a href="#request-issue-statistics-bydate-example-http" data-toggle="tab">HTTP</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="request-issue-statistics-bydate-example-curl">
+                                    <pre><code class="hljs curl">curl -X GET "http://localhost:8080/getIssueCountByDate"</code></pre>
+                                </div>
+                                <div class="tab-pane" id="request-issue-statistics-bydate-example-http">
+                                    <pre><code class="hljs http">GET /getIssueCountByDate HTTP/1.1
+Host: localhost:8080</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                
+                                <li role="presentation" class="active">
+                                    <a href="#request-issue-statistics-bydate-responses-bb5d39c7-544b-4ee2-b870-2f76d96f2398" data-toggle="tab">
+                                        
+                                            Response
+                                        
+                                    </a>
+                                </li>
+                                
+                            </ul>
+                            <div class="tab-content">
+                                
+                                <div class="tab-pane active" id="request-issue-statistics-bydate-responses-bb5d39c7-544b-4ee2-b870-2f76d96f2398">
+                                    <table class="table table-bordered">
+                                        <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Access-Control-Request-Method</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Access-Control-Request-Headers</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Content-Type</th><td>application/json</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Transfer-Encoding</th><td>chunked</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Date</th><td>Sat, 01 Jun 2024 06:38:42 GMT</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Keep-Alive</th><td>timeout=60</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Connection</th><td>keep-alive</td></tr>
+                                        
+                                        
+                                            
+                                            <tr><td class="response-text-sample" colspan="2">
+                                                <pre><code>[
+    {
+        "date": "2024-05-27",
+        "count": "2"
+    },
+    {
+        "date": "2024-05-28",
+        "count": "1"
+    },
+    {
+        "date": "2024-05-30",
+        "count": "13"
+    }
+]</code></pre>
+                                            </td></tr>
+                                            
+                                        
+                                    </table>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+
+                        <hr>
+                    </div>
+                    
+                    
+                    <div class="request">
+
+                        <h4 id="request-issue-statistics-bytag">
+                            byTag
+                            <a href="#request-issue-statistics-bytag"><i class="glyphicon glyphicon-link"></i></a>
+                        </h4>
+
+                        <div></div>
+
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active"><a href="#request-issue-statistics-bytag-example-curl" data-toggle="tab">Curl</a></li>
+                                <li role="presentation"><a href="#request-issue-statistics-bytag-example-http" data-toggle="tab">HTTP</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="request-issue-statistics-bytag-example-curl">
+                                    <pre><code class="hljs curl">curl -X GET "http://localhost:8080/getIssueCountByTag"</code></pre>
+                                </div>
+                                <div class="tab-pane" id="request-issue-statistics-bytag-example-http">
+                                    <pre><code class="hljs http">GET /getIssueCountByTag HTTP/1.1
+Host: localhost:8080</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                
+                                <li role="presentation" class="active">
+                                    <a href="#request-issue-statistics-bytag-responses-0b5b51a8-36ba-4436-9fdc-577933d3e762" data-toggle="tab">
+                                        
+                                            Response
+                                        
+                                    </a>
+                                </li>
+                                
+                            </ul>
+                            <div class="tab-content">
+                                
+                                <div class="tab-pane active" id="request-issue-statistics-bytag-responses-0b5b51a8-36ba-4436-9fdc-577933d3e762">
+                                    <table class="table table-bordered">
+                                        <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Access-Control-Request-Method</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Access-Control-Request-Headers</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Content-Type</th><td>application/json</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Transfer-Encoding</th><td>chunked</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Date</th><td>Sat, 01 Jun 2024 06:46:53 GMT</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Keep-Alive</th><td>timeout=60</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Connection</th><td>keep-alive</td></tr>
+                                        
+                                        
+                                            
+                                            <tr><td class="response-text-sample" colspan="2">
+                                                <pre><code>[
+    {
+        "tag": null,
+        "count": 3
+    },
+    {
+        "tag": "#1",
+        "count": 8
+    },
+    {
+        "tag": "#3",
+        "count": 2
+    },
+    {
+        "tag": "#4",
+        "count": 1
+    },
+    {
+        "tag": "#2",
+        "count": 2
+    }
+]</code></pre>
+                                            </td></tr>
+                                            
+                                        
+                                    </table>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+
+                        <hr>
+                    </div>
+                    
+                    
+                    <div class="request">
+
+                        <h4 id="request-issue-statistics-bypriority">
+                            byPriority
+                            <a href="#request-issue-statistics-bypriority"><i class="glyphicon glyphicon-link"></i></a>
+                        </h4>
+
+                        <div></div>
+
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active"><a href="#request-issue-statistics-bypriority-example-curl" data-toggle="tab">Curl</a></li>
+                                <li role="presentation"><a href="#request-issue-statistics-bypriority-example-http" data-toggle="tab">HTTP</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="request-issue-statistics-bypriority-example-curl">
+                                    <pre><code class="hljs curl">curl -X GET "http://localhost:8080/getIssueCountByPriority"</code></pre>
+                                </div>
+                                <div class="tab-pane" id="request-issue-statistics-bypriority-example-http">
+                                    <pre><code class="hljs http">GET /getIssueCountByPriority HTTP/1.1
+Host: localhost:8080</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                
+                                <li role="presentation" class="active">
+                                    <a href="#request-issue-statistics-bypriority-responses-517348ad-a3b5-40e4-b23e-cd87f707f107" data-toggle="tab">
+                                        
+                                            Response
+                                        
+                                    </a>
+                                </li>
+                                
+                            </ul>
+                            <div class="tab-content">
+                                
+                                <div class="tab-pane active" id="request-issue-statistics-bypriority-responses-517348ad-a3b5-40e4-b23e-cd87f707f107">
+                                    <table class="table table-bordered">
+                                        <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Access-Control-Request-Method</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Access-Control-Request-Headers</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Content-Type</th><td>application/json</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Transfer-Encoding</th><td>chunked</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Date</th><td>Sat, 01 Jun 2024 06:39:11 GMT</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Keep-Alive</th><td>timeout=60</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Connection</th><td>keep-alive</td></tr>
+                                        
+                                        
+                                            
+                                            <tr><td class="response-text-sample" colspan="2">
+                                                <pre><code>[
+    {
+        "LOW": 14
+    },
+    {
+        "MEDIUM": 1
+    },
+    {
+        "CRITICAL": 1
+    }
+]</code></pre>
+                                            </td></tr>
+                                            
+                                        
+                                    </table>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+
+                        <hr>
+                    </div>
+                    
+
+                </div>
+                
+                
+                <div class="endpoints-group">
+                    <h3 id="folder-account">
+                        Account
+                        <a href="#folder-account"><i class="glyphicon glyphicon-link"></i></a>
+                    </h3>
+
+                    <div><p>계정 이용에 대한 API</p>
+</div>
+
+                    
+                    
+                    <div class="request">
+
+                        <h4 id="request-account-register">
+                            Register
+                            <a href="#request-account-register"><i class="glyphicon glyphicon-link"></i></a>
+                        </h4>
+
+                        <div></div>
+
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active"><a href="#request-account-register-example-curl" data-toggle="tab">Curl</a></li>
+                                <li role="presentation"><a href="#request-account-register-example-http" data-toggle="tab">HTTP</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="request-account-register-example-curl">
+                                    <pre><code class="hljs curl">curl -X POST -d '{
+    "id":"userId",
+    "password":"password",
+    "name":"userName",
+    "contract":"phonNumber"
+}' "http://localhost:8080/register"</code></pre>
+                                </div>
+                                <div class="tab-pane" id="request-account-register-example-http">
+                                    <pre><code class="hljs http">POST /register HTTP/1.1
+Host: localhost:8080
+
+{
+    "id":"userId",
+    "password":"password",
+    "name":"userName",
+    "contract":"phonNumber"
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                
+                                <li role="presentation" class="active">
+                                    <a href="#request-account-register-responses-04417ab1-9cff-4874-8256-b677f7e8e27c" data-toggle="tab">
+                                        
+                                            Response
+                                        
+                                    </a>
+                                </li>
+                                
+                            </ul>
+                            <div class="tab-content">
+                                
+                                <div class="tab-pane active" id="request-account-register-responses-04417ab1-9cff-4874-8256-b677f7e8e27c">
+                                    <table class="table table-bordered">
+                                        <tr><th style="width: 20%;">Status</th><td>201 Created</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Access-Control-Request-Method</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Access-Control-Request-Headers</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Content-Type</th><td>application/json</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Content-Length</th><td>40</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Date</th><td>Sat, 01 Jun 2024 06:14:36 GMT</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Keep-Alive</th><td>timeout=60</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Connection</th><td>keep-alive</td></tr>
+                                        
+                                        
+                                            
+                                            <tr><td class="response-text-sample" colspan="2">
+                                                <pre><code>{
+    "message": "User created successfully"
+}</code></pre>
+                                            </td></tr>
+                                            
+                                        
+                                    </table>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+
+                        <hr>
+                    </div>
+                    
+                    
+                    <div class="request">
+
+                        <h4 id="request-account-login">
+                            Login
+                            <a href="#request-account-login"><i class="glyphicon glyphicon-link"></i></a>
+                        </h4>
+
+                        <div></div>
+
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active"><a href="#request-account-login-example-curl" data-toggle="tab">Curl</a></li>
+                                <li role="presentation"><a href="#request-account-login-example-http" data-toggle="tab">HTTP</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="request-account-login-example-curl">
+                                    <pre><code class="hljs curl">curl -X POST -d '{
+    "id":"userId",
+    "password":"password"
+}' "http://localhost:8080/login"</code></pre>
+                                </div>
+                                <div class="tab-pane" id="request-account-login-example-http">
+                                    <pre><code class="hljs http">POST /login HTTP/1.1
+Host: localhost:8080
+
+{
+    "id":"userId",
+    "password":"password"
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                
+                                <li role="presentation" class="active">
+                                    <a href="#request-account-login-responses-fa245a76-7b39-48c1-8df7-be010945f638" data-toggle="tab">
+                                        
+                                            Response
+                                        
+                                    </a>
+                                </li>
+                                
+                            </ul>
+                            <div class="tab-content">
+                                
+                                <div class="tab-pane active" id="request-account-login-responses-fa245a76-7b39-48c1-8df7-be010945f638">
+                                    <table class="table table-bordered">
+                                        <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Access-Control-Request-Method</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Access-Control-Request-Headers</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Content-Type</th><td>text/plain;charset=UTF-8</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Content-Length</th><td>161</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Date</th><td>Sat, 01 Jun 2024 06:15:47 GMT</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Keep-Alive</th><td>timeout=60</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Connection</th><td>keep-alive</td></tr>
+                                        
+                                        
+                                            
+                                            <tr><td class="response-text-sample" colspan="2">
+                                                <pre><code>{
+    "email": "userId",
+    "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VySWQiLCJpYXQiOjE3MTcyMjI1NDcsImV4cCI6MTcxNzMwODk0N30.xwmEqxFnxHG2vvSGXm2JDglq88zPXAeIFG_phOZg6yo"
+}</code></pre>
+                                            </td></tr>
+                                            
+                                        
+                                    </table>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+
+                        <hr>
+                    </div>
+                    
+                    
+                    <div class="request">
+
+                        <h4 id="request-account-delete-account">
+                            Delete Account
+                            <a href="#request-account-delete-account"><i class="glyphicon glyphicon-link"></i></a>
+                        </h4>
+
+                        <div></div>
+
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active"><a href="#request-account-delete-account-example-curl" data-toggle="tab">Curl</a></li>
+                                <li role="presentation"><a href="#request-account-delete-account-example-http" data-toggle="tab">HTTP</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="request-account-delete-account-example-curl">
+                                    <pre><code class="hljs curl">curl -X POST -d '{
+    "token":"token",
+    "userId":"userId"
+}' "http://localhost:8080/deleteAccount"</code></pre>
+                                </div>
+                                <div class="tab-pane" id="request-account-delete-account-example-http">
+                                    <pre><code class="hljs http">POST /deleteAccount HTTP/1.1
+Host: localhost:8080
+
+{
+    "token":"token",
+    "userId":"userId"
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                
+                                <li role="presentation" class="active">
+                                    <a href="#request-account-delete-account-responses-fcf930fc-7bfc-4bf0-91a6-2b3443d83a25" data-toggle="tab">
+                                        
+                                            Response
+                                        
+                                    </a>
+                                </li>
+                                
+                            </ul>
+                            <div class="tab-content">
+                                
+                                <div class="tab-pane active" id="request-account-delete-account-responses-fcf930fc-7bfc-4bf0-91a6-2b3443d83a25">
+                                    <table class="table table-bordered">
+                                        <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Access-Control-Request-Method</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Access-Control-Request-Headers</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Content-Type</th><td>text/plain;charset=UTF-8</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Content-Length</th><td>15</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Date</th><td>Sat, 01 Jun 2024 06:48:38 GMT</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Keep-Alive</th><td>timeout=60</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Connection</th><td>keep-alive</td></tr>
+                                        
+                                        
+                                            
+                                        
+                                    </table>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+
+                        <hr>
+                    </div>
+                    
+
+                </div>
+                
+                
+                <div class="endpoints-group">
+                    <h3 id="folder-search-issue">
+                        Search Issue
+                        <a href="#folder-search-issue"><i class="glyphicon glyphicon-link"></i></a>
+                    </h3>
+
+                    <div></div>
+
+                    
+                    
+                    <div class="request">
+
+                        <h4 id="request-search-issue-search-issues-all">
+                            Search Issues /all
+                            <a href="#request-search-issue-search-issues-all"><i class="glyphicon glyphicon-link"></i></a>
+                        </h4>
+
+                        <div></div>
+
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active"><a href="#request-search-issue-search-issues-all-example-curl" data-toggle="tab">Curl</a></li>
+                                <li role="presentation"><a href="#request-search-issue-search-issues-all-example-http" data-toggle="tab">HTTP</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="request-search-issue-search-issues-all-example-curl">
+                                    <pre><code class="hljs curl">curl -X GET "http://localhost:8080/search/all?projectId=&token="</code></pre>
+                                </div>
+                                <div class="tab-pane" id="request-search-issue-search-issues-all-example-http">
+                                    <pre><code class="hljs http">GET /search/all?projectId=&token= HTTP/1.1
+Host: localhost:8080</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                
+                                <li role="presentation" class="active">
+                                    <a href="#request-search-issue-search-issues-all-responses-53045d6c-3e4d-467b-8329-56403ba1b268" data-toggle="tab">
+                                        
+                                            Response
+                                        
+                                    </a>
+                                </li>
+                                
+                            </ul>
+                            <div class="tab-content">
+                                
+                                <div class="tab-pane active" id="request-search-issue-search-issues-all-responses-53045d6c-3e4d-467b-8329-56403ba1b268">
+                                    <table class="table table-bordered">
+                                        <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Access-Control-Request-Method</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Access-Control-Request-Headers</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Content-Type</th><td>application/json</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Transfer-Encoding</th><td>chunked</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Date</th><td>Sat, 01 Jun 2024 06:51:36 GMT</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Keep-Alive</th><td>timeout=60</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Connection</th><td>keep-alive</td></tr>
+                                        
+                                        
+                                            
+                                            <tr><td class="response-text-sample" colspan="2">
+                                                <pre><code>[
+    {
+        "date": "2024-05-27T22:58:44.183635",
+        "assignees": "4, 5",
+        "reporter": "2",
+        "id": "1",
+        "tag": null,
+        "title": "이슈 1",
+        "priority": "LOW",
+        "fixer": "2",
+        "status": "FIXED"
+    },
+    {
+        "date": "2024-05-31T01:48:25.291417",
+        "assignees": "",
+        "reporter": "2",
+        "id": "4",
+        "tag": "#1",
+        "title": "issue 2",
+        "priority": "LOW",
+        "fixer": "",
+        "status": "NEW"
+    },
+    {
+        "date": "2024-05-31T01:48:33.563125",
+        "assignees": "",
+        "reporter": "2",
+        "id": "5",
+        "tag": "#3",
+        "title": "issue 3",
+        "priority": "LOW",
+        "fixer": "",
+        "status": "NEW"
+    },
+    {
+        "date": "2024-05-31T01:48:42.360792",
+        "assignees": "",
+        "reporter": "2",
+        "id": "6",
+        "tag": "#4",
+        "title": "issue 4",
+        "priority": "LOW",
+        "fixer": "",
+        "status": "NEW"
+    },
+    {
+        "date": "2024-05-31T01:48:52.044413",
+        "assignees": "",
+        "reporter": "2",
+        "id": "7",
+        "tag": "#1",
+        "title": "issue 5",
+        "priority": "LOW",
+        "fixer": "",
+        "status": "NEW"
+    }
+]</code></pre>
+                                            </td></tr>
+                                            
+                                        
+                                    </table>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+
+                        <hr>
+                    </div>
+                    
+                    
+                    <div class="request">
+
+                        <h4 id="request-search-issue-search-issues-byissuestatus">
+                            Search Issues /byIssueStatus
+                            <a href="#request-search-issue-search-issues-byissuestatus"><i class="glyphicon glyphicon-link"></i></a>
+                        </h4>
+
+                        <div></div>
+
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active"><a href="#request-search-issue-search-issues-byissuestatus-example-curl" data-toggle="tab">Curl</a></li>
+                                <li role="presentation"><a href="#request-search-issue-search-issues-byissuestatus-example-http" data-toggle="tab">HTTP</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="request-search-issue-search-issues-byissuestatus-example-curl">
+                                    <pre><code class="hljs curl">curl -X GET "http://localhost:8080/search/byIssueStatus?projectId=&token=&status=NEW, ASSIGNED, FIXED, RESOLVED, CLOSED"</code></pre>
+                                </div>
+                                <div class="tab-pane" id="request-search-issue-search-issues-byissuestatus-example-http">
+                                    <pre><code class="hljs http">GET /search/byIssueStatus?projectId=&token=&status=NEW, ASSIGNED, FIXED, RESOLVED, CLOSED HTTP/1.1
+Host: localhost:8080</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                
+                                <li role="presentation" class="active">
+                                    <a href="#request-search-issue-search-issues-byissuestatus-responses-7e62ba9e-f4d1-4d03-bbe8-db9f833add6a" data-toggle="tab">
+                                        
+                                            Response
+                                        
+                                    </a>
+                                </li>
+                                
+                            </ul>
+                            <div class="tab-content">
+                                
+                                <div class="tab-pane active" id="request-search-issue-search-issues-byissuestatus-responses-7e62ba9e-f4d1-4d03-bbe8-db9f833add6a">
+                                    <table class="table table-bordered">
+                                        <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Access-Control-Request-Method</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Access-Control-Request-Headers</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Content-Type</th><td>application/json</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Transfer-Encoding</th><td>chunked</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Date</th><td>Sat, 01 Jun 2024 06:51:53 GMT</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Keep-Alive</th><td>timeout=60</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Connection</th><td>keep-alive</td></tr>
+                                        
+                                        
+                                            
+                                            <tr><td class="response-text-sample" colspan="2">
+                                                <pre><code>[
+    {
+        "date": "2024-05-31T01:48:52.044413",
+        "assignees": "",
+        "reporter": "2",
+        "id": "7",
+        "tag": "#1",
+        "title": "issue 5",
+        "priority": "LOW",
+        "fixer": "",
+        "status": "NEW"
+    },
+    {
+        "date": "2024-05-31T01:48:42.360792",
+        "assignees": "",
+        "reporter": "2",
+        "id": "6",
+        "tag": "#4",
+        "title": "issue 4",
+        "priority": "LOW",
+        "fixer": "",
+        "status": "NEW"
+    },
+    {
+        "date": "2024-05-31T01:48:33.563125",
+        "assignees": "",
+        "reporter": "2",
+        "id": "5",
+        "tag": "#3",
+        "title": "issue 3",
+        "priority": "LOW",
+        "fixer": "",
+        "status": "NEW"
+    },
+    {
+        "date": "2024-05-31T01:48:25.291417",
+        "assignees": "",
+        "reporter": "2",
+        "id": "4",
+        "tag": "#1",
+        "title": "issue 2",
+        "priority": "LOW",
+        "fixer": "",
+        "status": "NEW"
+    }
+]</code></pre>
+                                            </td></tr>
+                                            
+                                        
+                                    </table>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+
+                        <hr>
+                    </div>
+                    
+                    
+                    <div class="request">
+
+                        <h4 id="request-search-issue-search-issues-byperson">
+                            Search Issues /byPerson
+                            <a href="#request-search-issue-search-issues-byperson"><i class="glyphicon glyphicon-link"></i></a>
+                        </h4>
+
+                        <div></div>
+
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active"><a href="#request-search-issue-search-issues-byperson-example-curl" data-toggle="tab">Curl</a></li>
+                                <li role="presentation"><a href="#request-search-issue-search-issues-byperson-example-http" data-toggle="tab">HTTP</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="request-search-issue-search-issues-byperson-example-curl">
+                                    <pre><code class="hljs curl">curl -X GET "http://localhost:8080/search/byPerson?token&projectId&role=assignee, reporter, fixer&id=userId"</code></pre>
+                                </div>
+                                <div class="tab-pane" id="request-search-issue-search-issues-byperson-example-http">
+                                    <pre><code class="hljs http">GET /search/byPerson?token&projectId&role=assignee, reporter, fixer&id=userId HTTP/1.1
+Host: localhost:8080</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                
+                                <li role="presentation" class="active">
+                                    <a href="#request-search-issue-search-issues-byperson-responses-9ac6ce6d-ba62-438b-ba99-d823b6084286" data-toggle="tab">
+                                        
+                                            Response
+                                        
+                                    </a>
+                                </li>
+                                
+                            </ul>
+                            <div class="tab-content">
+                                
+                                <div class="tab-pane active" id="request-search-issue-search-issues-byperson-responses-9ac6ce6d-ba62-438b-ba99-d823b6084286">
+                                    <table class="table table-bordered">
+                                        <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Access-Control-Request-Method</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Access-Control-Request-Headers</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Content-Type</th><td>application/json</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Transfer-Encoding</th><td>chunked</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Date</th><td>Sat, 01 Jun 2024 06:53:08 GMT</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Keep-Alive</th><td>timeout=60</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Connection</th><td>keep-alive</td></tr>
+                                        
+                                        
+                                            
+                                            <tr><td class="response-text-sample" colspan="2">
+                                                <pre><code>[
+    {
+        "date": "2024-05-27T23:01:55.258533",
+        "assignees": "3, 4",
+        "reporter": "2",
+        "id": "2",
+        "tag": null,
+        "title": "P2-이슈1",
+        "priority": "MEDIUM",
+        "fixer": "3",
+        "status": "FIXED"
+    }
+]</code></pre>
+                                            </td></tr>
+                                            
+                                        
+                                    </table>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+
+                        <hr>
+                    </div>
+                    
+                    
+                    <div class="request">
+
+                        <h4 id="request-search-issue-search-issues-bypriority">
+                            Search Issues /byPriority
+                            <a href="#request-search-issue-search-issues-bypriority"><i class="glyphicon glyphicon-link"></i></a>
+                        </h4>
+
+                        <div></div>
+
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active"><a href="#request-search-issue-search-issues-bypriority-example-curl" data-toggle="tab">Curl</a></li>
+                                <li role="presentation"><a href="#request-search-issue-search-issues-bypriority-example-http" data-toggle="tab">HTTP</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="request-search-issue-search-issues-bypriority-example-curl">
+                                    <pre><code class="hljs curl">curl -X GET "http://localhost:8080/search/byPriority?projectId&token&priority=LOW, MEDIUM, HIGH, CRITICAL"</code></pre>
+                                </div>
+                                <div class="tab-pane" id="request-search-issue-search-issues-bypriority-example-http">
+                                    <pre><code class="hljs http">GET /search/byPriority?projectId&token&priority=LOW, MEDIUM, HIGH, CRITICAL HTTP/1.1
+Host: localhost:8080</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        <div>
+                            <ul class="nav nav-tabs" role="tablist">
+                                
+                                <li role="presentation" class="active">
+                                    <a href="#request-search-issue-search-issues-bypriority-responses-350805d0-7579-435a-9064-9d445dc34d49" data-toggle="tab">
+                                        
+                                            Response
+                                        
+                                    </a>
+                                </li>
+                                
+                            </ul>
+                            <div class="tab-content">
+                                
+                                <div class="tab-pane active" id="request-search-issue-search-issues-bypriority-responses-350805d0-7579-435a-9064-9d445dc34d49">
+                                    <table class="table table-bordered">
+                                        <tr><th style="width: 20%;">Status</th><td>200 OK</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Origin</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Access-Control-Request-Method</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Vary</th><td>Access-Control-Request-Headers</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Content-Type</th><td>application/json</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Transfer-Encoding</th><td>chunked</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Date</th><td>Sat, 01 Jun 2024 07:06:59 GMT</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Keep-Alive</th><td>timeout=60</td></tr>
+                                        
+                                        <tr><th style="width: 20%;">Connection</th><td>keep-alive</td></tr>
+                                        
+                                        
+                                            
+                                            <tr><td class="response-text-sample" colspan="2">
+                                                <pre><code>[
+    {
+        "date": "2024-05-27T22:58:44.183635",
+        "assignees": "4, 5",
+        "reporter": "2",
+        "id": "1",
+        "tag": null,
+        "title": "이슈 1",
+        "priority": "LOW",
+        "fixer": "2",
+        "status": "FIXED"
+    },
+    {
+        "date": "2024-05-31T01:48:25.291417",
+        "assignees": "",
+        "reporter": "2",
+        "id": "4",
+        "tag": "#1",
+        "title": "issue 2",
+        "priority": "LOW",
+        "fixer": "",
+        "status": "NEW"
+    },
+    {
+        "date": "2024-05-31T01:48:33.563125",
+        "assignees": "",
+        "reporter": "2",
+        "id": "5",
+        "tag": "#3",
+        "title": "issue 3",
+        "priority": "LOW",
+        "fixer": "",
+        "status": "NEW"
+    },
+    {
+        "date": "2024-05-31T01:48:42.360792",
+        "assignees": "",
+        "reporter": "2",
+        "id": "6",
+        "tag": "#4",
+        "title": "issue 4",
+        "priority": "LOW",
+        "fixer": "",
+        "status": "NEW"
+    },
+    {
+        "date": "2024-05-31T01:48:52.044413",
+        "assignees": "",
+        "reporter": "2",
+        "id": "7",
+        "tag": "#1",
+        "title": "issue 5",
+        "priority": "LOW",
+        "fixer": "",
+        "status": "NEW"
+    }
+]</code></pre>
+                                            </td></tr>
+                                            
+                                        
+                                    </table>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+
+                        <hr>
+                    </div>
+                    
+
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-2.2.2.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $("table:not(.table)").addClass('table table-bordered');
+    });
+</script>
+</body>
+</html>
