@@ -5,11 +5,14 @@ import org.springframework.stereotype.Service;
 import swengineering.team7.issuemanagementsystem.DTO.IssueCountByDateDTO;
 import swengineering.team7.issuemanagementsystem.DTO.IssueCountByTagDTO;
 import swengineering.team7.issuemanagementsystem.repository.IssueRepository;
+import swengineering.team7.issuemanagementsystem.util.Priority;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 // 이슈 통계분석을 담당하는 Service
 @Service
@@ -50,7 +53,16 @@ public class IssueAnalyticsService {
 
         return issueCountsByTag;
     }
-
+    public List<Map<Priority,Long>> getIssueCountsByPriority(){
+        List<Object[]> results = issueRepository.countIssuesByPriority();
+        List<Map<Priority,Long>> issueCountsByPriority = new ArrayList<>();
+        for (Object[] result: results){
+            Map<Priority,Long> tmp = new HashMap<>();
+            tmp.put((Priority) result[0],(Long) result[1]);
+            issueCountsByPriority.add(tmp);
+        }
+        return issueCountsByPriority;
+    }
 
 }
 

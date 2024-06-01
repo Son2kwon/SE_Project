@@ -331,11 +331,16 @@ public class IssueService {
             }
         }
         ///////////////////////////////////////////////////////////////////////
+        // 태그가 빈 태그로 주어진다면, 추천기능 필요 x, 빈 리스트 반환
+        if(tag.isEmpty()) {
+            return new ArrayList<UserInformationDTO>();
+        }
         String tagset[] = tag.split("#");
         List<String> temp_tagset = new ArrayList<>(Arrays.asList(tagset));
         temp_tagset.remove(0);
         tagset = temp_tagset.toArray(new String[temp_tagset.size()]);
-        
+
+        // temp 를 키값으로 가지는 우선순위큐 (Max Heap) 자료구조 생성
         PriorityQueue<PriorityPair> queue = new PriorityQueue<>();
         List<String> devIDs= projectAssignmentService.getDevIdByProjectId(projectID);
         Optional<Project> optionalProject = projectRepository.findById(projectID);
@@ -349,7 +354,11 @@ public class IssueService {
                         temp=temp+user.getIssueResolve().get(s);
                     }
                 }
-                queue.offer(new PriorityPair(temp,user));
+                // 해결이력이 1개 이상 존재하고, Dev인경우 추가
+                // Dev가 아니라면 애초에 해결이력이 늘어날 상황이 없기때문
+                if(temp!=0) {
+                    queue.offer(new PriorityPair(temp, user));
+                }
             }
         }
         List<UserInformationDTO> ret = new ArrayList<>();

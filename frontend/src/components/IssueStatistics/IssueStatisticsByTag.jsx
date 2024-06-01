@@ -5,7 +5,7 @@ import { BarElement, Chart } from 'chart.js';
 import URLs from '../../utils/urls';
 Chart.register(BarElement);
 
-const IssueStatisticByTag = ({ apiUrl }) => {
+const IssueStatisticByTag = () => {
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
 
   useEffect(() => {
@@ -23,18 +23,23 @@ const IssueStatisticByTag = ({ apiUrl }) => {
   }
 
   const processData = (data) => {
-    const sortedData = data.sort((a, b) => b.count - a.count);
+    const processedData = data.map(entry => {
+      return {
+          ...entry,
+          tag: entry.tag === null ? 'no tag' : entry.tag
+      };
+  });
+    const sortedData = processedData.sort((a, b) => b.count - a.count);
     const labels = sortedData.map(entry => entry.tag);
     const counts = sortedData.map(entry => entry.count);
-
     setChartData({
       labels,
       datasets: [
         {
           label: 'Count',
           data: counts,
-          backgroundColor: 'rgba(54, 162, 235, 0.6)',
-          borderColor: 'rgba(54, 162, 235, 1)',
+          backgroundColor: 'rgba(75, 192, 192, 0.6)',
+          borderColor: 'rgba(75, 192, 192, 1)',
           borderWidth: 1,
         },
       ],
@@ -44,7 +49,7 @@ const IssueStatisticByTag = ({ apiUrl }) => {
   return (
     <div>
       {chartData.labels.length > 0 ? (
-      <Bar
+      <Bar class="chart-container"
         data={chartData}
         options={{
           scales: {

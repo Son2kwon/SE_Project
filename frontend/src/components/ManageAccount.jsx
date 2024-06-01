@@ -4,7 +4,7 @@ import URLs from "../utils/urls";
 import '../styles/tableStyle.css'
 const ManageAccount=()=>{
   const [accountList,setAccountList] = useState([]);
-  
+
   const fetchData = async() => {
     await axios({
       url: URLs.GetAllUser,
@@ -25,7 +25,7 @@ const ManageAccount=()=>{
     try{
       await axios.post(URLs.DELAccount,{
         token:sessionStorage.getItem('token'),
-        id: userID,
+        userId: userID,
       })
       fetchData()
     }catch(error){

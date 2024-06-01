@@ -13,6 +13,7 @@ const URLs = {
   AssignDev: base_url +'/assignDev',
   GetIssueCountByDate: base_url + '/getIssueCountByDate',
   GetIssueCountByTag:  base_url + '/getIssueCountByTag',
+  GetIssueCountByPriority:  base_url + '/getIssueCountByPriority',
   GetRecommendDev: base_url + '/getRecommendDev'
 };
 export default URLs;

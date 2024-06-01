@@ -40,6 +40,12 @@ public class UserService {
        User user = userRepository.findById(userInformationDTO.getId()).orElse(null);
        return user.getRole()!=null&&user.getRole().equals("admin");
     }
+    //계정 삭제
+    public void deleteUserById(String userId){
+       if(userRepository.existsById(userId)) {
+           userRepository.deleteById(userId);
+       }
+    }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // 사용자 계정 정보 수정
@@ -116,9 +122,8 @@ public class UserService {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //이름으로 검색된 사용자들 DTO 반환
-    public List<UserInformationDTO> searchByUsername(UserInformationDTO userInformationDTO) {
-        Specification<User> spec = searchname(userInformationDTO.getName());
-        List<User> users = userRepository.findAll(spec);
+    public List<UserInformationDTO> searchByUsername(String keyword) {
+        List<User> users = userRepository.findByUsernameContainingOrderByUsernameAsc(keyword);
 
         List<UserInformationDTO> userInformationDTOS = new ArrayList<>();
         for (User user : users) {
@@ -126,22 +131,11 @@ public class UserService {
         }
 
         return userInformationDTOS;
-    }
-    //사용자 이름으로 검색 하는 메소드
-    public Specification<User> searchname(String input) {
-        return new Specification<User>() {
-            @Override
-            public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-                query.distinct(true);
-                return cb.like(root.get("username"),"%"+input+"%");
-            }
-        };
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //사용자 권한으로 검색된 리스트 DTO 반환
-    public List<UserInformationDTO> searchByUserrole(String input) {
-        Specification<User> spec = searchrole(input);
-        List<User> users = userRepository.findAll(spec);
+    public List<UserInformationDTO> searchByUserrole(String role) {
+        List<User> users = userRepository.findByRoleOrderByUsernameAsc(role);
 
         List<UserInformationDTO> userInformationDTOS = new ArrayList<>();
         for (User user : users) {
@@ -149,16 +143,6 @@ public class UserService {
         }
 
         return userInformationDTOS;
-    }
-    //사용자 권한(admin, PL, dev, tester) 으로 검색
-    public Specification<User> searchrole(String input) {
-        return new Specification<User>() {
-            @Override
-            public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-                query.distinct(true);
-                return cb.like(root.get("role"),"%"+input+"%");
-            }
-        };
     }
 
     public User SearchSepcificUser (String id) {

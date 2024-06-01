@@ -54,14 +54,15 @@ const CreateIssue = () => {
     <div>
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
-          <strong>My ID:</strong> {email ? email : ""} <strong>역할:</strong> {role ? role : ""}<br/>
-          <strong>Project:</strong> {projectName}<br/>
+          <strong className='strong'>My ID:</strong> {email ? email : ""}<br/>
+          <strong className='strong'>Project:</strong> {projectName}<br/>
+          <strong className='strong'>역할:</strong> {role ? role : ""}<br/>
         </div>
         <LogOut/>
       </div>
       <br/>
       <div>
-        <button className="button" onClick={() => setShowIssueCreate(true)}>Create Issue</button>
+        <button className="button" onClick={() => setShowIssueCreate(!showIssueCreate)}>Create Issue</button>
         {showIssueCreate?
         <form className="form" onSubmit={handleSubmit}>
         <div>

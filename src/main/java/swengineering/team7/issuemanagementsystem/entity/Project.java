@@ -103,7 +103,7 @@ public class Project {
     }
 
     public void addAssignedUser(User user){
-        assignedUsers.add(user);
+        this.assignedUsers.add(user);
     }
 
     public void addIssue(Issue issue){

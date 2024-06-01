@@ -1,6 +1,7 @@
 .table {
-    width: 100%;
+    width:100%;
     border-collapse: collapse;
+    margin-left:8px;
   }
   
   .table th, .table td {
@@ -11,4 +12,8 @@
   .table th {
     background-color: #f2f2f2;
     color: #333;
+  }
+  .result-button{
+    margin-left:8px;
+    margin-top:8px;
   }
