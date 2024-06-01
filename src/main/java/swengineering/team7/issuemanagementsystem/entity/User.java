@@ -58,6 +58,7 @@ public class User {
 
     public void incrementResolve(String tag) {
         if(tag!=null){
+            System.out.println("tag : "+tag);
             String tagset[] = tag.split("#");
             List<String> temp = new ArrayList<>(Arrays.asList(tagset));
             temp.remove(0);
@@ -169,7 +170,7 @@ public class User {
         this.Contract=contract;
     }
 
-    public void addIssue(Issue newissue) { this.issues.add(newissue); };
+    public void addIssue(Issue newissue) { this.issues.add(newissue); }
 
     public void removeIssue(Issue target) {
         issues.remove(target);

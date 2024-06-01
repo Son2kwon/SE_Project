@@ -19,4 +19,5 @@ public interface UserRepository extends JpaRepository<User, String>, JpaSpecific
     List<User> findByRoleOrderByUsernameAsc(String role);
     // 기본 CRUD 제공
     Optional<User> findByUsername(String name);
+    long count();
 }

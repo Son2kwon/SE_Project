@@ -79,10 +79,11 @@ public class IssueServiceTest {
         Set<String> A = new HashSet<>();
         A.add("assignee");
         IssueDTO issueDTO = new IssueDTO(1L,1L,"title", LocalDateTime.now(),State.CLOSED,"description", Priority.HIGH,"reporterid","reportername","#tag1#tag2#tag3","fixerid","fixername",A);
-        Dev dev1 = new Dev();
+        User dev1 = new Dev();
         dev1.setId("fixerid");
+        dev1.setRole("dev");
 
-        Issue terminal_issue = Issue.makeIssueOf("old_title","old_description",LocalDateTime.now(),State.FIXED,Priority.HIGH, "Testtag");
+        Issue terminal_issue = Issue.makeIssueOf("old_title","old_description",LocalDateTime.now(),State.FIXED,Priority.HIGH, "#old_tag");
         terminal_issue.setId(1L);
         terminal_issue.setFixer(dev1);
 
@@ -91,14 +92,13 @@ public class IssueServiceTest {
         when(userRepository.findById("fixerid")).thenReturn(Optional.of(dev1));
         when(userRepository.save(any(User.class))).thenReturn(dev1);
 
-        System.out.println(terminal_issue.getId());
         Boolean result = issueService.UpdateIssueInfo(issueDTO);
 
         assertTrue(result);
         assertEquals(1,dev1.getIssueResolve().get("tag1"));
         assertEquals(1,dev1.getIssueResolve().get("tag2"));
         assertEquals(1,dev1.getIssueResolve().get("tag3"));
-        verify(issueRepository, times(2)).save(terminal_issue);
+        verify(issueRepository, times(1)).save(terminal_issue);
         verify(userRepository, times(1)).save(dev1);
     }
 
@@ -151,13 +151,8 @@ public class IssueServiceTest {
         when(userRepository.findById("dev4")).thenReturn(Optional.of(dev4));
         when(projectAssignmentService.getDevIdByProjectId(1L)).thenReturn(dev_id);
         List<UserInformationDTO> users = issueService.recommendAssignee(projectDTO.getId(),"#tag1#tag2#tag3");
-       // for(int i=0;i<3;i++){
-          //  assertEquals(ans.get(i).getId(),users.get(i).getId());
-       // }
-
-        for(int i=0;i<users.size();i++)
-        {
-            System.out.println(users.get(i).getId());
+        for(int i=0;i<3;i++){
+            assertEquals(ans.get(i).getId(),users.get(i).getId());
         }
     }
 

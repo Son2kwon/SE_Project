@@ -230,11 +230,10 @@ public class IssueService {
         // 만약 issue의 상태가 closed, 즉 해결된 상태로 바뀐다면
         // 해당 issue에 배정된 Dev의 해결 이력 업데이트
         if(issueDTO.getState()==State.CLOSED) {
-            for(User user : issue.getAssignedUsers()) {
-                if(user instanceof Dev) {
-                    //((Dev) user).incrementResolve(issueDTO.getTag());
-                    userRepository.save(user);
-                }
+            if(!issueDTO.getFixer().isEmpty()) {
+                User user = userRepository.findById(issueDTO.getFixer()).orElse(null);
+                user.incrementResolve(issueDTO.getTag());
+                userRepository.save(user);
             }
         }
         issue.setTitle(issueDTO.getTitle());
