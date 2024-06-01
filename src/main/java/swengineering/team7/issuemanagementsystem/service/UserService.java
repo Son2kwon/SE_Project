@@ -30,7 +30,13 @@ public class UserService {
    //회원가입
     public void createUser(String id, String password, String username,  String contract) {
        User user = new User(id, username,password,contract);
-       this.userRepository.save(user);
+       if(userRepository.findById(id).orElse(null)==null) {
+           this.userRepository.save(user);
+           if(userRepository.count()==1) {
+               user.setRole("admin");
+               this.userRepository.save(user);
+           }
+       }
     }
     public boolean login(UserInformationDTO userInformationDTO){
        User user = userRepository.findById(userInformationDTO.getId()).orElse(null);
@@ -71,7 +77,7 @@ public class UserService {
         User user_n = userRepository.findById(usernow.getId()).orElse(null);
         // user_t = 변경할 사용자의 계정 정보
         User user_t = userRepository.findById(usertarget.getId()).orElse(null);
-        if(user_n instanceof Admin) {
+        if(user_n.getRole().equals("admin")) {
             user_t.setRole(newrole);
             this.userRepository.save(user_t);
         }
