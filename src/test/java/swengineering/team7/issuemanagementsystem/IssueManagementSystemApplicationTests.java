@@ -15,10 +15,6 @@ class IssueManagementSystemApplicationTests {
 
     @Test
     void testJpa() {
-        String tag="#";
-        String tagset[] = tag.split("#");
-        List<String> temp_tagset = new ArrayList<>(Arrays.asList(tagset));
-        temp_tagset.remove(0);
-        tagset = temp_tagset.toArray(new String[temp_tagset.size()]);
+        
     }
 }
